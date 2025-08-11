@@ -1,0 +1,306 @@
+/* === RESET === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #4facfe;
+  --secondary: #00f2fe;
+  --text: #222;
+  --background: #f0f4f8;
+  --glass: rgba(255, 255, 255, 0.3);
+  --border: rgba(255, 255, 255, 0.25);
+  --shadow: rgba(0, 0, 0, 0.1);
+  --radius: 20px;
+  --green: #28a745;
+  --yellow: #ffc107;
+  --red: #dc3545;
+  --toast-background: rgba(0, 0, 0, 0.8);
+  --toast-text: #fff;
+}
+
+body.dark {
+  --primary: #4facfe;
+  --secondary: #00f2fe;
+  --text: #f4f4f4;
+  --background: #1e1e1e;
+  --glass: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.15);
+  --shadow: rgba(0, 0, 0, 0.6);
+  --toast-background: rgba(255, 255, 255, 0.9);
+  --toast-text: #121212;
+}
+
+body {
+  font-family: 'Poppins', 'Segoe UI', sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background-color 0.4s, color 0.4s;
+}
+
+/* === CONTAINER === */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem;
+}
+
+/* === HEADER === */
+header {
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  color: white;
+  padding: 1.2rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+.main-nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 25px;
+  font-weight: 500;
+  position: relative;
+}
+.main-nav a::after {
+  content: '';
+  height: 2px;
+  width: 0%;
+  background: white;
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  transition: width 0.3s ease;
+}
+.main-nav a:hover::after {
+  width: 100%;
+}
+
+/* === GLASS PANEL === */
+.glass-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px var(--shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+/* === FORM === */
+form {
+  background: var(--glass);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px var(--shadow);
+  padding: 2rem;
+  margin-top: 2rem;
+  color: var(--text);
+}
+form label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+form input,
+form textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.3s ease;
+  background-color: #fff;
+}
+form input:focus,
+form textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
+}
+
+/* === BUTTON === */
+.btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+.btn:hover {
+  background: #3a9ee0;
+}
+.btn.small {
+  padding: 8px 20px;
+  font-size: 0.9rem;
+}
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* === EVENTS LIST === */
+#events-list {
+  margin-top: 3rem;
+}
+#event-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+#event-items li {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 18px var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-left: 6px solid var(--primary);
+}
+#event-items li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px var(--shadow);
+}
+#event-items li::before {
+  content: '🎁';
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+#event-items li.green {
+  border-left: 6px solid var(--green);
+}
+#event-items li.yellow {
+  border-left: 6px solid var(--yellow);
+}
+#event-items li.red {
+  border-left: 6px solid var(--red);
+}
+
+/* === PROGRESS BAR === */
+.progress-bar {
+  background: #f3f3f3;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+.progress-bar .bar {
+  height: 10px;
+  border-radius: 12px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* === TOAST MESSAGE === */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: var(--toast-background);
+  color: var(--toast-text);
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px var(--shadow);
+  z-index: 9999;
+  font-size: 1rem;
+  opacity: 1;
+  transition: opacity 0.5s ease, transform 0.3s ease;
+}
+.toast.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* === LANGUAGE SWITCHER === */
+.language-switcher {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+.lang-btn {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  font-size: 1.1rem;
+  padding: 8px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.lang-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+.lang-btn.active {
+  background: var(--secondary);
+  color: white;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .main-nav {
+    margin-top: 1rem;
+  }
+  .main-nav a {
+    margin-left: 0;
+    margin-right: 15px;
+  }
+}
+
+#jar-fill {
+  background: linear-gradient(to top, #22c55e, #4ade80);
+}
+
+
+#modal {
+  z-index: 9999;
+}
+
+/* Додай це у style.css для підтримки safe-area */
+.safe-area {
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left:  env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top:   env(safe-area-inset-top);
+}
+/* у style.css */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: #fff;
+  transition: width 0.2s;
+}
+.nav-link:hover::after, .nav-link:focus::after {
+  width: 100%;
+}

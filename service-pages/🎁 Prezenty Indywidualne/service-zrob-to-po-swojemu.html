@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎁 Zrób to po swojemu – HappyDate</title>
+  <meta name="description" content="Stwórz spersonalizowany prezent z HappyDate – pełna kontrola i magia emocji!" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- Tailwind & AOS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <style>
+    /* spójne, pastelowe tło (kopiuje wzór ze strony „Rok Radości”) */
+    body {
+      background-image:
+        radial-gradient(circle at 10% 20%, #fef9c3 1.2%, transparent 1.2%),
+        radial-gradient(circle at 90% 10%, #bae6fd 1.2%, transparent 1.2%),
+        radial-gradient(circle at 80% 80%, #fbcfe8 1.2%, transparent 1.2%),
+        radial-gradient(circle at 30% 70%, #bbf7d0 1.2%, transparent 1.2%);
+      background-size: 1200px 900px;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+    ::selection{background:#fde68a}
+  </style>
+</head>
+<body class="font-sans min-h-screen overflow-x-hidden">
+
+  <!-- HEADER (identyczny gradient jak w „Rok Radości”) -->
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 sticky top-0 z-50 shadow-none">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <a href="/pages/index.html" class="flex items-center gap-2 text-white font-bold text-xl hover:scale-105 transition">
+        <span class="text-2xl select-none">🎁</span>
+        <span class="hidden sm:inline">HappyDate</span>
+      </a>
+      <nav class="flex gap-4 text-white text-base">
+        <a href="/pages/index.html" class="hover:underline">Strona główna</a>
+        <a href="/pages/services.html" class="hover:underline">Usługi</a>
+        <a href="/pages/about.html" class="hover:underline">O nas</a>
+        <a href="/pages/reviews.html" class="hover:underline">Opinie</a>
+        <a href="#" class="font-bold underline underline-offset-2 decoration-yellow-300 pointer-events-none cursor-default">Zrób to po swojemu</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="py-12 text-center bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100 select-none" data-aos="fade-up">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-[76px] mb-2 animate-pulse" aria-hidden="true">🎁✨</div>
+      <h1 class="text-4xl sm:text-5xl font-extrabold mb-2 drop-shadow">Zrób to po swojemu</h1>
+      <p class="text-lg text-gray-700 mb-2 font-semibold">Stwórz idealny prezent od A do Z – Twoja wyobraźnia, nasza magia logistyki!</p>
+      <span class="inline-block mt-1 text-base text-gray-500">Wypełnij prosty kreator, a my zajmiemy się resztą.</span>
+    </div>
+  </section>
+
+  <!-- FORM (1‑krokowy, uproszczony MVP) -->
+  <main class="max-w-xl mx-auto py-10 px-4">
+    <form id="gift-form" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-blue-100 dark:border-blue-700 space-y-6" data-aos="fade-up" autocomplete="off">
+      <!-- elementy -->
+      <div>
+        <label class="block mb-1 font-semibold" for="item0">Co włożymy do boxu? <span class="text-pink-500">*</span></label>
+        <div id="items-wrapper" class="space-y-3">
+          <div class="flex gap-2 item-row">
+            <select name="item[]" class="flex-1 px-3 py-2 border rounded bg-blue-50 dark:bg-blue-900/30">
+              <option>Słodycze</option>
+              <option>Zdjęcia</option>
+              <option>Liścik</option>
+              <option>Ulubiony zapach</option>
+              <option>Rękodzieło</option>
+              <option>Voucher</option>
+              <option>Własny drobiazg</option>
+            </select>
+            <input name="itemNote[]" placeholder="Szczegóły (opcjonalnie)" class="flex-1 px-3 py-2 border rounded bg-yellow-50 dark:bg-yellow-900/30" />
+            <button type="button" class="remove-row hidden bg-pink-500 hover:bg-pink-600 text-white px-3 rounded">−</button>
+          </div>
+        </div>
+        <button type="button" id="add-row" class="mt-3 bg-cyan-400 hover:bg-cyan-500 text-white rounded px-4 py-2 transition">+ Dodaj element</button>
+      </div>
+
+      <!-- dla kogo / data -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input type="text" name="forWhom" required placeholder="Dla kogo? (Imię)" class="flex-1 px-3 py-2 border rounded bg-pink-50 dark:bg-pink-900/30" />
+        <input type="date" name="deliveryDate" required class="flex-1 px-3 py-2 border rounded bg-green-50 dark:bg-green-900/30" />
+      </div>
+
+      <!-- adres / mail -->
+      <div>
+        <label class="block mb-1 font-semibold" for="address">Adres (lub email) odbiorcy <span class="text-pink-500">*</span></label>
+        <textarea name="address" rows="2" required class="w-full px-3 py-2 border rounded bg-blue-50 dark:bg-blue-900/30" placeholder="Adres pocztowy lub email"></textarea>
+      </div>
+
+      <!-- CTA -->
+      <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 rounded-full shadow-md text-lg flex items-center justify-center gap-2 focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 active:scale-95">
+        <span>Zamawiam prezent!</span><span class="text-2xl">🎉</span>
+      </button>
+      <div class="text-xs text-gray-400 text-center">100% satysfakcji lub zwrot pieniędzy</div>
+      <div id="success-msg" class="hidden text-center text-green-700 dark:text-green-400 font-semibold mt-4">✅ Dziękujemy! Skontaktujemy się w ciągu 24 h.</div>
+    </form>
+  </main>
+
+  <!-- FAQ (spójny kolor) -->
+  <section class="max-w-3xl mx-auto px-4 mt-16" data-aos="fade-up" data-aos-delay="150">
+    <h2 class="text-2xl font-semibold mb-3 text-blue-900 dark:text-blue-200 text-center">FAQ — najczęstsze pytania</h2>
+    <div class="divide-y divide-blue-100 dark:divide-blue-700">
+      <details class="py-3 group">
+        <summary class="font-semibold cursor-pointer group-hover:text-cyan-600 transition">Czy mogę dodać własny list lub zdjęcie?</summary>
+        <div class="mt-2 text-gray-700 dark:text-gray-300">Tak, możesz dorzucić do prezentu zdjęcia, własny liścik czy nawet drobiazg.</div>
+      </details>
+      <details class="py-3 group">
+        <summary class="font-semibold cursor-pointer group-hover:text-cyan-600 transition">Kiedy najlepiej zamówić?</summary>
+        <div class="mt-2 text-gray-700 dark:text-gray-300">Im wcześniej, tym lepiej – gwarantujemy terminową dostawę na wskazany dzień.</div>
+      </details>
+      <details class="py-3 group">
+        <summary class="font-semibold cursor-pointer group-hover:text-cyan-600 transition">Czy dostanę powiadomienie o wysyłce?</summary>
+        <div class="mt-2 text-gray-700 dark:text-gray-300">Tak, potwierdzimy mailowo dzień wysyłki oraz podamy link do śledzenia.</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- CTA footer button (opcjonalnie) -->
+  <div class="text-center mt-16 mb-10" data-aos="zoom-in">
+    <a href="dashboard.html" class="inline-block bg-gradient-to-r from-blue-400 to-cyan-400 hover:brightness-110 text-white font-bold py-4 px-8 rounded-full shadow-xl text-lg transition-all duration-300 hover:scale-105">
+      Przejdź do panelu
+    </a>
+  </div>
+
+  <!-- FOOTER (spójny z nagłówkiem) -->
+  <footer class="bg-gradient-to-r from-blue-400 to-cyan-400 text-white py-6 mt-12 text-center text-sm md:text-base">
+    &copy; 2025 HappyDate. Tworzymy emocje. | <a href="privacy.html" class="underline hover:text-yellow-200 transition">Polityka prywatności</a>
+  </footer>
+
+  <!-- JS -->
+  <script>
+    AOS.init({ duration: 700, once: true, offset: 60 });
+
+    // dynamiczne dodawanie / usuwanie wierszy
+    const wrapper = document.getElementById('items-wrapper');
+    document.getElementById('add-row').addEventListener('click', () => {
+      const tpl = wrapper.querySelector('.item-row').cloneNode(true);
+      tpl.querySelector('input').value = '';
+      tpl.querySelector('.remove-row').classList.remove('hidden');
+      tpl.querySelector('.remove-row').addEventListener('click', () => tpl.remove());
+      wrapper.appendChild(tpl);
+    });
+
+    // walidacja + sukces
+    document.getElementById('gift-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const required = e.target.querySelectorAll('[required]');
+      for (const el of required){
+        if(!el.value.trim()){ el.classList.add('border-red-500'); el.focus(); return; }
+        else { el.classList.remove('border-red-500'); }
+      }
+      document.getElementById('success-msg').classList.remove('hidden');
+      e.target.reset();
+      // usuń dodatkowe wiersze
+      wrapper.querySelectorAll('.item-row').forEach((row, idx) => { if(idx>0) row.remove(); });
+      wrapper.querySelector('.remove-row').classList.add('hidden');
+      setTimeout(()=>document.getElementById('success-msg').classList.add('hidden'),4000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-pink-50 text-gray-900 dark:bg-pink-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Skonfiguruj wyjątkowy prezent grupowy z HappyDate – łatwo, pięknie i razem." />
+  <meta name="robots" content="index, follow">
+  <title>Konfiguracja Prezentu Grupowego – HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .glass-form {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ffc5d0;
+      box-shadow: 0 8px 24px rgba(255, 192, 203, 0.25);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+    }
+    .glass-form input,
+    .glass-form select,
+    .glass-form textarea {
+      background-color: #fff;
+    }
+    .btn-submit {
+      background: #d63384;
+      transition: background 0.3s ease;
+    }
+    .btn-submit:hover {
+      background: #b0246c;
+    }
+    .btn-submit:focus {
+      outline: 3px solid #f9a8d4;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body class="service-wedding">
+
+  <header class="bg-gradient-to-r from-pink-400 to-rose-400 py-4 shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-white">💍 HappyDate</h1>
+      <a href="/index.html" class="text-white hover:underline text-sm sm:text-base">Strona główna</a>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-16">
+    <h2 class="text-3xl sm:text-4xl font-extrabold mb-8 text-center" data-aos="fade-down">🎉 Konfiguracja wspólnego prezentu</h2>
+
+    <form id="groupGiftForm" class="glass-form space-y-6 p-6 sm:p-8 rounded-lg" data-aos="zoom-in" aria-label="Formularz prezentu grupowego">
+      
+      <div>
+        <label for="occasion" class="block font-medium mb-2">🎈 Okazja</label>
+        <select id="occasion" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+          <option value="">-- Wybierz --</option>
+          <option>Ślub</option>
+          <option>Rocznica</option>
+          <option>Urodziny</option>
+          <option>Inne</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="recipient" class="block font-medium mb-2">👤 Imię osoby obdarowywanej</label>
+        <input type="text" id="recipient" required placeholder="Np. Anna i Marek"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+      </div>
+
+      <div>
+        <label for="preferences" class="block font-medium mb-2">💡 Preferencje / życzenia</label>
+        <textarea id="preferences" rows="3" placeholder="Co lubią, czego unikać, co jest ważne..."
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"></textarea>
+      </div>
+
+      <div>
+        <label for="deliveryDate" class="block font-medium mb-2">📅 Planowana data wręczenia</label>
+        <input type="date" id="deliveryDate" required
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+      </div>
+
+      <div>
+        <label for="contactEmail" class="block font-medium mb-2">📧 Twój adres e-mail</label>
+        <input type="email" id="contactEmail" required placeholder="np. organizator@gmail.com"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+      </div>
+
+
+      <div>
+        <label for="contactPhone" class="block font-medium mb-2">📞 Numer telefonu</label>
+        <input type="tel" id="contactPhone" placeholder="np. +48 123 456 789" pattern="^\+?\d[\d\s\-]{7,}$"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+      </div>
+      
+      <div>
+        <label for="preferredContact" class="block font-medium mb-2">☎️ Preferowana forma kontaktu</label>
+        <select id="preferredContact" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+          <option value="">-- Wybierz --</option>
+          <option value="email">E-mail</option>
+          <option value="phone">Telefon</option>
+          <option value="whatsapp">WhatsApp</option>
+        </select>
+      </div>
+      
+      <div>
+        <label for="preferredTime" class="block font-medium mb-2">🕐 Godziny kontaktu</label>
+        <input type="text" id="preferredTime" placeholder="Np. 10:00–12:00 lub po 17:00"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400">
+      </div>
+      
+
+      <div>
+        <label for="participants" class="block font-medium mb-2">🤝 Uczestnicy (e-maile lub imiona)</label>
+        <textarea id="participants" rows="3" placeholder="Oddziel przecinkami lub enterami"
+          class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"></textarea>
+      </div>
+
+      <button type="submit" class="w-full text-white font-semibold py-3 rounded-lg btn-submit">✅ Wyślij zapytanie do HappyDate</button>
+    </form>
+  </main>
+
+  <footer class="bg-pink-500 text-white text-center py-4 mt-16 text-sm sm:text-base">
+    &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ once: true, duration: 700, easing: 'ease-out' });
+
+    document.getElementById('groupGiftForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const data = {
+      occasion: document.getElementById('occasion').value,
+      recipient: document.getElementById('recipient').value,
+      preferences: document.getElementById('preferences').value,
+      deliveryDate: document.getElementById('deliveryDate').value,
+      contactEmail: document.getElementById('contactEmail').value,
+      contactPhone: document.getElementById('contactPhone').value,
+      preferredContact: document.getElementById('preferredContact').value,
+      preferredTime: document.getElementById('preferredTime').value,
+      participants: document.getElementById('participants').value.split(/[\n,]+/).map(x => x.trim())
+    };
+
+
+      localStorage.setItem('groupOccasionGift', JSON.stringify(data));
+      alert("Dziękujemy! Skontaktujemy się z Tobą, aby dopracować szczegóły prezentu 🎁");
+      window.location.href = "na-okazje-thankyou.html";
+    });
+  </script>
+</body>
+</html>

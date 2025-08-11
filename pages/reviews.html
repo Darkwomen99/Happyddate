@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HappyDate - Opinie</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- i18n -->
+  <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@1.4.1/i18nextHttpBackend.min.js"></script>
+  <style>
+    /* Сховати спінери для кнопок на Safari/Mac */
+    textarea:focus { outline: none; }
+    ::selection { background: #fde68a; }
+  </style>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- Header (фірмовий) -->
+<header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-none">
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white cursor-pointer">🎁 HappyDate</h1>
+    <nav class="flex gap-4 text-white text-base">
+      <a href="/pages/index.html" class="hover:underline" data-i18n="header.home">Strona główna</a>
+      <a href="/pages/services.html" class="hover:underline" data-i18n="header.services">Usługi</a>
+      <a href="/pages/dashboard.html" class="hover:underline" data-i18n="header.dashboard">Moje wydarzenia</a>
+      <a href="/pages/partnerstwo.html" class="hover:underline" data-i18n="header.partner">Partnerstwo</a>
+      <a href="/pages/about.html" class="hover:underline" data-i18n="header.about">O nas</a>
+      <a href="/pages/reviews.html" class="font-semibold underline" data-i18n="header.reviews">Opinie</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero section -->
+<section class="bg-gradient-to-r from-pink-100 via-yellow-100 to-blue-100 py-14 text-center select-none" data-aos="fade-up">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-4xl font-extrabold mb-4" data-i18n="reviews.title">Opinie naszych użytkowników 💬</h2>
+    <p class="text-lg text-gray-700 mb-8" data-i18n="reviews.hero">
+      Twoja opinia sprawia, że HappyDate staje się lepszy i jeszcze bardziej magiczny! Podziel się emocjami — dla nas to ważne!
+    </p>
+    <!-- Стильний emoji-герой замість картинки -->
+    <div class="text-[70px] sm:text-[90px] mb-2 animate-pulse" aria-hidden="true">💝</div>
+  </div>
+</section>
+
+<!-- Review Form -->
+<section class="max-w-2xl mx-auto px-4 -mt-16 mb-12 relative z-10" data-aos="fade-up">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-pink-100 dark:border-gray-700">
+    <h3 class="text-2xl font-semibold mb-4" data-i18n="reviews.formTitle">Dodaj swoją opinię</h3>
+    <form id="review-form" class="space-y-4">
+      <textarea id="review-text" rows="4" maxlength="333"
+        class="w-full px-4 py-2 border rounded-lg resize-none focus:ring-2 focus:ring-pink-300 transition"
+        placeholder="Podziel się swoją opinią..." required></textarea>
+      <button type="submit"
+        class="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-xl w-full font-semibold text-lg shadow transition active:scale-95">
+        Wyślij opinię
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Reviews List -->
+<section class="max-w-5xl mx-auto px-4 py-8" data-aos="fade-up">
+  <h3 class="text-xl font-bold text-center mb-8" data-i18n="reviews.listTitle">Twoje opinie:</h3>
+  <div id="reviews-list" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-blue-500 text-white py-6 mt-12 text-center text-sm md:text-base">
+  <div data-i18n="footer.text">
+    &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script>
+  AOS.init({ duration: 700, once: true, offset: 60 });
+
+  // Icons for reviews
+  const reviewIcons = ["💖", "✨", "🌸", "🎉", "😊", "💝", "🥰", "🎁", "💌", "⭐"];
+  function getRandomIcon() {
+    return reviewIcons[Math.floor(Math.random() * reviewIcons.length)];
+  }
+
+  // Очистити старі текстові відгуки (тільки при першому запуску після редизайну)
+  function migrateReviews() {
+    let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    let migrated = false;
+    reviews = reviews.filter((review) => {
+      if (typeof review === "string") migrated = true;
+      return typeof review !== "string";
+    });
+    if (migrated) localStorage.setItem("reviews", JSON.stringify(reviews));
+  }
+  migrateReviews();
+
+  // Додавання нового відгуку
+  document.getElementById("review-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const reviewText = document.getElementById("review-text").value.trim();
+    if (reviewText === "") {
+      alert("Proszę wprowadzić opinię!");
+      return;
+    }
+    let reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    reviews.unshift({
+      text: reviewText,
+      date: new Date().toLocaleDateString(),
+      icon: getRandomIcon()
+    });
+    if (reviews.length > 30) reviews = reviews.slice(0, 30); // max 30 останніх
+    localStorage.setItem("reviews", JSON.stringify(reviews));
+    displayReviews();
+    document.getElementById("review-text").value = "";
+  });
+
+  // Відображення відгуків
+  function displayReviews() {
+    const reviewsList = document.getElementById("reviews-list");
+    const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    reviewsList.innerHTML = "";
+    if (reviews.length === 0) {
+      reviewsList.innerHTML = `<div class='col-span-full text-gray-500 text-center opacity-80'>Brak opinii jeszcze 😔</div>`;
+      return;
+    }
+    reviews.forEach((review) => {
+      if (!review.text) return; // на всяк випадок пропускаємо пусті
+      const div = document.createElement("div");
+      div.className =
+        "bg-white dark:bg-gray-800 p-6 rounded-2xl shadow group hover:shadow-xl transition-all duration-300 text-left flex flex-col gap-3 border border-gray-100 dark:border-gray-700";
+      div.innerHTML = `
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-2xl select-none">${review.icon || "💬"}</span>
+          <span class="text-xs text-gray-400 ml-auto">${review.date || ""}</span>
+        </div>
+        <div class="text-base text-gray-800 dark:text-gray-200 break-words whitespace-pre-line">${review.text}</div>
+      `;
+      reviewsList.appendChild(div);
+    });
+  }
+  displayReviews();
+</script>
+
+<!-- GDPR Cookies Popup -->
+<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="text-sm md:text-base" data-i18n="cookies.text">
+      Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą
+      <a href="privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
+    </p>
+    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
+      <span data-i18n="cookies.accept">Akceptuję</span>
+    </button>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cookieConsent = document.getElementById('cookieConsent');
+    const acceptBtn = document.getElementById('acceptCookies');
+    if (!localStorage.getItem('happydate_cookie_consent')) {
+      cookieConsent.classList.remove('hidden');
+    }
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('happydate_cookie_consent', 'true');
+      cookieConsent.classList.add('hidden');
+    });
+  });
+</script>
+
+<!-- i18n -->
+<script>
+const browserLang = navigator.language?.slice(0, 2) || "pl";
+const supportedLangs = ["pl", "ua", "en", "ru", "de"];
+const initialLang = localStorage.getItem("lang") || (supportedLangs.includes(browserLang) ? browserLang : "pl");
+
+i18next
+  .use(i18nextHttpBackend)
+  .init({
+    lng: initialLang,
+    fallbackLng: "pl",
+    backend: {
+      loadPath: "/assets/lang/{{lng}}.json"
+    }
+  }, function(err, t) {
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.getAttribute("data-i18n");
+      if (t(key) !== key) {
+        el.innerHTML = t(key);
+      }
+    });
+  });
+
+document.querySelectorAll(".lang-btn").forEach(btn => {
+  btn.addEventListener("click", function () {
+    const lang = this.getAttribute("data-lang");
+    localStorage.setItem("lang", lang);
+    location.reload();
+  });
+});
+</script>
+<script>AOS.init();</script>
+</body>
+</html>

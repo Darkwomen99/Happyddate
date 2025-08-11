@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ankieta powitalna — HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-white to-blue-100 dark:from-gray-800 dark:to-gray-900 min-h-screen py-12 px-4">
+  <div class="max-w-3xl mx-auto text-center">
+    <h1 class="text-3xl font-bold mb-2">Opowiedz nam coś o sobie 💌</h1>
+    <p class="mb-6 text-sm text-gray-700 dark:text-gray-300">Twoje odpowiedzi pomogą nam lepiej się Tobą zaopiekować. W zamian otrzymasz 20 punktów 🎁</p>
+
+    <form id="survey-form" class="text-left bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl space-y-5">
+      <label class="block">
+        <span class="text-sm font-medium">Imię *</span>
+        <input type="text" name="firstName" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required>
+      </label>
+      <label class="block">
+        <span class="text-sm">Nazwisko (opcjonalnie)</span>
+        <input type="text" name="lastName" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+      </label>
+      <label class="block">
+        <span class="text-sm font-medium">Wiek *</span>
+        <input type="number" name="age" min="1" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required>
+      </label>
+      <label class="block">
+        <span class="text-sm font-medium">Co lubisz? Jak spędzasz wolny czas? *</span>
+        <textarea name="interests" rows="3" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required></textarea>
+      </label>
+      <label class="block">
+        <span class="text-sm">Czy był w Twoim życiu moment, który Cię zranił? (opcjonalnie)</span>
+        <textarea name="lifePain" rows="3" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700"></textarea>
+      </label>
+      <label class="block">
+        <span class="text-sm">Data lub rocznica trudnego dnia (opcjonalnie)</span>
+        <input type="date" name="lifePainDate" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+      </label>
+      <label class="block">
+        <span class="text-sm">Jakie emocje chcesz czuć, gdy dostajesz prezent?</span>
+        <select name="giftEmotion" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+          <option>Radość</option>
+          <option>Wzruszenie</option>
+          <option>Rozbawienie</option>
+          <option>Spokój</option>
+          <option>Inspiracja</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-sm">Czy lubisz niespodzianki?</span>
+        <select name="likesSurprises" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+          <option>Tak</option>
+          <option>Raczej nie</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-sm">Czego nie lubisz dostawać? (opcjonalnie)</span>
+        <input type="text" name="dislikes" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+      </label>
+      <label class="block">
+        <span class="text-sm">Ulubione kolory lub motywy (opcjonalnie)</span>
+        <input type="text" name="colors" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+      </label>
+      <label class="block">
+        <span class="text-sm">Ulubiony cytat lub motto (opcjonalnie)</span>
+        <input type="text" name="motto" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+      </label>
+
+      <label class="block text-sm text-gray-600 dark:text-gray-400">
+        <input type="checkbox" required class="mr-2"> Zgadzam się na przetwarzanie moich danych zgodnie z polityką prywatności.
+      </label>
+
+      <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded-xl shadow transition">
+        Zapisz ankietę i odbierz 20 punktów 🎁
+      </button>
+    </form>
+
+    <p id="confirmation" class="mt-6 text-green-600 font-medium hidden">Dziękujemy! Twoje odpowiedzi zostały zapisane 💛</p>
+  </div>
+
+ <script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyCJmddWXQKRGw1nnQ6Evje4qMqHcddSulY",
+  authDomain: "happydate-4e42f.firebaseapp.com",
+  projectId: "happydate-4e42f",
+  storageBucket: "happydate-4e42f.firebasestorage.app",
+  messagingSenderId: "169631163082",
+  appId: "1:169631163082:web:b4295c7840898da42aca33",
+  measurementId: "G-YLM20HD2FY"
+};
+firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged(user => {
+  if (!user) {
+    alert("Zaloguj się, aby wypełnić ankietę.");
+    window.location.href = "login.html";
+  }
+});
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    document.getElementById('survey-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) return alert("Musisz być zalogowany, aby zapisać ankietę.");
+
+      const form = e.target;
+      const data = {
+        firstName: form.firstName.value,
+        lastName: form.lastName.value,
+        age: parseInt(form.age.value),
+        interests: form.interests.value,
+        lifePain: form.lifePain.value,
+        lifePainDate: form.lifePainDate.value,
+        giftEmotion: form.giftEmotion.value,
+        likesSurprises: form.likesSurprises.value,
+        dislikes: form.dislikes.value,
+        colors: form.colors.value,
+        motto: form.motto.value,
+        completedAt: new Date().toISOString(),
+        pointsGiven: 20
+      };
+
+      try {
+        await db.collection("users").doc(user.uid).collection("onboarding").doc("survey").set(data);
+        await db.collection("users").doc(user.uid).update({ points: firebase.firestore.FieldValue.increment(20) });
+        document.getElementById('confirmation').classList.remove('hidden');
+        form.reset();
+      } catch (err) {
+        console.error("Błąd zapisu ankiety:", err);
+        alert("Coś poszło nie tak. Spróbuj ponownie później.");
+      }
+    });
+  </script>
+</body>
+</html>

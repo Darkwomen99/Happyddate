@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiadomość od Grupy – HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white">🎁 HappyDate</h1>
+    <nav class="flex gap-6 text-white">
+      <a href="../index.html" class="hover:underline">Strona główna</a>
+      <a href="../services.html" class="hover:underline">Usługi</a>
+      <a href="../dashboard.html" class="hover:underline">Moje wydarzenia</a>
+      <a href="../partnerstwo.html" class="hover:underline">Partnerstwo</a>
+      <a href="../about.html" class="hover:underline">O nas</a>
+      <a href="../reviews.html" class="hover:underline">Opinie</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="max-w-4xl mx-auto px-4 py-16">
+
+  <!-- Title -->
+  <section class="text-center mb-12">
+    <h2 class="text-4xl font-bold mb-4">🎥 Wiadomość od Grupy</h2>
+    <p class="text-lg text-gray-700 dark:text-gray-300">
+      Zbierz życzenia, wspomnienia i słowa od serca od wielu osób i zamień je w jedno wyjątkowe nagranie.
+    </p>
+  </section>
+
+  <!-- Video Example -->
+  <section class="mb-16">
+    <h3 class="text-2xl font-semibold mb-4 text-center">📽️ Zobacz przykładową wiadomość grupową</h3>
+    <div class="aspect-w-16 aspect-h-9">
+      <iframe class="w-full rounded-xl shadow-lg" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Przykład wiadomości od grupy" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-16">
+    <div class="glass-card">
+      <h3 class="text-xl font-semibold mb-2">🎙️ Różne formaty</h3>
+      <p>Wideo, głos, tekst – wszystkie formy dozwolone.</p>
+    </div>
+    <div class="glass-card">
+      <h3 class="text-xl font-semibold mb-2">🎬 Profesjonalny montaż</h3>
+      <p>Muzyka, napisy, emocje – gotowe na prezent!</p>
+    </div>
+    <div class="glass-card">
+      <h3 class="text-xl font-semibold mb-2">📤 Prosty link do udostępnienia</h3>
+      <p>Każdy może nagrać i przesłać swoją część.</p>
+    </div>
+    <div class="glass-card">
+      <h3 class="text-xl font-semibold mb-2">⏰ Dostawa na czas</h3>
+      <p>Gwarantujemy terminowość i pełną opiekę.</p>
+    </div>
+  </section>
+
+  <!-- Contact Form -->
+  <section class="mb-16">
+    <h3 class="text-2xl font-semibold mb-6 text-center">📩 Zostaw dane kontaktowe, a my zaczniemy od razu</h3>
+    <form id="group-message-form" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow space-y-4 max-w-xl mx-auto">
+      <div>
+        <label for="email" class="block font-medium mb-1">Adres e-mail</label>
+        <input type="email" id="email" name="email" required class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700" placeholder="Twój adres e-mail">
+      </div>
+      <div>
+        <label for="phone" class="block font-medium mb-1">Numer telefonu</label>
+        <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 border rounded-lg dark:bg-gray-700" placeholder="Opcjonalnie: zadzwońmy do Ciebie">
+      </div>
+      <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold">➡️ Przejdź do konfiguracji prezentu</button>
+    </form>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="bg-blue-500 text-white text-center py-4 mt-12">
+  &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.
+</footer>
+
+<script>
+  document.getElementById("group-message-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  localStorage.setItem("groupMessageLead", JSON.stringify({ email, phone }));
+  window.location.href = "wiadomosc-wizard.html";
+});
+
+</script>
+
+</body>
+</html>

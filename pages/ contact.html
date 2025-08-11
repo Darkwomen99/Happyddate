@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skontaktuj się z nami - HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 sticky top-0 shadow-md z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
+      <h1 class="text-2xl font-bold">🎁 HappyDate</h1>
+      <nav class="flex gap-6 text-white">
+        <a href="/pages/index.html" class="hover:underline">Strona główna</a>
+        <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
+        <a href="/pages/partnerstwo.html" class="hover:underline">Partnerstwo</a>
+        <a href="/pages/about.html" class="hover:underline">O nas</a>
+        <a href="/pages/reviews.html" class="hover:underline">Opinie</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    <section class="text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Skontaktuj się z nami</h2>
+      <p class="text-lg mb-6">Aby stać się naszym partnerem, prosimy wypełnić formularz poniżej, aby dostarczyć niezbędne informacje kontaktowe oraz szczegóły na temat usług, które oferujesz.</p>
+      
+      <form action="submit_form.php" method="POST" class="space-y-6">
+        <!-- Name -->
+        <div class="flex flex-col">
+          <label for="name" class="text-lg font-semibold">Imię i nazwisko</label>
+          <input type="text" id="name" name="name" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz swoje imię i nazwisko" />
+        </div>
+
+        <!-- Email -->
+        <div class="flex flex-col">
+          <label for="email" class="text-lg font-semibold">Adres e-mail</label>
+          <input type="email" id="email" name="email" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz swój adres e-mail" />
+        </div>
+
+        <!-- Phone -->
+        <div class="flex flex-col">
+          <label for="phone" class="text-lg font-semibold">Numer telefonu</label>
+          <input type="tel" id="phone" name="phone" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz swój numer telefonu" />
+        </div>
+
+        <!-- Services Provided -->
+        <div class="flex flex-col">
+          <label for="services" class="text-lg font-semibold">Jakie usługi świadczysz?</label>
+          <textarea id="services" name="services" required class="p-3 border border-gray-300 rounded-lg" placeholder="Opisz usługi, które oferujesz"></textarea>
+        </div>
+
+        <!-- Years in Business -->
+        <div class="flex flex-col">
+          <label for="years_in_business" class="text-lg font-semibold">Ile lat działasz na rynku?</label>
+          <input type="number" id="years_in_business" name="years_in_business" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz liczbę lat" />
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-semibold">Wyślij</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-blue-500 text-white text-center py-4 mt-12">
+    <div>&copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.</div>
+  </footer>
+
+
+  <!-- GDPR Cookies Consent Popup -->
+<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="text-sm md:text-base">
+      This website uses cookies to enhance your browsing experience. By continuing to use this site, you agree to our 
+      <a href="privacy.html" class="underline hover:text-blue-300">Privacy Policy</a>.
+    </p>
+    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
+      Accept
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cookieConsent = document.getElementById('cookieConsent');
+    const acceptBtn = document.getElementById('acceptCookies');
+
+    if (!localStorage.getItem('happydate_cookie_consent')) {
+      cookieConsent.classList.remove('hidden');
+    }
+
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('happydate_cookie_consent', 'true');
+      cookieConsent.classList.add('hidden');
+    });
+  });
+</script>
+
+</body>
+</html>

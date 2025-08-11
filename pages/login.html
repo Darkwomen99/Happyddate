@@ -1,0 +1,52 @@
+<!-- login.html (bez analytics, poprawna wersja) -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logowanie — HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <main class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Zaloguj się do HappyDate</h1>
+    <form id="login-form" class="space-y-4">
+      <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded">
+      <input type="password" id="password" placeholder="Hasło" required class="w-full p-2 border rounded">
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Zaloguj się</button>
+    </form>
+    <p class="mt-4 text-center text-sm">Nie masz konta? <a href="/pages/register.html" class="text-blue-600 underline">Zarejestruj się</a></p>
+  </main>
+
+  <script type="module">
+    import { auth } from '../js/firebaseConfig.js';
+    import { getFriendlyErrorMessage } from '../js/errorMessages.js';
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          showNotification("Zalogowano pomyślnie ✅");
+          setTimeout(() => window.location.href = 'dashboard.html', 1200);
+        })
+        .catch(error => {
+          console.warn("Błąd logowania:", error.code);
+          showNotification(getFriendlyErrorMessage(error.code), true);
+        });
+    });
+
+    function showNotification(message, isError = false) {
+      const note = document.createElement('div');
+      note.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 ' +
+        (isError ? 'bg-red-500' : 'bg-green-500') +
+        ' text-white px-4 py-2 rounded shadow z-50';
+      note.textContent = message;
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 2500);
+    }
+  </script>
+</body>
+</html>

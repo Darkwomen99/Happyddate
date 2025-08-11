@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rozpocznij z AI – HappyDate</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-none">
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white cursor-pointer">🎁 HappyDate</h1>
+    <nav class="flex gap-4 text-white text-base">
+      <a href="/pages/index.html" class="hover:underline">Strona główna</a>
+      <a href="/pages/services.html" class="hover:underline">Usługi</a>
+      <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
+      <a href="/pages/partnerstwo.html" class="hover:underline">Partnerstwo</a>
+      <a href="/pages/about.html" class="hover:underline">O nas</a>
+      <a href="/pages/reviews.html" class="hover:underline">Opinie</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero Welcome -->
+<section class="bg-gradient-to-r from-pink-100 via-yellow-100 to-blue-100 py-14 text-center" data-aos="fade-up">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-[70px] sm:text-[90px] mb-3 animate-pulse" aria-hidden="true">🤖</div>
+    <h2 class="text-4xl font-extrabold mb-4">Witamy w Asystencie AI!</h2>
+    <p class="text-lg text-gray-700 mb-4">
+      Zaledwie <b>3 kroki</b> dzielą Cię od idealnego prezentu dopasowanego do każdej okazji.<br>
+      Przygotuj się na szybki, kreatywny i <b>w 100% anonimowy</b> proces wyboru prezentu.
+    </p>
+    <span class="text-base text-gray-500">Twoje dane są chronione – liczy się tylko radość i satysfakcja!</span>
+  </div>
+</section>
+
+<main class="max-w-4xl mx-auto py-10 px-4 space-y-10">
+
+  <section data-aos="fade-up" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-blue-100 dark:border-gray-700 text-center">
+    <h2 class="text-2xl font-semibold mb-5">Jak wygląda proces?</h2>
+    <div class="grid gap-6 sm:grid-cols-3">
+      <div>
+        <div class="text-5xl mb-2">✏️</div>
+        <h3 class="font-bold mb-1">1. Opis osoby/okazji</h3>
+        <div class="text-gray-600 dark:text-gray-300 text-sm">Podaj kilka informacji – wiek, relacja, zainteresowania, preferencje.</div>
+      </div>
+      <div>
+        <div class="text-5xl mb-2">🤖</div>
+        <h3 class="font-bold mb-1">2. Propozycje AI</h3>
+        <div class="text-gray-600 dark:text-gray-300 text-sm">Asystent AI analizuje dane i tworzy 2–3 propozycje z wyjaśnieniem.</div>
+      </div>
+      <div>
+        <div class="text-5xl mb-2">🎁</div>
+        <h3 class="font-bold mb-1">3. Realizacja prezentu</h3>
+        <div class="text-gray-600 dark:text-gray-300 text-sm">Wybierasz pomysł, a my zajmujemy się resztą – produkcja i dostawa!</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-aos="fade-up" class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-yellow-100 dark:border-gray-700 text-center">
+    <h2 class="text-xl font-semibold mb-2">Co możesz przygotować przed startem?</h2>
+    <ul class="list-disc list-inside space-y-1 text-left mx-auto max-w-xl text-gray-700 dark:text-gray-300">
+      <li>Podstawowe informacje o osobie/okazji (wiek, płeć, relacja, hobby)</li>
+      <li>Preferowany budżet (opcjonalnie)</li>
+      <li>Własne inspiracje lub wymagania (opcjonalnie)</li>
+    </ul>
+  </section>
+
+  <div class="text-center mt-10" data-aos="zoom-in">
+    <a href="ai-kreator.html"
+      class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-7 rounded-full shadow-md transition text-lg focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 active:scale-95">
+      <span>Zacznij kreator AI</span> <span class="text-2xl">🚀</span>
+    </a>
+  </div>
+</main>
+
+<footer class="bg-blue-500 text-white py-6 mt-12 text-center text-sm md:text-base">
+  &copy; 2025 HappyDate. Tworzymy emocje. | <a href="privacy.html" class="underline">Polityka prywatności</a>
+</footer>
+
+<script>
+  AOS.init({ duration: 700, once: true, offset: 60 });
+</script>
+</body>
+</html>

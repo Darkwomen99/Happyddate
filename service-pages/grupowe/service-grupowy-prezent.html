@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zrzutka na Prezent – HappyDate</title>
+  <meta name="description" content="Zorganizuj wspólną zrzutkę na prezent online z rodziną i przyjaciółmi. Prosto, szybko i bezpiecznie." />
+  <link rel="icon" href="/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+</head>
+<body class="font-sans">
+
+<header class="bg-gradient-to-r from-blue-500 to-cyan-400 shadow-md sticky top-0 z-50">
+  <div class="container mx-auto flex items-center justify-between px-4 py-4">
+    <a href="index.html" class="text-3xl font-bold text-white hover:underline">🎁 HappyDate</a>
+    <nav class="hidden md:flex gap-6 text-white">
+        <a href=".index.html" class="hover:underline">🏠 Strona główna</a>
+     
+      <a href="#how-it-works" class="hover:underline">Jak to działa?</a>
+      <a href="#form" class="hover:underline">Utwórz zrzutkę</a>
+      <a href="#" class="hover:underline">O nas</a>
+    </nav>
+  </div>
+</header>
+
+<section class="relative bg-white dark:bg-gray-900 py-10">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="relative w-full max-w-6xl mx-auto rounded-3xl overflow-hidden shadow-2xl">
+      <img src="/assets/img/11.png" alt="Zorganizuj prezent z HappyDate" class="w-full h-auto object-cover" />
+      <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 bg-black/30">
+        <h2 class="text-4xl md:text-5xl font-bold text-white drop-shadow mb-4">Zorganizuj prezent, który zachwyca!</h2>
+        <p class="text-lg md:text-xl text-white drop-shadow mb-6">Łatwa i szybka zrzutka na prezent z HappyDate</p>
+        <a href="#form" class="inline-block bg-white text-blue-600 font-semibold py-3 px-8 rounded-full shadow hover:scale-105 transition">Rozpocznij teraz</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="py-16 container mx-auto text-center">
+  <h3 class="text-3xl font-semibold mb-10">Jak to działa?</h3>
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition">
+      <div class="text-5xl mb-3">📅</div>
+      <h4 class="text-xl font-bold mb-2">Utwórz zrzutkę</h4>
+      <p>Wybierz okazję, ustal kwotę i gotowe!</p>
+    </div>
+    <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition">
+      <div class="text-5xl mb-3">🔗</div>
+      <h4 class="text-xl font-bold mb-2">Udostępnij znajomym</h4>
+      <p>Wyślij link do przyjaciół i rodziny.</p>
+    </div>
+    <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition">
+      <div class="text-5xl mb-3">🎁</div>
+      <h4 class="text-xl font-bold mb-2">Prezent gotowy!</h4>
+      <p>My zajmiemy się dostawą i pakowaniem.</p>
+    </div>
+  </div>
+</section>
+
+<section id="form" class="py-16 bg-gray-100 dark:bg-gray-800">
+  <div class="max-w-lg mx-auto bg-white dark:bg-gray-900 p-8 rounded-xl shadow-2xl">
+    <h3 class="text-2xl font-bold text-center mb-6">🎉 Stwórz swoją zrzutkę</h3>
+    <div class="flex justify-center mb-4">
+      <img src="/assets/img/money.png" alt="Zrzutka na prezent" class="w-32 shadow-md rounded-lg">
+    </div>
+    <form id="zrzutkaForm" class="space-y-4">
+      <input type="text" id="occasion" placeholder="Okazja (np. urodziny, ślub)" class="w-full px-4 py-2 border rounded-lg">
+      <input type="number" id="goal" placeholder="Cel kwotowy (PLN)" class="w-full px-4 py-2 border rounded-lg">
+      <input type="number" id="people" placeholder="Liczba uczestników" class="w-full px-4 py-2 border rounded-lg">
+      <p id="perPerson" class="text-sm text-center text-blue-600"></p>
+      <select id="giftSelect" class="w-full px-4 py-2 border rounded-lg">
+        <option value="" disabled selected>🎁 Wybierz prezent</option>
+        <option value="flowers">Kwiaty</option>
+        <option value="voucher">Voucher</option>
+        <option value="box">Box z niespodziankami</option>
+      </select>
+      <div id="giftPreview" class="mt-4 hidden text-center">
+        <img id="giftImg" src="" alt="Prezent" class="w-32 h-32 object-contain mx-auto mb-2">
+        <p id="giftDesc" class="text-sm text-gray-600 dark:text-gray-300"></p>
+      </div>
+      <textarea id="message" rows="3" placeholder="Wiadomość dla uczestników" class="w-full px-4 py-2 border rounded-lg"></textarea>
+      <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 transition">Utwórz zrzutkę</button>
+    </form>
+    <div class="mt-6 text-center">
+      <p class="text-sm">Zebrano <strong>180 PLN</strong> z <strong>300 PLN</strong></p>
+      <div class="w-full bg-gray-200 rounded-full overflow-hidden my-2">
+        <div class="bg-blue-500 h-3" style="width: 60%;"></div>
+      </div>
+      <p id="countdown" class="text-sm text-gray-600"></p>
+    </div>
+    <div id="qrContainer" class="mt-6 text-center hidden">
+      <p class="text-sm mb-2">📱 Udostępnij zrzutkę:</p>
+      <canvas id="qrCodeCanvas" class="mx-auto mb-3"></canvas>
+      <div class="flex justify-center gap-4 mb-3">
+        <button id="downloadQR" class="text-sm text-blue-600 underline hover:text-blue-800 transition">📥 Pobierz QR</button>
+        <button id="copyQR" class="text-sm text-blue-600 underline hover:text-blue-800 transition">🔗 Kopiuj link</button>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3 mb-4">
+        <button id="whatsappShare" class="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition">WhatsApp</button>
+        <button id="telegramShare" class="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">Telegram</button>
+        <button id="messengerShare" class="inline-flex items-center gap-2 bg-[#0084ff] text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">Messenger</button>
+      </div>
+      <p id="copyConfirm" class="text-green-600 text-sm mt-2 hidden">✅ Link skopiowany!</p>
+      <div class="flex justify-center items-center gap-6 mt-6">
+        <svg class="h-8 transition-transform duration-300 hover:scale-110" viewBox="0 0 90 20" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="15" font-size="14" fill="black" font-family="Arial, sans-serif">Google Pay</text>
+</svg>
+<svg class="h-8 transition-transform duration-300 hover:scale-110" viewBox="0 0 90 20" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="15" font-size="14" fill="black" font-family="Arial, sans-serif"> Pay</text>
+</svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-gray-800 text-white py-6">
+  <div class="container mx-auto text-center">
+    © 2025 HappyDate. Tworzymy niezapomniane chwile.
+  </div>
+</footer>
+
+<script>
+  const eventDate = new Date("2025-04-28T12:00:00");
+  setInterval(() => {
+    const diff = eventDate - new Date();
+    if (diff < 0) return;
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    document.getElementById("countdown").innerText = `⏳ Pozostało: ${d} dni ${h} godz. ${m} min`;
+  }, 1000);
+
+  const goalInput = document.getElementById("goal");
+  const peopleInput = document.getElementById("people");
+  const perPerson = document.getElementById("perPerson");
+  [goalInput, peopleInput].forEach(input => {
+    input.addEventListener("input", () => {
+      const goal = parseFloat(goalInput.value);
+      const people = parseInt(peopleInput.value);
+      if (!isNaN(goal) && !isNaN(people) && people > 0) {
+        const amount = (goal / people).toFixed(2);
+        perPerson.textContent = `Każdy uczestnik wpłaca: ${amount} PLN`;
+      } else {
+        perPerson.textContent = "";
+      }
+    });
+  });
+
+  const giftSelect = document.getElementById("giftSelect");
+  const giftPreview = document.getElementById("giftPreview");
+  const giftImg = document.getElementById("giftImg");
+  const giftDesc = document.getElementById("giftDesc");
+
+  const giftData = {
+    flowers: {
+      img: "/js/img/flowers.png",
+      desc: "Piękny bukiet świeżych kwiatów."
+    },
+    voucher: {
+      img: "/js/img/voucher.png",
+      desc: "Voucher do ulubionego sklepu lub restauracji."
+    },
+    box: {
+      img: "/js/img/box.png",
+      desc: "Zestaw niespodzianek z wyjątkowymi drobiazgami."
+    }
+  };
+
+  giftSelect.addEventListener("change", () => {
+    const value = giftSelect.value;
+    if (giftData[value]) {
+      giftImg.src = giftData[value].img;
+      giftDesc.textContent = giftData[value].desc;
+      giftPreview.classList.remove("hidden");
+    }
+  });
+
+  document.getElementById("zrzutkaForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const qrText = `https://happydate.pl/zrzutka?id=${Date.now()}`;
+    document.getElementById("qrContainer").classList.remove("hidden");
+
+    QRCode.toCanvas(document.getElementById("qrCodeCanvas"), qrText, function (error) {
+      if (error) console.error(error);
+    });
+
+    document.getElementById("downloadQR").addEventListener("click", () => {
+      const canvas = document.getElementById("qrCodeCanvas");
+      const link = document.createElement("a");
+      link.download = "zrzutka-qr.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+
+    document.getElementById("copyQR").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(qrText);
+        const confirm = document.getElementById("copyConfirm");
+        confirm.classList.remove("hidden");
+        setTimeout(() => confirm.classList.add("hidden"), 3000);
+      } catch (err) {
+        alert("❌ Nie udało się skopiować linku.");
+      }
+    });
+
+    document.getElementById("whatsappShare").addEventListener("click", () => {
+      const message = encodeURIComponent(`🎁 Dołącz do zrzutki na prezent! Kliknij tutaj: ${qrText}`);
+      window.open(`https://wa.me/?text=${message}`, '_blank');
+    });
+
+    document.getElementById("telegramShare").addEventListener("click", () => {
+      const message = encodeURIComponent(`🎁 Dołącz do zrzutki na prezent! Kliknij tutaj: ${qrText}`);
+      window.open(`https://t.me/share/url?url=${qrText}&text=${message}`, '_blank');
+    });
+
+    document.getElementById("messengerShare").addEventListener("click", () => {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${qrText}`, '_blank');
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>📨 Wiadomość z Nieba – HappyDate</title>
+  <meta name="description" content="Wiadomość z Nieba — napisz list od serca dzięki HappyDate" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans min-h-screen bg-gradient-to-b from-indigo-500 via-purple-200 via-pink-100 to-white dark:from-indigo-950 dark:via-fuchsia-900 dark:to-gray-900">
+
+<!-- HEADER -->
+<header class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 py-4 sticky top-0 z-50 shadow-none transition-shadow duration-300">
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 flex justify-between items-center">
+    <a href="/pages/index.html" class="flex items-center gap-2 text-white font-bold text-xl hover:scale-105 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white rounded">
+      <span class="text-2xl" aria-label="Prezent">🎁</span>
+      <span class="hidden sm:inline">HappyDate</span>
+    </a>
+    <nav class="flex gap-4 text-white text-base" aria-label="Główna nawigacja">
+      <a href="/pages/index.html" class="hover:underline focus:underline transition">Strona główna</a>
+      <a href="/pages/services.html" class="hover:underline focus:underline transition">Usługi</a>
+      <a href="/pages/about.html" class="hover:underline focus:underline transition">O nas</a>
+      <a href="/pages/reviews.html" class="hover:underline focus:underline transition">Opinie</a>
+    </nav>
+  </div>
+</header>
+
+
+<!-- HERO -->
+<section class="relative text-center py-12 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg overflow-hidden">
+  <div class="absolute inset-0 pointer-events-none opacity-20">
+    <svg width="100%" height="100%">
+      <ellipse cx="30" cy="40" rx="16" ry="10" fill="#fff" />
+      <ellipse cx="100" cy="60" rx="10" ry="7" fill="#c7d2fe" />
+      <ellipse cx="240" cy="80" rx="18" ry="11" fill="#fbcfe8" />
+      <ellipse cx="420" cy="30" rx="12" ry="7" fill="#fef9c3" />
+    </svg>
+  </div>
+  <div class="relative z-10">
+    <div class="text-6xl sm:text-7xl mb-2 animate-bounce select-none" aria-hidden="true">📨☁️</div>
+    <h1 class="text-4xl sm:text-5xl font-extrabold drop-shadow">Wiadomość z Nieba</h1>
+    <p class="mt-2 text-lg max-w-xl mx-auto">Stwórz wyjątkowy list od serca – nawet jeśli nie możesz już powiedzieć tego osobiście.</p>
+  </div>
+</section>
+
+<!-- FORM SECTION -->
+<section class="max-w-3xl mx-auto px-6 py-16">
+  <form id="message-form"
+    class="space-y-7 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-purple-200 dark:border-purple-700"
+    autocomplete="off" novalidate>
+    
+    <!-- Тип повідомлення -->
+    <div>
+      <label class="block text-lg font-semibold mb-1" for="message-type">
+        Forma wiadomości <span class="text-pink-500">*</span>
+      </label>
+      <select id="message-type" name="message-type"
+        class="w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-700 transition">
+        <option value="text">Tekstowa</option>
+        <option value="audio">Głosowa (QR)</option>
+        <option value="video">Wideo (QR)</option>
+      </select>
+      <div class="text-xs text-gray-500 mt-1">Wybierz – napisz list, nagraj wiadomość głosową lub wideo.</div>
+    </div>
+
+    <!-- Текстовий лист -->
+    <div id="text-fields">
+      <div>
+        <label class="block text-lg font-semibold mb-1" for="receiver">Do kogo kierujesz wiadomość? <span class="text-pink-500">*</span></label>
+        <input id="receiver" name="receiver" type="text" required autocomplete="off"
+          class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 bg-indigo-50 dark:bg-gray-900 dark:border-gray-700 transition"
+          placeholder="Imię osoby..." />
+      </div>
+      <div>
+        <label class="block text-lg font-semibold mb-1" for="context">O czym chcesz napisać? <span class="text-pink-500">*</span></label>
+        <textarea id="context" name="context" rows="4" required autocomplete="off"
+          class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-400 bg-pink-50 dark:bg-gray-900 dark:border-gray-700 transition"
+          placeholder="Np. wspomnienie, podziękowanie, coś niewypowiedzianego..."></textarea>
+      </div>
+      <div>
+        <label class="block text-lg font-semibold mb-1" for="style">Styl wiadomości</label>
+        <select id="style" name="style"
+          class="w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-700 transition">
+          <option value="ciepły">Ciepły i wspierający</option>
+          <option value="poetycki">Poetycki i wzruszający</option>
+          <option value="prosty">Prosty i spokojny</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Аудіо-лист -->
+    <div id="audio-fields" class="hidden">
+      <label class="block text-lg font-semibold mb-1">Nagraj wiadomość głosową:</label>
+      <div class="flex flex-col sm:flex-row items-center gap-4 mb-2">
+        <button id="start-record" type="button"
+          class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded transition">🎙️ Rozpocznij nagrywanie</button>
+        <button id="stop-record" type="button" disabled
+          class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded transition">Zakończ</button>
+        <audio id="audio-preview" controls class="hidden max-w-xs"></audio>
+      </div>
+      <input type="hidden" id="audio-file-data" name="audio-file-data" />
+      <div id="qr-preview" class="hidden mt-2">
+        <img id="qr-img" src="" alt="QR do wiadomości głosowej" class="mx-auto w-32 h-32 rounded shadow"/>
+        <div class="text-xs text-gray-500 mt-1">Zeskanuj QR, by odsłuchać wiadomość</div>
+      </div>
+      <div class="text-xs text-gray-500">Twoje nagranie zostanie zamienione na unikalny link QR.</div>
+    </div>
+
+    <!-- Відео-лист -->
+    <div id="video-fields" class="hidden">
+      <label class="block text-lg font-semibold mb-1">Nagraj wiadomość wideo:</label>
+      <div class="flex flex-col sm:flex-row items-center gap-4 mb-2">
+        <video id="video-preview" class="hidden max-w-xs rounded border" controls></video>
+        <button id="start-video" type="button"
+          class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded transition">🎥 Rozpocznij nagrywanie</button>
+        <button id="stop-video" type="button" disabled
+          class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded transition">Zakończ</button>
+      </div>
+      <input type="hidden" id="video-file-data" name="video-file-data" />
+      <div id="qr-video-preview" class="hidden mt-2">
+        <img id="qr-video-img" src="" alt="QR do wiadomości wideo" class="mx-auto w-32 h-32 rounded shadow"/>
+        <div class="text-xs text-gray-500 mt-1">Zeskanuj QR, by obejrzeć wiadomość</div>
+      </div>
+      <div class="text-xs text-gray-500">Twoje nagranie zostanie zamienione na unikalny link QR.</div>
+    </div>
+
+    <!-- Форма доставки -->
+    <div>
+      <label class="block text-lg font-semibold mb-1" for="delivery-method">
+        Sposób dostawy <span class="text-pink-500">*</span>
+      </label>
+      <select id="delivery-method" name="delivery-method"
+        class="w-full px-4 py-3 border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-700 transition">
+        <option value="email">E-mail</option>
+        <option value="post">List tradycyjny (poczta / kurier)</option>
+      </select>
+    </div>
+
+    <!-- Для e-mail -->
+    <div id="email-field">
+      <label class="block text-lg font-semibold mb-1" for="receiver-email">
+        E-mail odbiorcy <span class="text-pink-500">*</span>
+      </label>
+      <input type="email" id="receiver-email" name="receiver-email"
+        class="w-full px-4 py-3 border rounded-lg bg-blue-50 dark:bg-gray-900 dark:border-gray-700" required />
+    </div>
+
+    <!-- Для пошти -->
+    <div id="post-field" class="hidden">
+      <label class="block text-lg font-semibold mb-1" for="receiver-address">
+        Adres odbiorcy <span class="text-pink-500">*</span>
+      </label>
+      <textarea id="receiver-address" name="receiver-address" rows="2"
+        class="w-full px-4 py-3 border rounded-lg bg-pink-50 dark:bg-gray-900 dark:border-gray-700" required></textarea>
+      <div class="text-xs text-gray-500 mt-1">Przesyłka papierowa: wydrukujemy i wyślemy Twój list na wskazany adres w wybranym terminie.</div>
+    </div>
+
+    <!-- Кнопка -->
+    <button type="submit"
+      class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:brightness-110 text-white py-3 rounded-xl text-lg font-bold transition flex items-center justify-center gap-2 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
+      <span>Generuj Wiadomość</span>
+      <span class="text-2xl">✨</span>
+    </button>
+  </form>
+</section>
+
+<!-- JS-блоки після форми -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+  // Динамічне перемикання типу повідомлення
+  document.getElementById('message-type').addEventListener('change', function() {
+    const type = this.value;
+    document.getElementById('text-fields').classList.toggle('hidden', type !== 'text');
+    document.getElementById('audio-fields').classList.toggle('hidden', type !== 'audio');
+    document.getElementById('video-fields').classList.toggle('hidden', type !== 'video');
+  });
+
+  // Перемикання e-mail/пошта
+  document.getElementById('delivery-method').addEventListener('change', function() {
+    const isEmail = this.value === 'email';
+    document.getElementById('email-field').style.display = isEmail ? 'block' : 'none';
+    document.getElementById('post-field').classList.toggle('hidden', isEmail);
+    document.getElementById('receiver-email').required = isEmail;
+    document.getElementById('receiver-address').required = !isEmail;
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('message-type').dispatchEvent(new Event('change'));
+    document.getElementById('delivery-method').dispatchEvent(new Event('change'));
+  });
+
+  // --- Аудіо-запис + QR
+  let mediaRecorder, audioChunks = [];
+  const startBtn = document.getElementById('start-record');
+  const stopBtn = document.getElementById('stop-record');
+  const preview = document.getElementById('audio-preview');
+  const audioDataInput = document.getElementById('audio-file-data');
+  const qrPreview = document.getElementById('qr-preview');
+  const qrImg = document.getElementById('qr-img');
+
+  if(startBtn){
+    startBtn.onclick = async () => {
+      audioChunks = [];
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.start();
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(audioBlob);
+        preview.src = url;
+        preview.classList.remove('hidden');
+        audioDataInput.value = url;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        const qr = new QRious({ value: url, size: 128 });
+        qrImg.src = qr.toDataURL();
+        qrPreview.classList.remove('hidden');
+      };
+    };
+    stopBtn.onclick = () => {
+      mediaRecorder.stop();
+    };
+  }
+
+  // --- Відео-запис + QR
+  let videoRecorder, videoChunks = [];
+  const startVideoBtn = document.getElementById('start-video');
+  const stopVideoBtn = document.getElementById('stop-video');
+  const videoPreview = document.getElementById('video-preview');
+  const videoDataInput = document.getElementById('video-file-data');
+  const qrVideoPreview = document.getElementById('qr-video-preview');
+  const qrVideoImg = document.getElementById('qr-video-img');
+
+  if(startVideoBtn){
+    startVideoBtn.onclick = async () => {
+      videoChunks = [];
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      videoRecorder = new MediaRecorder(stream);
+      videoRecorder.start();
+      startVideoBtn.disabled = true;
+      stopVideoBtn.disabled = false;
+
+      videoRecorder.ondataavailable = e => videoChunks.push(e.data);
+      videoRecorder.onstop = () => {
+        const videoBlob = new Blob(videoChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(videoBlob);
+        videoPreview.src = url;
+        videoPreview.classList.remove('hidden');
+        videoDataInput.value = url;
+        startVideoBtn.disabled = false;
+        stopVideoBtn.disabled = true;
+        const qr = new QRious({ value: url, size: 128 });
+        qrVideoImg.src = qr.toDataURL();
+        qrVideoPreview.classList.remove('hidden');
+      };
+    };
+    stopVideoBtn.onclick = () => {
+      videoRecorder.stop();
+    };
+  }
+</script>
+
+
+
+   <!-- Output -->
+  <div id="output" class="mt-10 hidden bg-white dark:bg-gray-800 p-8 rounded-2xl shadow text-center border border-purple-200 dark:border-purple-700">
+    <div class="text-[50px] mb-2 select-none">✨</div>
+    <h2 class="text-2xl font-bold mb-3">Twoja wiadomość:</h2>
+    <div id="generated-message" class="text-lg whitespace-pre-wrap text-gray-800 dark:text-gray-100 mb-4"></div>
+    <button id="copy-btn" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:brightness-110 text-white px-5 py-2 rounded-lg transition focus:outline-none focus:ring-2 focus:ring-indigo-400 mt-2 font-semibold">
+      Skopiuj wiadomość
+    </button>
+    <div class="text-xs text-gray-400 mt-2">Twoja wiadomość jest anonimowa i bezpieczna ❤️</div>
+    <button id="new-msg" class="mt-4 text-indigo-500 hover:text-pink-500 hover:underline underline-offset-2 transition block mx-auto font-semibold">
+      Stwórz kolejną wiadomość
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-6 mt-12 text-center text-sm md:text-base">
+  <div class="max-w-4xl mx-auto px-4">
+    &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.<br>
+    <span class="text-xs opacity-80">Projekt & UX: HappyDate Team | <a href="privacy.html" class="underline hover:text-yellow-200 transition">Polityka prywatności</a></span>
+  </div>
+</footer>
+
+<script>
+  // UX-валідація
+  function validateForm() {
+    let valid = true;
+    ['receiver','context'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el.value.trim()){
+        el.classList.add('border-red-400','ring-2','ring-red-200');
+        valid = false;
+      } else {
+        el.classList.remove('border-red-400','ring-2','ring-red-200');
+      }
+    });
+    return valid;
+  }
+
+  document.getElementById('message-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if(!validateForm()) return;
+
+    const receiver = document.getElementById('receiver').value.trim();
+    const context = document.getElementById('context').value.trim();
+    const style = document.getElementById('style').value;
+
+    let prefix = '';
+    if (style === 'poetycki') prefix = 'Wierszem płyną słowa: ';
+    if (style === 'ciepły') prefix = 'Od serca: ';
+    if (style === 'prosty') prefix = '';
+
+    const message = `Drogi/a ${receiver},\n\n${prefix}${context}\n\nZawsze w moim sercu – HappyDate ❤️`;
+
+    document.getElementById('generated-message').textContent = message;
+    document.getElementById('output').classList.remove('hidden');
+    setTimeout(() => document.getElementById('output').scrollIntoView({behavior:"smooth"}), 100);
+  });
+
+  document.getElementById('copy-btn').addEventListener('click', function() {
+    const text = document.getElementById('generated-message').textContent;
+    navigator.clipboard.writeText(text);
+    this.textContent = "Skopiowano! ✨";
+    this.classList.add('scale-110', 'bg-green-500');
+    setTimeout(() => {
+      this.textContent = "Skopiuj wiadomość";
+      this.classList.remove('scale-110', 'bg-green-500');
+    }, 1400);
+  });
+
+  document.getElementById('new-msg').addEventListener('click', function() {
+    document.getElementById('output').classList.add('hidden');
+    document.getElementById('message-form').reset();
+    ['receiver','context'].forEach(id=>{
+      document.getElementById(id).classList.remove('border-red-400','ring-2','ring-red-200');
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+</script>

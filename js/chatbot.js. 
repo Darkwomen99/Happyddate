@@ -1,0 +1,19 @@
+// js/chatbot.js
+function toggleChat() {
+  document.getElementById('chatbot-window').classList.toggle('hidden');
+}
+
+function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const content = document.getElementById('chat-content');
+  const message = input.value.trim();
+
+  if (message) {
+    content.innerHTML += `<p class="mt-2 text-right text-blue-600"><strong>Ty:</strong> ${message}</p>`;
+    setTimeout(() => {
+      content.innerHTML += `<p class="mt-2 text-gray-800"><strong>HappyBot:</strong> Świetny wybór! 🎁 Masz jeszcze inne pytania?</p>`;
+      content.scrollTop = content.scrollHeight;
+    }, 500);
+    input.value = '';
+  }
+}

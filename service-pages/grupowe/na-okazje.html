@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-pink-50 text-gray-900 dark:bg-pink-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Na Ślub, Rocznicę, Urodziny – HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <style>
+    .glass-card {
+      background: rgba(255, 240, 245, 0.85);
+      border: 1px solid #f9c3d1;
+      box-shadow: 0 6px 20px rgba(255, 192, 203, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-4px);
+    }
+    .service-wedding h3 {
+      color: #b0246c;
+    }
+    .btn-wedding {
+      background: #d63384;
+    }
+    .btn-wedding:hover {
+      background: #b0246c;
+    }
+  </style>
+</head>
+<body class="service-wedding">
+
+<header class="bg-gradient-to-r from-pink-400 to-rose-400 py-4 shadow-md sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white">💍 HappyDate</h1>
+    <nav class="flex gap-6 text-white">
+      <a href="/index.html" class="hover:underline">Strona główna</a>
+      <a href="/services.html" class="hover:underline">Usługi</a>
+      <a href="/dashboard.html" class="hover:underline">Moje wydarzenia</a>
+      <a href="/partnerstwo.html" class="hover:underline">Partnerstwo</a>
+      <a href="/about.html" class="hover:underline">O nas</a>
+      <a href="/reviews.html" class="hover:underline">Opinie</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 py-16">
+  <section class="text-center mb-16">
+    <h2 class="text-4xl font-extrabold mb-4">💍 Na Ślub, Rocznicę, Urodziny</h2>
+    <p class="text-lg sm:text-xl text-gray-700 dark:text-gray-200 max-w-3xl mx-auto">
+      Wyjątkowy prezent tworzony razem. Zbierz życzenia, wspomnienia i miłość bliskich w jednym, pięknie zorganizowanym upominku. My zajmiemy się wszystkim od A do Z.
+    </p>
+  </section>
+
+  <!-- Features -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-20" data-aos="fade-up">
+    <div class="glass-card" data-aos="zoom-in" data-aos-delay="100">
+      <h3 class="text-xl font-semibold mb-2">👰 Idealne na ślub</h3>
+      <p>Wspólny prezent od rodziny i znajomych, który wzruszy parę młodą – pamiątkowe nagranie, niespodzianka lub voucher z emocją.</p>
+    </div>
+    <div class="glass-card" data-aos="zoom-in" data-aos-delay="200">
+      <h3 class="text-xl font-semibold mb-2">🎂 Niezapomniane urodziny</h3>
+      <p>Każdy znajomy może dodać coś od siebie – my połączymy wszystkie gesty w jedną, dopracowaną niespodziankę pełną wspomnień.</p>
+    </div>
+    <div class="glass-card" data-aos="zoom-in" data-aos-delay="300">
+      <h3 class="text-xl font-semibold mb-2">🎉 Rocznice i jubileusze</h3>
+      <p>Opowiedz historię miłości lub przyjaźni, a my nadamy jej wyjątkową formę – video, box z prezentem, kolaż lub fotoksiążkę.</p>
+    </div>
+    <div class="glass-card" data-aos="zoom-in" data-aos-delay="400">
+      <h3 class="text-xl font-semibold mb-2">🤝 Koordynacja grupy</h3>
+      <p>Otrzymasz prosty link – każdy uczestnik może nagrać wiadomość, przesłać zdjęcie lub wpłatę. Zadbamy o całą resztę.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="text-center" data-aos="fade-up">
+    <a href="na-okazje-wizard.html" class="inline-block btn-wedding text-white font-bold text-lg py-3 px-8 rounded-full shadow-lg transition">
+      ➡️ Rozpocznij przygotowanie prezentu
+    </a>
+    <p class="mt-4 text-gray-600 dark:text-gray-300 text-sm">Zajmie to tylko kilka minut — a radość zostanie na lata ✨</p>
+  </section>
+</main>
+
+<footer class="bg-pink-500 text-white text-center py-4 mt-20">
+  &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ once: true, duration: 700, easing: 'ease-out' });
+</script>
+
+</body>
+</html>

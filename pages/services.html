@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>HappyDate – Nasze Usługi</title>
+
+  <!-- Meta Description -->
+  <meta name="description" content="Odkryj unikalne usługi HappyDate – Twój osobisty asystent prezentowy! Wyjątkowe prezenty z AI, emocjami i ekspresową dostawą." />
+  <meta name="keywords" content="prezenty, usługi HappyDate, AI, wyjątkowe upominki, prezent online, kalendarz prezentów" />
+  <meta name="author" content="HappyDate" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Canonical & Open Graph -->
+  <link rel="canonical" href="https://www.happydate.pl/services.html" />
+  <meta property="og:title" content="HappyDate – Nasze Usługi" />
+  <meta property="og:description" content="Wyjątkowe usługi prezentowe – AI, personalizacja, magia i emocje!" />
+  <meta property="og:image" content="assets/img/social-banner.jpg" />
+  <meta property="og:url" content="https://www.happydate.pl/services.html" />
+  <meta property="og:type" content="website" />
+
+  <!-- Favicon & Apple Icon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Własne Style (używane np. dla niestandardowych klas lub efektów) -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Animate On Scroll (AOS) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+
+  <!-- i18next – Obsługa wielojęzyczności -->
+  <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
+  <script src="https://unpkg.com/i18next-http-backend@1.4.1/i18nextHttpBackend.min.js"></script>
+
+</head>
+<body class="overflow-x-hidden">
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-none transition-shadow duration-300" aria-label="Główna nawigacja">
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 flex justify-between items-center">
+    
+    <!-- Logo & hasło -->
+    <div class="flex items-center gap-2">
+      <h1 class="text-2xl font-bold text-white cursor-pointer hover:underline" aria-label="HappyDate – prezentowy asystent">
+        🎁 HappyDate
+      </h1>
+      <span class="hidden md:inline ml-2 text-base italic text-white opacity-80">
+        Twój ciepły asystent prezentowy
+      </span>
+      <button
+        onclick="document.getElementById('audioModal')?.showModal()"
+        title="Kliknij po magiczną myśl!"
+        class="text-white text-2xl p-2 rounded hover:bg-white/10 transition focus:ring-2 focus:ring-cyan-300"
+        aria-label="Audio prezentacja"
+      >✨</button>
+    </div>
+
+    <!-- Nawigacja -->
+    <nav class="hidden sm:flex gap-5 md:gap-6 items-center text-white font-medium">
+      <a href="/pages/index.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Strona główna</a>
+      <a href="/pages/services.html" class="px-1 py-0.5 rounded bg-white/20 font-semibold underline focus:bg-white/30 transition">Usługi</a>
+      <a href="/pages/dashboard.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Moje wydarzenia</a>
+      <a href="/pages/partnerstwo.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Partnerstwo</a>
+      <a href="/pages/about.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">O nas</a>
+      <a href="/pages/reviews.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Opinie</a>
+    </nav>
+
+    <!-- Wybór języka -->
+    <div class="relative" id="lang-dropdown-wrap">
+      <button id="langDropdownBtn"
+        class="flex items-center gap-2 px-3 py-2 rounded border bg-white/10 text-white hover:bg-white/20 transition focus:ring-2 focus:ring-blue-300"
+        aria-label="Zmień język" type="button">
+        <span id="langFlag">🌐</span>
+        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      <div id="langDropdown"
+        class="absolute right-0 mt-2 bg-white shadow-xl rounded-xl z-50 py-2 min-w-[150px] hidden text-left
+               transition-all duration-200 scale-95 opacity-0 origin-top-right">
+        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="pl"><span>🇵🇱</span> Polski</button>
+        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ua"><span>🇺🇦</span> Українська</button>
+        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="en"><span>🇬🇧</span> English</button>
+        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ru"><span>🇷🇺</span> Русский</button>
+        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="de"><span>🇩🇪</span> Deutsch</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+<!-- Hero / Intro Sekcja -->
+<section class="relative bg-gradient-to-r from-pink-100 via-yellow-100 to-blue-100 py-20 md:py-28 mb-16 overflow-hidden">
+  <div class="max-w-4xl mx-auto text-center relative z-10 px-4">
+
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-6 flex flex-wrap items-center justify-center gap-3">
+      <span class="inline-block animate-bounce">🎁</span>
+      <span><span class="text-pink-500">Nasze Usługi</span> – Bo Liczą Się <span class="text-yellow-500">Emocje</span></span>
+    </h1>
+
+    <p class="text-base md:text-lg text-gray-700 mb-6">
+      Podaruj coś więcej niż przedmiot. Stwórz wspomnienie, które zostanie w sercu Twojej bliskiej osoby – z naszą pomocą.
+    </p>
+
+    <!-- Cytat emocjonalny -->
+    <p class="text-lg italic text-pink-700 mb-10" data-aos="fade-up" data-aos-delay="300">
+      „Najlepsze prezenty to te, które zostają w sercu — nie w szufladzie.” 💝
+    </p>
+
+    <!-- CTA - Przycisk przewinięcia -->
+    <a href="#prezenty"
+       class="mt-4 inline-block px-8 py-3 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-full shadow-lg transition focus:ring-2 focus:ring-pink-300"
+       data-aos="zoom-in" data-aos-delay="400">
+      Przejdź do inspiracji →
+    </a>
+  </div>
+
+  <!-- Dekoracje animowane -->
+  <div class="absolute animate-pulse text-pink-400 text-3xl top-4 left-6 select-none" aria-hidden="true" title="Dekoracja">💖</div>
+  <div class="absolute animate-pulse text-yellow-400 text-2xl top-10 right-6 select-none" aria-hidden="true" title="Dekoracja">✨</div>
+</section>
+
+
+
+
+<!-- ❤️ Prezenty z Sercem -->
+<section id="prezenty" class="bg-gradient-to-br from-rose-50 via-white to-rose-100 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 py-20 relative">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="flex justify-center mb-6" aria-hidden="true">
+      <div class="h-1 w-24 bg-gradient-to-r from-pink-500 via-red-400 to-pink-500 rounded-full"></div>
+    </div>
+
+    <!-- Tytuł sekcji -->
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900 dark:text-white text-center flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">❤️</span> Prezenty z Sercem
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+      Czasem największym prezentem jest serce. Oto propozycje, które niosą prawdziwe emocje, dobro i uśmiech.
+    </p>
+
+    <!-- Karty prezentów -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      <!-- Karta 1 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-pink-500 transition-colors">
+          🕊️ Podaruj Dobro
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200 leading-relaxed">
+          Zamiast rzeczy – wspólny czas z dziećmi, pomoc w schronisku czy ekologiczna akcja. Emocje, które zostają w sercu.
+        </p>
+        <a href="/service-pages/❤️ Prezenty z Sercem/service-podaruj-dobro.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-pink-500 text-white font-semibold shadow transition hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:ring-offset-2">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Przyszła karta (możна розкоментувати) -->
+      <!--
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-red-500 transition-colors">
+          🎗️ Inna forma dobra
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Opis drugiej dobrej inicjatywy – wolontariat, adopcja, pomoc sąsiedzka.
+        </p>
+        <a href="#" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-red-400 text-white font-semibold shadow transition hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+      -->
+
+    </div>
+  </div>
+</section>
+
+
+
+
+  <!-- 🤖 AI i Automatyzacja -->
+<section class="bg-gradient-to-br from-blue-50 via-white to-yellow-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="flex justify-center mb-6" aria-hidden="true">
+      <div class="h-1 w-24 bg-gradient-to-r from-blue-500 via-yellow-400 to-blue-500 rounded-full"></div>
+    </div>
+
+    <!-- Tytuł -->
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-gray-900 dark:text-white text-center flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">🤖</span> AI i Automatyzacja
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="100">
+      Technologia z sercem. Dzięki sztucznej inteligencji i automatyzacji podarunki stają się bardziej trafione, a cały proces – łatwiejszy niż kiedykolwiek.
+    </p>
+
+    <!-- Karty usług AI -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Asystent AI -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-blue-500 transition-colors">
+          🤖 Twój Osobisty Asystent AI
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200 leading-relaxed">
+          Nie wiesz, co podarować? Nasz inteligentny asystent podpowie idealny prezent na podstawie zainteresowań, okazji i budżetu.
+        </p>
+        <a href="/service-pages/🤖 AI i Automatyzacja/service-asystent-ai.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-blue-500 text-white font-semibold shadow transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Rok Radości -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-yellow-500 transition-colors">
+          💳 Rok Radości
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200 leading-relaxed">
+          Jedna decyzja – dwanaście niespodzianek. Zaplanuj z nami cały rok wyjątkowych chwil. My przypomnimy, przygotujemy i dostarczymy.
+        </p>
+        <a href="/service-pages/🤖 AI i Automatyzacja/service-rok-radosci.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-yellow-400 text-gray-900 font-semibold shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Wiadomość z Nieba -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-indigo-500 transition-colors">
+          📨 Wiadomość z Nieba
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200 leading-relaxed">
+          Słowa, których nie wypowiedzieliśmy. Nasz AI pomoże Ci stworzyć wyjątkową wiadomość „od serca” – jakby prosto z nieba.
+        </p>
+        <a href="/service-pages/🤖 AI i Automatyzacja/service-wiadomosc-niebo.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-indigo-500 text-white font-semibold shadow transition hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- 🎁 Prezenty Indywidualne -->
+<section class="bg-gradient-to-br from-pink-50 via-white to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="h-1 w-24 bg-gradient-to-r from-pink-500 via-yellow-400 to-pink-500 rounded-full mx-auto mb-6"></div>
+
+    <!-- Tytuł -->
+    <h2 class="text-3xl font-extrabold mb-4 text-gray-900 dark:text-white flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">🎁</span> Prezenty Indywidualne
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+      Każdy z nas ma inny sposób na okazanie uczuć. Wybierz prezent, który najlepiej pasuje do Ciebie — zrobiony z sercem, zapamiętany na długo.
+    </p>
+
+    <!-- Karty -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      <!-- Karta 1 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-pink-500 transition-colors">
+          🎁 Zrób to po swojemu
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Stwórz własny zestaw prezentowy: wybierz słodycze, dodatki, liścik – a my zapakujemy to z sercem i dostarczymy.
+        </p>
+        <a href="/service-pages/🎁 Prezenty Indywidualne/service-zrob-to-po-swojemu.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-pink-500 text-white font-semibold shadow transition hover:bg-pink-600 focus:ring-2 focus:ring-pink-400">
+          Zobacz, co możesz stworzyć →
+        </a>
+      </div>
+
+      <!-- Karta 2 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-blue-500 transition-colors">
+          📸 Wspomnienie na Prezent
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Stwórz pamiątkową fotoksiążkę lub kolaż z ważnych wspomnień – pięknie oprawiony i dostarczony z emocją.
+        </p>
+        <a href="/service-pages/🎁 Prezenty Indywidualne/service-wspomnienie.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-blue-500 text-white font-semibold shadow transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-400">
+          Spraw, by się uśmiechnęła →
+        </a>
+      </div>
+
+      <!-- Karta 3 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-yellow-500 transition-colors">
+          💌 Prezent na Zgodę
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Jeden drobny gest mówi więcej niż tysiąc słów. Pomożemy Ci powiedzieć „przepraszam” – z serca.
+        </p>
+        <a href="/service-pages/🎁 Prezenty Indywidualne/service-na-zgode.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-yellow-400 text-gray-900 font-semibold shadow transition hover:bg-yellow-500 focus:ring-2 focus:ring-yellow-300">
+          Przygotuj gest pojednania →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<!-- 👶 Dla Dzieci -->
+<section class="bg-gradient-to-br from-yellow-50 via-white to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="h-1 w-24 bg-gradient-to-r from-yellow-400 via-pink-400 to-yellow-400 rounded-full mx-auto mb-6"></div>
+
+    <!-- Tytuł -->
+    <h2 class="text-3xl font-extrabold mb-4 text-gray-900 dark:text-white flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">👶</span> Dla Dzieci
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+      Uśmiech dziecka to najpiękniejszy prezent. Zobacz, jak możemy razem stworzyć niezapomniane chwile dla najmłodszych!
+    </p>
+
+    <!-- Karty -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Karta 1 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-red-500 transition-colors">
+          🎅 Tajemniczy Mikołaj dla Dzieci
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Magia świąt pod drzwi. Mikołaj przyjdzie z prezentem do Twojego dziecka.
+        </p>
+        <a href="/service-pages/👶 Dla Dzieci/service-mikolaj-dzieci.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-red-500 text-white font-semibold shadow transition hover:bg-red-600 focus:ring-2 focus:ring-red-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Karta 2 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-yellow-500 transition-colors">
+          🐻 Animator w Stroju Misia
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Duży miś + uśmiech dziecka = wspomnienie na całe życie.
+        </p>
+        <a href="/service-pages/👶 Dla Dzieci/service-animator-mis.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-yellow-400 text-gray-900 font-semibold shadow transition hover:bg-yellow-500 focus:ring-2 focus:ring-yellow-300">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Karta 3 -->
+      <div class="relative bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="200">
+        <div class="absolute top-3 right-3 bg-pink-500 text-white text-xs px-3 py-1 rounded-full shadow">NOWOŚĆ</div>
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-pink-500 transition-colors">
+          🎨 Warsztaty Kreatywne
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Dzieci kochają tworzyć! Nasze warsztaty to godzina zabawy, kolorów i śmiechu — a pamiątka zostaje na zawsze.
+        </p>
+        <a href="/service-pages/👶 Dla Dzieci/service-warsztaty.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-pink-500 text-white font-semibold shadow transition hover:bg-pink-600 focus:ring-2 focus:ring-pink-300">
+          Zainspiruj dziecko →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<<!-- 🏢 Dla Firm -->
+<section class="bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="h-1 w-24 bg-gradient-to-r from-blue-500 via-green-400 to-blue-500 rounded-full mx-auto mb-6"></div>
+
+    <!-- Tytuł -->
+    <h2 class="text-3xl font-extrabold mb-4 text-gray-900 dark:text-white flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">🏢</span> Dla Firm
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+      Wyróżnij swoją firmę dzięki spersonalizowanym prezentom dla pracowników, partnerów i klientów – szybko, elegancko i z sercem.
+    </p>
+
+    <!-- Karty -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Karta 1 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-blue-600 transition-colors">
+          👨‍💼 Dla Twojej Firmy
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Prezenty dla pracowników i klientów – indywidualnie, elegancko i na czas. Możliwa personalizacja, logotypy, świąteczne zestawy. Integracja z systemem HR.
+        </p>
+        <a href="/service-pages/Dla Firm/service-dla-firmy.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-blue-500 text-white font-semibold shadow transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Karta 2 -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-green-500 transition-colors">
+          🎟️ Vouchery i Certyfikaty
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Podaruj przeżycie: masaż, kolacja, warsztaty kreatywne, kurs baristy i wiele więcej. Wersje papierowe i elektroniczne.
+        </p>
+        <a href="/service-pages/Dla Firm/service-vouchery.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-green-400 text-white font-semibold shadow transition hover:bg-green-500 focus:ring-2 focus:ring-green-300">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      
+      
+
+    </div>
+  </div>
+</section>
+
+
+ <!-- 🤝 Prezenty Grupowe -->
+<section class="bg-gradient-to-br from-green-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="h-1 w-24 bg-gradient-to-r from-pink-500 via-green-400 to-blue-500 rounded-full mx-auto mb-6"></div>
+
+    <!-- Tytuł -->
+    <h2 class="text-3xl font-extrabold mb-4 text-gray-900 dark:text-white flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">🤝</span> Prezenty Grupowe
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+      Razem raźniej – organizuj wspólne upominki łatwo i efektownie, z udziałem wszystkich przyjaciół lub współpracowników.
+    </p>
+
+    <!-- Karty -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Zrzutka na Prezent -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-green-500 transition-colors">
+          💸 Zrzutka na Prezent
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Ułatwiamy wspólne prezenty – udostępnij link, zaproś znajomych i zbieraj środki na wyjątkowy upominek.
+        </p>
+        <a href="/service-pages/grupowe/service-grupowy-prezent.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-green-400 text-white font-semibold shadow transition hover:bg-green-500 focus:ring-2 focus:ring-green-300">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Wiadomość od Grupy -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-blue-500 transition-colors">
+          🎥 Wiadomość od Grupy
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Zbierz życzenia od wszystkich – wideo, audio lub tekst. My złożymy to w piękną niespodziankę dla bliskiej osoby.
+        </p>
+        <a href="/service-pages/grupowe/wiadomosc.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-blue-500 text-white font-semibold shadow transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Na Ślub / Urodziny -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-pink-500 transition-colors">
+          💍 Na Ślub, Rocznicę, Urodziny
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Stwórz niezapomniany wspólny prezent dla pary młodej, jubilata lub przyjaciela. Skoordynujemy całość od A do Z.
+        </p>
+        <a href="/service-pages/grupowe/na-okazje.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-pink-500 text-white font-semibold shadow transition hover:bg-pink-600 focus:ring-2 focus:ring-pink-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- 🚚 Dostawa i Usługi -->
+<section class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-20">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <!-- Dekoracyjna linia -->
+    <div class="h-1 w-24 bg-gradient-to-r from-pink-500 via-indigo-500 to-blue-500 rounded-full mx-auto mb-6"></div>
+
+    <!-- Tytuł -->
+    <h2 class="text-3xl font-extrabold mb-4 text-gray-900 dark:text-white flex items-center justify-center gap-2" data-aos="fade-right">
+      <span class="text-2xl">🚚</span> Dostawa i Usługi
+    </h2>
+
+    <!-- Podtytuł -->
+    <p class="text-center text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-3xl mx-auto">
+      Emocje nie mają granic – spraw, by Twój prezent dotarł szybko, dyskretnie i z efektem „wow”. Nawet w nocy, anonimowo lub z kwiatami.
+    </p>
+
+    <!-- Karty -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Dostawa Kwiatów -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-pink-500 transition-colors">
+          💐 Dostawa Kwiatów
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Bukiet z liścikiem lub bez. Emocje zamknięte w kwiatach.
+        </p>
+        <a href="/service-pages/🚚 Dostawa i Usługi/service-kwiaty.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-pink-500 text-white font-semibold shadow transition hover:bg-pink-600 focus:ring-2 focus:ring-pink-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Anonimowa Wysyłka -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="100">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-blue-400 transition-colors">
+          🕊️ Anonimowa Wysyłka
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Radość bez podpisu – dla tych, którzy chcą pozostać anonimowi.
+        </p>
+        <a href="/service-pages/🚚 Dostawa i Usługi/service-anonimowa.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-blue-500 text-white font-semibold shadow transition hover:bg-blue-600 focus:ring-2 focus:ring-blue-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+      <!-- Nocna Magia -->
+      <div class="bg-white/80 dark:bg-gray-800/70 backdrop-blur-lg rounded-2xl shadow-md hover:shadow-xl transition transform hover:scale-105 text-center p-8 group"
+           data-aos="fade-up" data-aos-delay="200">
+        <h3 class="text-xl font-bold mb-3 flex justify-center items-center gap-2 group-hover:text-indigo-400 transition-colors">
+          🌙 Nocna Magia
+        </h3>
+        <p class="mb-4 text-gray-700 dark:text-gray-200">
+          Zapomniałeś o ważnej dacie? Dostarczymy prezent nawet w nocy.
+        </p>
+        <a href="/service-pages/🚚 Dostawa i Usługi/service-nocna-magia.html" target="_blank"
+           class="inline-block mt-2 px-6 py-2 rounded-xl bg-indigo-500 text-white font-semibold shadow transition hover:bg-indigo-600 focus:ring-2 focus:ring-indigo-400">
+          Dowiedz się więcej →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<footer class="bg-blue-500 text-white py-8 mt-16 w-full" aria-label="Stopka HappyDate">
+  <div class="text-center text-sm md:text-base px-4" data-i18n="footer.text">
+    &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.<br>
+    <span class="text-xs opacity-80">
+      Projekt & UX: HappyDate Team | <a href="privacy.html" class="underline hover:text-yellow-200">Polityka prywatności</a>
+    </span>
+  </div>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ once: true, duration: 700, easing: 'ease-out' });
+</script>
+
+<!-- GDPR Cookies Consent Popup -->
+<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-900 bg-opacity-95 text-white py-5 px-6 z-50 hidden" role="dialog" aria-modal="true" aria-label="Informacja o plikach cookies">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="text-sm md:text-base">
+      Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą 
+      <a href="privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
+    </p>
+    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition focus:ring-2 focus:ring-blue-400">
+      Akceptuję
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cookieConsent = document.getElementById('cookieConsent');
+    const acceptBtn = document.getElementById('acceptCookies');
+    if (!localStorage.getItem('happydate_cookie_consent')) {
+      cookieConsent.classList.remove('hidden');
+    }
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('happydate_cookie_consent', 'true');
+      cookieConsent.classList.add('hidden');
+    });
+  });
+</script>
+
+<script>
+  // Показати/сховати dropdown
+  const langBtn = document.getElementById('langDropdownBtn');
+  const langDropdown = document.getElementById('langDropdown');
+  if (langBtn && langDropdown) {
+    langBtn.addEventListener('click', () => {
+      langDropdown.classList.toggle('hidden');
+      langDropdown.classList.toggle('opacity-0');
+      langDropdown.classList.toggle('scale-95');
+    });
+    // Закрити при кліку поза dropdown
+    document.addEventListener('click', (e) => {
+      if (!langDropdown.contains(e.target) && !langBtn.contains(e.target)) {
+        langDropdown.classList.add('hidden', 'opacity-0', 'scale-95');
+      }
+    });
+  }
+  // Проста імітація перемикання прапорця (без перекладу)
+  document.querySelectorAll('#langDropdown button[data-lang]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.getElementById('langFlag').textContent = this.querySelector('span').textContent;
+      langDropdown.classList.add('hidden', 'opacity-0', 'scale-95');
+      // Додати тут: збереження мови у localStorage та reload або виклик функції перекладу
+    });
+  });
+</script>
+
+
+
+</body>
+</html>

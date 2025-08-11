@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ustawienia — HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-10">
+  <main class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow">
+    <h1 class="text-2xl font-bold mb-6">Ustawienia konta</h1>
+    <form id="settings-form" class="space-y-4">
+      <input type="text" id="displayName" placeholder="Imię i nazwisko" class="w-full p-2 border rounded">
+      <input type="url" id="photoURL" placeholder="Link do zdjęcia profilowego (opcjonalnie)" class="w-full p-2 border rounded">
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Zapisz zmiany</button>
+    </form>
+    <p class="mt-4 text-sm text-gray-500">Zmiany zostaną zastosowane natychmiast i będą widoczne w panelu użytkownika.</p>
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJmddWXQKRGw1nnQ6Evje4qMqHcddSulY",
+      authDomain: "happydate-4e42f.firebaseapp.com",
+      projectId: "happydate-4e42f",
+      storageBucket: "happydate-4e42f.firebaseapp.com",
+      messagingSenderId: "169631163082",
+      appId: "1:169631163082:web:b4295c7840898da42aca33"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        document.getElementById('displayName').value = user.displayName || '';
+        document.getElementById('photoURL').value = user.photoURL || '';
+      }
+    });
+
+    document.getElementById('settings-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const displayName = document.getElementById('displayName').value;
+      const photoURL = document.getElementById('photoURL').value;
+      const user = auth.currentUser;
+
+      try {
+        await user.updateProfile({ displayName, photoURL });
+        showNotification("Zapisano zmiany ✅");
+      } catch (error) {
+        showNotification(error.message, true);
+      }
+    });
+
+    function showNotification(message, isError = false) {
+      const note = document.createElement('div');
+      note.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 ' +
+        (isError ? 'bg-red-500' : 'bg-green-500') +
+        ' text-white px-4 py-2 rounded shadow z-50';
+      note.textContent = message;
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 2500);
+    }
+  </script>
+
+  <!-- GDPR Cookies Consent Popup -->
+<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="text-sm md:text-base">
+      This website uses cookies to enhance your browsing experience. By continuing to use this site, you agree to our 
+      <a href="privacy.html" class="underline hover:text-blue-300">Privacy Policy</a>.
+    </p>
+    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
+      Accept
+    </button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cookieConsent = document.getElementById('cookieConsent');
+    const acceptBtn = document.getElementById('acceptCookies');
+
+    if (!localStorage.getItem('happydate_cookie_consent')) {
+      cookieConsent.classList.remove('hidden');
+    }
+
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('happydate_cookie_consent', 'true');
+      cookieConsent.classList.add('hidden');
+    });
+  });
+</script>
+
+</body>
+
+</html>

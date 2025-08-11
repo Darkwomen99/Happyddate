@@ -1,0 +1,69 @@
+{
+  "header": {
+    "title": "🎁 HappyDate",
+    "home": "Home",
+    "services": "Services",
+    "dashboard": "My Events",
+    "partner": "Partnership",
+    "about": "About Us",
+    "reviews": "Reviews",
+    "register": "Sign up",
+    "login": "Log in",
+    "logout": "Log out",
+    "dashboardPanel": "User Panel"
+  },
+  "hero": {
+    "title": "Let every important date become magical ✨",
+    "description": "HappyDate is your personal assistant for gifts and emotions. We'll make sure you never forget the special moments of your loved ones.",
+    "cta": "Get Started",
+    "ctaFind": "Find a Gift 🎁",
+    "ctaAdd": "Add Event 📅"
+  },
+  "howItWorks": {
+    "title": "How does it work?",
+    "step1": "You add the event to the calendar",
+    "step2": "You fill in details and preferences",
+    "step3": "We take care of the rest ❤️"
+  },
+  "advantages": {
+    "title": "Why HappyDate?",
+    "ai": "🎁 AI — Smart Gift Suggestions",
+    "aiDesc": "Our AI will help you choose the perfect gift, considering the recipient's preferences.",
+    "privacy": "🔐 Anonymity and Safety",
+    "privacyDesc": "Your data is safe. We guarantee full anonymity.",
+    "delivery": "🚚 On-time delivery",
+    "deliveryDesc": "The gift will arrive exactly when it should — stress-free.",
+    "emotions": "❤️ Emotions First",
+    "emotionsDesc": "HappyDate is more than a gift — it's a moment, a memory, and love."
+  },
+  "reviews": {
+    "title": "User Reviews 💬",
+    "adam": {
+      "text": "🎁 \"Thanks to HappyDate I didn’t forget my wife’s birthday. The gift was perfect!\"",
+      "author": "— Adam, Warsaw"
+    },
+    "kasia": {
+      "text": "💌 \"I reconnected with my sister after years — the gift from HappyDate made it happen!\"",
+      "author": "— Kasia, Gdańsk"
+    },
+    "ola": {
+      "text": "🌟 \"I received flowers and a voucher on Mother’s Day — exactly how I dreamed.\"",
+      "author": "— Ola, Kraków"
+    }
+  },
+  "gifts": {
+    "title": "🎁 Gift Examples",
+    "romantic": "SPA Set + ‘I Love You’ Card",
+    "flowers": "Flowers + Apology Letter",
+    "box": "Surprise Box + Voucher",
+    "voucher": "Massage and Dinner Voucher"
+  },
+  "footer": {
+    "text": "© 2025 HappyDate. We create unforgettable moments with love."
+  },
+  "meta": {
+    "description": "HappyDate — your personal gift assistant. Take care of your loved ones' special moments with perfectly matched surprises!",
+    "ogTitle": "HappyDate - Magical gifts for every occasion",
+    "ogDescription": "Surprise your loved ones with unique gifts — reminders, selection, delivery, and emotion in one place!"
+  }
+}

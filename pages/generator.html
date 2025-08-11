@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Znajdź idealny prezent dzięki HappyDate — wpisz budżet i preferencje, a my zrobimy resztę!">
+  <title>Co podarować? - HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900">
+  <section class="min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100">
+    <div class="max-w-xl w-full bg-white p-8 rounded-2xl shadow-xl">
+      <h1 class="text-3xl font-bold text-center text-pink-600 mb-6">🎁 Co podarować?</h1>
+      <p class="text-center mb-6 text-gray-600">Wpisz kilka informacji o osobie i znajdziemy prezent, który wzruszy do łez.</p>
+
+      <form id="giftForm" class="space-y-4">
+        <div>
+          <label class="block font-semibold mb-1">Dla kogo?</label>
+          <select id="forWho" class="w-full border rounded px-3 py-2" required>
+            <option value="">Wybierz...</option>
+            <option>Dla dziewczyny</option>
+            <option>Dla chłopaka</option>
+            <option>Dla mamy</option>
+            <option>Dla taty</option>
+            <option>Dla przyjaciela/przyjaciółki</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Budżet (PLN)</label>
+          <input type="number" id="budget" min="0" class="w-full border rounded px-3 py-2" placeholder="np. 50" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold mb-1">Co lubi ta osoba?</label>
+          <input type="text" id="preferences" class="w-full border rounded px-3 py-2" placeholder="np. koty, książki, kawa" required>
+        </div>
+
+        <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition">Pokaż pomysł 🎉</button>
+      </form>
+
+      <div id="result" class="mt-6 hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+        <p><strong>Pomysł na prezent:</strong> <span id="ideaText"></span></p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const examples = [
+      { match: ['koty'], idea: 'Personalizowana filiżanka z grafiką kota + aromatyczna kawa (za 49 zł)' },
+      { match: ['kawa'], idea: 'Zestaw kaw smakowych i kubek z grawerem (za 45 zł)' },
+      { match: ['książki'], idea: 'Bestseller książkowy + zakładka magnetyczna (za 39 zł)' },
+      { match: ['muzyka'], idea: 'Płyta ulubionego artysty + słodka niespodzianka (za 55 zł)' },
+      { match: ['rower'], idea: 'Lampka na rower + bidon z motywem (za 35 zł)' }
+    ];
+
+    document.getElementById('giftForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const prefs = document.getElementById('preferences').value.toLowerCase();
+      const match = examples.find(ex => ex.match.some(word => prefs.includes(word)));
+      document.getElementById('ideaText').textContent = match ? match.idea : 'Voucher do Empiku lub kwiaty w ozdobnym pudełku (za 50 zł)';
+      document.getElementById('result').classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test logowania – HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    import { auth } from '../js/firebaseConfig.js';
+
+    window.onload = () => {
+      console.log('Firebase auth:', auth);
+      auth.onAuthStateChanged(user => {
+        console.log('User state:', user);
+      });
+
+      document.getElementById('login-test').addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+
+        try {
+          const user = await auth.signInWithEmailAndPassword(email, pass);
+          console.log('Zalogowano:', user);
+          alert('Zalogowano jako: ' + user.user.email);
+        } catch (err) {
+          console.error('Błąd logowania:', err.code, err.message);
+          alert('Błąd: ' + err.message);
+        }
+      });
+    }
+  </script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+  <div class="bg-white p-6 rounded shadow w-full max-w-sm">
+    <h1 class="text-2xl font-bold mb-4 text-center">🔐 Test logowania</h1>
+    <input id="email" type="email" placeholder="Email" class="w-full mb-2 px-3 py-2 border rounded" />
+    <input id="password" type="password" placeholder="Hasło" class="w-full mb-4 px-3 py-2 border rounded" />
+    <button id="login-test" class="w-full bg-blue-600 text-white py-2 rounded">Zaloguj się (test)</button>
+  </div>
+</body>
+</html>

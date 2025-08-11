@@ -1,0 +1,55 @@
+<!-- register.html (bez Analytics, poprawiona wersja) -->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rejestracja — HappyDate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <main class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Zarejestruj się w HappyDate</h1>
+    <form id="register-form" class="space-y-4">
+      <input type="text" id="name" placeholder="Imię i nazwisko" required class="w-full p-2 border rounded">
+      <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded">
+      <input type="password" id="password" placeholder="Hasło" required class="w-full p-2 border rounded">
+      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Zarejestruj się</button>
+    </form>
+    <p class="mt-4 text-center text-sm">Masz już konto? <a href="/pages/login.html" class="text-blue-600 underline">Zaloguj się</a></p>
+  </main>
+
+  <script type="module">
+    import { auth } from '../js/firebaseConfig.js';
+    import { getFriendlyErrorMessage } from '../js/errorMessages.js';
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await userCredential.user.updateProfile({ displayName: name });
+        showNotification("Rejestracja zakończona sukcesem ✅");
+       setTimeout(() => window.location.href = 'survey.html', 1200);
+
+      } catch (error) {
+        console.warn("Błąd rejestracji:", error.code);
+        showNotification(getFriendlyErrorMessage(error.code), true);
+      }
+    });
+
+    function showNotification(message, isError = false) {
+      const note = document.createElement('div');
+      note.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 ' +
+        (isError ? 'bg-red-500' : 'bg-green-500') +
+        ' text-white px-4 py-2 rounded shadow z-50';
+      note.textContent = message;
+      document.body.appendChild(note);
+      setTimeout(() => note.remove(), 2500);
+    }
+  </script>
+</body>
+</html>
