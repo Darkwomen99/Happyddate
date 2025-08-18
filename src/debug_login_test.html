@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test logowania – HappyDate (Supabase)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Завантажимо публічні env (Vercel function) ДО клієнта -->
+  <script>
+    window.env = {};
+    fetch('/api/env').then(r=>r.json()).then(e => window.env = e);
+  </script>
+
+  <style>
+    html,body{height:100%}
+    .log-line{white-space:pre-wrap}
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
+    <h1 class="text-2xl font-bold mb-1 text-center">🔐 Test logowania (Supabase)</h1>
+    <p class="text-sm text-gray-500 text-center mb-6">
+      Magic link + e-mail/hasło. Редірект повернення — на <code class="bg-gray-100 px-1 rounded">/index.html</code>.
+    </p>
+
+    <label class="block mb-2">
+      <span class="text-sm font-medium">Email</span>
+      <input id="email" type="email" placeholder="np. jan@kowalski.pl"
+             class="w-full mt-1 px-3 py-2 border rounded-lg" autocomplete="email" />
+    </label>
+
+    <label class="block mb-4">
+      <span class="text-sm font-medium">Hasło (dla trybu hasła)</span>
+      <input id="password" type="password" placeholder="min. 6 znaków"
+             class="w-full mt-1 px-3 py-2 border rounded-lg" autocomplete="current-password" />
+    </label>
+
+    <div class="grid grid-cols-2 gap-2 mb-4">
+      <button id="btn-magic"  class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg">Wyślij magic link</button>
+      <button id="btn-signin" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg">Zaloguj (hasło)</button>
+      <button id="btn-signup" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg">Rejestracja (hasło)</button>
+      <button id="btn-reset"  class="bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-lg">Reset hasła</button>
+    </div>
+
+    <div class="flex gap-2 mb-4">
+      <button id="btn-session" class="flex-1 border px-3 py-2 rounded-lg">Pokaż session()</button>
+      <button id="btn-logout"  class="flex-1 border px-3 py-2 rounded-lg">Wyloguj</button>
+    </div>
+
+    <div class="bg-gray-50 rounded-lg p-3 mb-3">
+      <div class="text-xs text-gray-500 mb-1">Aktualny użytkownik:</div>
+      <pre id="user-json" class="text-xs overflow-x-auto max-h-44"></pre>
+    </div>
+
+    <div class="bg-gray-50 rounded-lg p-3">
+      <div class="text-xs text-gray-500 mb-1">Log:</div>
+      <div id="log" class="space-y-1 text-sm max-h-48 overflow-auto"></div>
+    </div>
+
+    <p class="text-[11px] text-gray-500 mt-4">
+      Upewnij się, że w <em>Authentication → URL Configuration</em> masz dodane:
+      <code class="bg-gray-100 px-1 rounded">https://happydate.vercel.app</code> i
+      <code class="bg-gray-100 px-1 rounded">http://localhost:3000</code>.
+    </p>
+  </div>
+
+  <!-- Supabase client (ESM) -->
+  <script type="module">
+    import { supabase } from '/js/supabaseClient.js';
+
+    const $ = (sel) => document.querySelector(sel);
+    const emailEl = $('#email');
+    const passEl  = $('#password');
+    const userPre = $('#user-json');
+    const logBox  = $('#log');
+
+    const log = (msg, type='info') => {
+      const el = document.createElement('div');
+      el.className = `log-line ${type==='error'?'text-red-600':'text-gray-700'}`;
+      el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logBox.appendChild(el);
+      logBox.scrollTop = logBox.scrollHeight;
+      console[type==='error'?'error':'log'](msg);
+    };
+
+    const showSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) log(`getSession error: ${error.message}`, 'error');
+      userPre.textContent = JSON.stringify({
+        user: session?.user ?? null,
+        access_token: session?.access_token ? '(present)' : null,
+        expires_at: session?.expires_at ?? null
+      }, null, 2);
+    };
+
+    // Обробка повернення з magic link / OAuth (?code=...)
+    const handleCodeExchange = async () => {
+      const url = new URL(window.location.href);
+      const error_description = url.searchParams.get('error_description');
+      if (error_description) log(`Auth error: ${error_description}`, 'error');
+
+      const code = url.searchParams.get('code');
+      if (code) {
+        log('Znaleziono ?code=..., wymieniam na session...');
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) { log(`exchangeCodeForSession: ${error.message}`, 'error'); }
+        else { log('Sesja utworzona z kodu ✅'); }
+        // Приберемо code з URL
+        url.searchParams.delete('code');
+        history.replaceState({}, document.title, url.pathname);
+      }
+    };
+
+    // Слухач змін auth
+    supabase.auth.onAuthStateChange((_event, session) => {
+      log(`Auth event: ${_event}`);
+      showSession();
+    });
+
+    // Кнопки
+    $('#btn-magic')?.addEventListener('click', async () => {
+      const email = emailEl.value.trim();
+      if (!email) return alert('Podaj email');
+      log(`Wysyłam magic link na ${email}...`);
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${location.origin}/index.html` }
+      });
+      if (error) return log(`signInWithOtp error: ${error.message}`, 'error');
+      log('Sprawdź skrzynkę ✉️ (link ważny krótko).');
+    });
+
+    $('#btn-signup')?.addEventListener('click', async () => {
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+      if (!email || !password) return alert('Email i hasło wymagane');
+      log(`Rejestracja ${email}...`);
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { emailRedirectTo: `${location.origin}/index.html` }
+      });
+      if (error) return log(`signUp error: ${error.message}`, 'error');
+      log('Konto utworzone. Jeśli włączona weryfikacja e-mail — sprawdź pocztę ✉️.');
+    });
+
+    $('#btn-signin')?.addEventListener('click', async () => {
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+      if (!email || !password) return alert('Email i hasło wymagane');
+      log(`Logowanie ${email}...`);
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return log(`signInWithPassword error: ${error.message}`, 'error');
+      log('Zalogowano ✅');
+    });
+
+    $('#btn-reset')?.addEventListener('click', async () => {
+      const email = emailEl.value.trim();
+      if (!email) return alert('Podaj email');
+      log(`Reset hasła dla ${email}...`);
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${location.origin}/pages/login.html`
+      });
+      if (error) return log(`resetPasswordForEmail error: ${error.message}`, 'error');
+      log('Sprawdź skrzynkę ✉️ (link do resetu).');
+    });
+
+    $('#btn-session')?.addEventListener('click', showSession);
+
+    $('#btn-logout')?.addEventListener('click', async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) return log(`signOut error: ${error.message}`, 'error');
+      log('Wylogowano 👋');
+    });
+
+    // Старт
+    await handleCodeExchange();
+    await showSession();
+  </script>
+</body>
+</html>

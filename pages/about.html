@@ -2,352 +2,309 @@
 <html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>O nas – HappyDate, Twój prezentowy asystent</title>
-  <meta name="description" content="Poznaj HappyDate – naszą historię, wartości i zespół. Tworzymy wyjątkowe prezenty z AI, emocjami i indywidualnym podejściem. Dołącz do naszej społeczności!" />
+  <meta name="description" content="Poznaj HappyDate – naszą historię, wartości i zespół. Tworzymy wyjątkowe prezenty z AI, emocjami i indywidualnym podejściem." />
   <meta name="keywords" content="HappyDate, prezenty, o nas, AI, emocje, personalizacja, partnerstwo, zespół, wartości, prezentowy asystent" />
   <meta name="author" content="HappyDate" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://www.happydate.pl/pages/about.html" />
 
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph -->
   <meta property="og:title" content="O nas – HappyDate, Twój prezentowy asystent" />
   <meta property="og:description" content="Poznaj HappyDate – naszą misję, historię i wartości. Tworzymy niezapomniane chwile dla Ciebie i Twoich bliskich!" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.happydate.pl/pages/about.html" />
-  <meta property="og:image" content="https://www.happydate.pl/assets/img/social-banner.jpg" />
-  
+  <meta property="og:image" content="/assets/img/social-banner.jpg" />
+
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
 
-  <!-- Tailwind CSS -->
+  <!-- Tailwind & styles -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/assets/css/style.css" />
-  <!-- Animate on Scroll (AOS) -->
+  <style>
+    @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
+  </style>
+
+  <!-- AOS -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
   <!-- Structured Data -->
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "HappyDate",
-      "url": "https://www.happydate.pl/",
-      "logo": "https://www.happydate.pl/assets/img/logo.svg",
-      "contactPoint": [{
-        "@type": "ContactPoint",
-        "email": "kontakt@happydateservice.pl",
-        "contactType": "customer support",
-        "areaServed": "PL"
-      }]
-    }
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"HappyDate",
+    "url":"https://www.happydate.pl/",
+    "logo":"https://www.happydate.pl/assets/img/logo.svg",
+    "sameAs": ["https://www.facebook.com/", "https://www.instagram.com/"],
+    "contactPoint":[{
+      "@type":"ContactPoint",
+      "email":"kontakt@happydate.pl",
+      "contactType":"customer support",
+      "areaServed":"PL",
+      "availableLanguage":["pl","en","uk"]
+    }]
+  }
   </script>
 </head>
 
-<body class="overflow-x-hidden min-h-screen bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-200 flex flex-col">
+<body class="overflow-x-hidden min-h-screen flex flex-col">
 
 <!-- HEADER -->
-<header id="mainHeader"
-  class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-lg transition-shadow duration-300">
-  <div class="max-w-7xl mx-auto px-3 sm:px-8 flex justify-between items-center">
-    <!-- Logo & Slogan -->
-    <div class="flex items-center gap-2">
-      <a href="/pages/index.html" class="inline-flex items-center gap-2 group focus:outline-none" aria-label="HappyDate – prezentowy asystent">
-        <span class="text-2xl font-bold group-hover:underline text-white transition">🎁 HappyDate</span>
-      </a>
-      <span class="hidden md:inline ml-2 text-base italic text-white opacity-80 select-none">Twój ciepły asystent prezentowy</span>
-      <button
-        onclick="document.getElementById('audioModal')?.showModal()"
-        title="Posłuchaj nas"
-        class="ml-1 text-white text-2xl p-2 rounded hover:bg-white/10 focus:ring-2 focus:ring-cyan-300"
-        aria-label="Audio prezentacja"
-      >✨</button>
-    </div>
-    <!-- Lang + mobile menu -->
-    <div class="flex items-center gap-4">
-      <!-- Language Dropdown -->
-      <div class="relative" id="lang-dropdown-wrap">
-        <button id="langDropdownBtn"
-          class="flex items-center gap-2 px-3 py-2 rounded border border-white/30 bg-white/10 text-white hover:bg-white/20 focus:ring-2 focus:ring-blue-300"
-          aria-label="Zmień język"
-          aria-haspopup="listbox"
-          aria-controls="langDropdown"
-          aria-expanded="false"
-          type="button">
-          <span id="langFlag">🌐</span>
-          <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
-        <div id="langDropdown"
-          class="absolute right-0 mt-2 bg-white shadow-lg border border-blue-100 rounded-xl z-50 py-2 min-w-[150px] hidden text-left transition-all duration-200 scale-95 opacity-0 pointer-events-none origin-top-right"
-          role="menu" aria-labelledby="langDropdownBtn">
-          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="pl"><span>🇵🇱</span> Polski</button>
-          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ua"><span>🇺🇦</span> Українська</button>
-          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="en"><span>🇬🇧</span> English</button>
-          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ru"><span>🇷🇺</span> Русский</button>
-          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="de"><span>🇩🇪</span> Deutsch</button>
-        </div>
-      </div>
-      <!-- Mobile menu button -->
-      <button id="mobile-menu-toggle"
-        class="sm:hidden text-white text-3xl p-2 rounded hover:bg-white/10 focus:ring-2 focus:ring-cyan-300"
-        aria-label="Otwórz menu"
-        aria-controls="mobile-menu"
-        aria-expanded="false">☰</button>
-    </div>
-  </div>
-  <!-- Desktop navigation -->
-  <nav class="hidden sm:block mt-4 text-white" id="desktop-menu" aria-label="Menu główne" role="navigation">
-    <div class="flex flex-wrap gap-4 justify-center items-center">
-      <a href="/pages/index.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30 transition" data-i18n="header.home">Strona główna</a>
-      <a href="/pages/services.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30 transition" data-i18n="header.services">Usługi</a>
-      <a href="/pages/dashboard.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30 transition" data-i18n="header.dashboard">Moje wydarzenia</a>
-      <a href="/pages/partnerstwo.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30 transition" data-i18n="header.partner">Partnerstwo</a>
-      <a href="/pages/about.html" class="px-2 py-1 rounded-lg bg-white/30 text-cyan-900 font-semibold underline shadow transition" data-i18n="header.about">O nas</a>
-      <a href="/pages/reviews.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30 transition" data-i18n="header.reviews">Opinie</a>
-    </div>
-  </nav>
-  <!-- Мобільне меню — залиш як у тебе, але винеси з header якщо треба, щоб не перекривало інші секції -->
-</header>
- <script>
-  // Mobile menu toggle
-  document.getElementById('mobile-menu-toggle').addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-    // Animate slide-in for mobile menu
-    if (!menu.classList.contains('hidden')) {
-      menu.classList.remove('-translate-x-full');
-      menu.classList.add('translate-x-0');
-    } else {
-      menu.classList.add('-translate-x-full');
-      menu.classList.remove('translate-x-0');
-    }
-  });
-  // Close mobile menu
-  document.getElementById('close-mobile-menu').addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.add('hidden');
-    menu.classList.add('-translate-x-full');
-    menu.classList.remove('translate-x-0');
-  });
-</script>
-
-<!-- END HEADER -->
-
-<!-- HERO "O NAS" + SEO -->
-
-<section class="relative py-20 px-2 md:px-0 bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-200">
-  <div class="max-w-5xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-100 px-8 py-14 flex flex-col md:flex-row items-center gap-12">
-    <!-- LEFT: TEXT -->
-    <div class="flex-1 flex flex-col gap-5">
-      <h1 class="text-5xl font-extrabold text-gray-900 mb-2 drop-shadow-sm leading-tight">
-        <span class="inline-block align-middle mr-2 text-4xl">🎁</span>
-        <span class="bg-gradient-to-r from-cyan-700 via-blue-600 to-pink-600 bg-clip-text text-transparent">O nas – HappyDate</span>
-        <br>
-        <span class="text-gray-800 font-semibold text-3xl">Twój prezentowy asystent</span>
-      </h1>
-      <p class="text-xl text-gray-700 font-medium">
-        HappyDate łączy <span class="text-cyan-700 font-bold">technologię</span> i <span class="text-pink-600 font-bold">emocje</span>, byś nigdy nie zapomniał o ważnych chwilach bliskich. <br>
-        Wierzymy, że prezent to nie tylko rzecz – to <b>uśmiech</b>, <b>wzruszenie</b> i niezapomniane wspomnienia.
-      </p>
-      <p class="text-base text-gray-700">
-        Naszą misją jest uprościć wybieranie prezentów i sprawić, by każde wydarzenie – od urodzin po rocznice – było wyjątkowe.<br>
-        Łączymy <span class="text-cyan-700 font-semibold">AI</span> i <span class="text-pink-600 font-semibold">ludzkie serce</span>, by trafiać w marzenia i potrzeby każdego obdarowywanego.
-      </p>
-      <div class="mt-2">
-        <a href="/pages/dashboard.html"
-          class="inline-block bg-gradient-to-r from-blue-500 via-cyan-500 to-indigo-500 hover:scale-105 shadow-lg text-white px-10 py-4 rounded-full font-bold text-xl transition-all duration-300 border-4 border-white/30"
-          data-i18n="about.cta">
-          Zacznij teraz
+<header id="mainHeader" class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-lg">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6">
+    <div class="flex justify-between items-center">
+      <!-- Logo & slogan -->
+      <div class="flex items-center gap-2">
+        <a href="/index.html" class="inline-flex items-center gap-2 group focus:outline-none" aria-label="HappyDate – prezentowy asystent">
+          <span class="text-2xl font-bold text-white group-hover:underline">🎁 HappyDate</span>
         </a>
+        <span class="hidden md:inline text-base italic text-white/90 select-none">Twój ciepły asystent prezentowy</span>
+        <button id="audioBtn" title="Posłuchaj nas" class="ml-1 text-white text-2xl p-2 rounded hover:bg-white/10 focus:ring-2 focus:ring-cyan-300" aria-label="Audio prezentacja" aria-controls="audioModal" type="button">✨</button>
+      </div>
+
+      <!-- Right: lang + mobile -->
+      <div class="flex items-center gap-4">
+        <!-- Language dropdown -->
+        <div class="relative" id="lang-dropdown-wrap">
+          <button id="langDropdownBtn" class="flex items-center gap-2 px-3 py-2 rounded border border-white/30 bg-white/10 text-white hover:bg-white/20 focus:ring-2 focus:ring-blue-300" aria-label="Zmień język" aria-haspopup="menu" aria-controls="langDropdown" aria-expanded="false" type="button">
+            <span id="langFlag">🌐</span>
+            <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="langDropdown" class="absolute right-0 mt-2 bg-white shadow-lg border border-blue-100 rounded-xl z-50 py-2 min-w-[150px] hidden text-left transition-all duration-200 scale-95 opacity-0 pointer-events-none origin-top-right" role="menu" aria-labelledby="langDropdownBtn">
+            <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="pl">🇵🇱 Polski</button>
+            <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="ua">🇺🇦 Українська</button>
+            <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="en">🇬🇧 English</button>
+            <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="ru">🇷🇺 Русский</button>
+            <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="de">🇩🇪 Deutsch</button>
+          </div>
+        </div>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-toggle" class="sm:hidden text-white text-3xl p-2 rounded hover:bg-white/10 focus:ring-2 focus:ring-cyan-300" aria-label="Otwórz menu" aria-controls="mobile-menu" aria-expanded="false" type="button">☰</button>
       </div>
     </div>
-    <!-- RIGHT: HISTORY & VALUES -->
-    <div class="flex-1 flex flex-col gap-6 w-full max-w-md">
-      <div class="bg-blue-50/80 rounded-2xl p-6 shadow flex flex-col gap-2">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="text-lg">📖</span>
-          <h2 class="text-lg font-bold text-cyan-800">Nasza historia</h2>
-        </div>
-        <p class="text-gray-700 text-base">
-          Pomysł na HappyDate zrodził się z codziennych potrzeb: jak często zapominamy o ważnych datach lub nie wiemy, co sprawi radość bliskim? Od 2024 roku pomagamy tysiącom osób przeżywać te chwile łatwiej i piękniej — z technologią, ale i sercem.
-        </p>
+
+    <!-- Desktop nav -->
+    <nav id="desktop-menu" class="hidden sm:flex justify-center gap-4 mt-4 text-white" aria-label="Menu główne">
+      <a href="/index.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30">Strona główna</a>
+      <a href="/pages/services.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30">Usługi</a>
+      <a href="/pages/dashboard.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30">Moje wydarzenia</a>
+      <a href="/pages/partnerstwo.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30">Partnerstwo</a>
+      <a href="/pages/about.html" class="px-2 py-1 rounded-lg bg-white/30 text-cyan-900 font-semibold underline shadow">O nas</a>
+      <a href="/pages/reviews.html" class="px-2 py-1 rounded-lg hover:bg-white/20 focus:bg-white/30">Opinie</a>
+    </nav>
+
+    <!-- Mobile nav -->
+    <div id="mobile-menu" class="sm:hidden hidden mt-3 text-white space-y-2" aria-label="Menu mobilne">
+      <div class="grid grid-cols-2 gap-2">
+        <a href="/index.html" class="px-2 py-1 rounded hover:bg-white/10">Strona główna</a>
+        <a href="/pages/services.html" class="px-2 py-1 rounded hover:bg-white/10">Usługi</a>
+        <a href="/pages/dashboard.html" class="px-2 py-1 rounded hover:bg-white/10">Moje wydarzenia</a>
+        <a href="/pages/partnerstwo.html" class="px-2 py-1 rounded hover:bg-white/10">Partnerstwo</a>
+        <a href="/pages/about.html" class="px-2 py-1 rounded bg-white/20 underline">O nas</a>
+        <a href="/pages/reviews.html" class="px-2 py-1 rounded hover:bg-white/10">Opinie</a>
       </div>
-      <div class="flex flex-wrap gap-2">
-        <span class="bg-blue-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🤗 Zaufanie</span>
-        <span class="bg-yellow-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">💡 Technologia dla ludzi</span>
-        <span class="bg-pink-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🎉 Emocje</span>
-        <span class="bg-green-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🤝 Współpraca</span>
-        <span class="bg-indigo-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🌍 Odpowiedzialność</span>
+      <div class="flex gap-2 pt-2" aria-label="Zmiana języka">
+        <button class="lang-btn px-2 py-1 rounded border" data-lang="pl">🇵🇱</button>
+        <button class="lang-btn px-2 py-1 rounded border" data-lang="ua">🇺🇦</button>
+        <button class="lang-btn px-2 py-1 rounded border" data-lang="en">🇬🇧</button>
+        <button class="lang-btn px-2 py-1 rounded border" data-lang="ru">🇷🇺</button>
+        <button class="lang-btn px-2 py-1 rounded border" data-lang="de">🇩🇪</button>
       </div>
     </div>
   </div>
-</section>
+</header>
+<!-- /HEADER -->
 
+<!-- AUDIO MODAL -->
+<dialog id="audioModal" class="rounded-2xl shadow-lg p-0 w-full max-w-md">
+  <form method="dialog" class="p-6 bg-white dark:bg-gray-800 flex flex-col gap-4">
+    <h3 class="text-lg font-bold">Krótka zapowiedź</h3>
+    <p class="text-sm text-gray-600 dark:text-gray-300">Ciepło, emocje i prezenty — odkryj HappyDate w 30 sekund 💛</p>
+    <audio controls class="w-full">
+      <source src="/assets/audio/intro.mp3" type="audio/mpeg" />
+      Twoja przeglądarka nie wspiera audio.
+    </audio>
+    <div class="flex justify-end"><button class="px-4 py-2 rounded-lg border">Zamknij</button></div>
+  </form>
+</dialog>
+
+<main id="content">
+
+  <!-- HERO -->
+  <section class="relative py-20 px-2 md:px-0 bg-gradient-to-br from-pink-100 via-yellow-100 to-blue-200">
+    <div class="max-w-5xl mx-auto bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-100 px-8 py-14 flex flex-col md:flex-row items-center gap-12" data-aos="fade-up">
+      <!-- TEXT -->
+      <div class="flex-1 flex flex-col gap-5">
+        <h1 class="text-5xl font-extrabold text-gray-900 mb-2 leading-tight">
+          <span class="inline-block align-middle mr-2 text-4xl">🎁</span>
+          <span class="bg-gradient-to-r from-cyan-700 via-blue-600 to-pink-600 bg-clip-text text-transparent">O nas – HappyDate</span><br>
+          <span class="text-gray-800 font-semibold text-3xl">Twój prezentowy asystent</span>
+        </h1>
+        <p class="text-xl text-gray-700 font-medium">
+          HappyDate łączy <span class="text-cyan-700 font-bold">technologię</span> i <span class="text-pink-600 font-bold">emocje</span>, byś nigdy nie zapomniał o ważnych chwilach bliskich.
+          Wierzymy, że prezent to nie tylko rzecz – to <b>uśmiech</b>, <b>wzruszenie</b> i wspomnienia.
+        </p>
+        <p class="text-base text-gray-700">
+          Naszą misją jest uprościć wybieranie prezentów i sprawić, by każde wydarzenie – od urodzin po rocznice – było wyjątkowe.
+          Łączymy <span class="text-cyan-700 font-semibold">AI</span> i <span class="text-pink-600 font-semibold">ludzkie serce</span>, by trafiać w marzenia i potrzeby każdego obdarowywanego.
+        </p>
+        <div class="mt-2">
+          <a href="/pages/dashboard.html" class="inline-block bg-gradient-to-r from-blue-500 via-cyan-500 to-indigo-500 hover:scale-105 shadow-lg text-white px-10 py-4 rounded-full font-bold text-xl transition-all duration-300 border-4 border-white/30">
+            Zacznij teraz
+          </a>
+        </div>
+      </div>
+      <!-- VALUES -->
+      <div class="flex-1 flex flex-col gap-6 w-full max-w-md">
+        <div class="bg-blue-50/80 rounded-2xl p-6 shadow flex flex-col gap-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-lg">📖</span>
+            <h2 class="text-lg font-bold text-cyan-800">Nasza historia</h2>
+          </div>
+          <p class="text-gray-700 text-base">
+            Pomysł narodził się z codziennych potrzeb: jak często zapominamy o ważnych datach albo nie wiemy, co sprawi radość bliskim?
+            Od 2024 roku pomagamy przeżywać te chwile łatwiej i piękniej — z technologią, ale i sercem.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <span class="bg-blue-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🤗 Zaufanie</span>
+          <span class="bg-yellow-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">💡 Technologia dla ludzi</span>
+          <span class="bg-pink-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🎉 Emocje</span>
+          <span class="bg-green-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🤝 Współpraca</span>
+          <span class="bg-indigo-100 rounded-xl px-3 py-1 text-base flex items-center gap-1">🌍 Odpowiedzialność</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dekor -->
+    <div class="absolute animate-pulse text-pink-400 text-2xl sm:text-3xl top-6 left-6 pointer-events-none select-none" aria-hidden="true">💖</div>
+    <div class="absolute animate-ping text-yellow-400 text-xl sm:text-2xl top-28 right-10 pointer-events-none select-none" aria-hidden="true">✨</div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="max-w-4xl mx-auto py-12 px-4" data-aos="fade-up">
+    <div class="backdrop-blur-lg bg-white/60 border border-white/60 shadow-xl rounded-3xl p-8">
+      <h2 class="text-2xl md:text-3xl font-semibold mb-8 text-center">Poznaj nasz zespół</h2>
+      <div class="flex flex-wrap justify-center gap-8">
+        <article class="bg-white/80 border border-blue-100 rounded-2xl shadow-sm p-6 w-60 text-center" aria-label="Founder & CEO">
+          <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-200 via-cyan-200 to-yellow-200 mx-auto mb-3 flex items-center justify-center text-3xl" aria-hidden="true">👩‍💻</div>
+          <h3 class="font-bold text-lg">Maria Bilohlazova</h3>
+          <p class="text-sm text-gray-600 mb-1">Founder & CEO</p>
+          <p class="text-xs text-gray-400">Wizja, rozwój, serce projektu</p>
+        </article>
+        <article class="bg-white/80 border border-blue-100 rounded-2xl shadow-sm p-6 w-60 text-center" aria-label="Asystent AI">
+          <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-200 via-indigo-200 to-green-100 mx-auto mb-3 flex items-center justify-center text-3xl" aria-hidden="true">🤖</div>
+          <h3 class="font-bold text-lg">AI Team</h3>
+          <p class="text-sm text-gray-600 mb-1">Asystent AI</p>
+          <p class="text-xs text-gray-400">Wsparcie, pomysły, inspiracja</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNER FAQ -->
+  <section class="max-w-4xl mx-auto py-12 px-4" data-aos="fade-up">
+    <div class="backdrop-blur-lg bg-white/70 border border-cyan-100 shadow-xl rounded-3xl p-8">
+      <div class="border-t-4 border-cyan-400 pt-4">
+        <h2 class="text-2xl md:text-3xl font-semibold mb-4 flex items-center gap-2">
+          <span class="text-lg">🤝</span> Warunki współpracy z HappyDate
+        </h2>
+        <p class="mb-4 text-gray-800 dark:text-gray-200">
+          Szukasz nowych klientów i rozwoju? Zapraszamy do współpracy sklepy z prezentami, florystów, rękodzielników, animatorów, firmy kurierskie i wszystkich, którzy razem z nami chcą budować pozytywne emocje.
+        </p>
+        <ul class="list-disc list-inside space-y-2 mb-5 text-gray-900 dark:text-gray-200">
+          <li><strong>Kto do nas pasuje:</strong> sklepy, kwiaciarnie, cukiernie, animatorzy, twórcy handmade, dostawcy dekoracji i logistyki.</li>
+          <li><strong>Oferujemy:</strong> nowych klientów, panel zamówień, elastyczne zasady, branding, wsparcie AI, opiekuna.</li>
+          <li><strong>Wymagania:</strong> terminowość, jakość, poufność, przejrzyste zasady współpracy.</li>
+          <li><strong>Jak zacząć?</strong> Wypełnij <a href="/pages/partnerstwo.html" class="underline text-cyan-700 hover:text-cyan-400">formularz partnera</a>, podpisz umowę i dodaj swoje produkty.</li>
+        </ul>
+        <div class="mt-6 bg-blue-50/70 border border-blue-100 rounded-xl p-5">
+          <h3 class="font-semibold text-lg mb-2">Najczęstsze pytania</h3>
+          <ul class="list-disc list-inside text-gray-800 dark:text-gray-200 text-base space-y-1">
+            <li><b>Czy trzeba mieć własny sklep?</b> — Nie, możesz działać jako freelancer lub twórca.</li>
+            <li><b>Kiedy pojawią się zamówienia?</b> — Zwykle w ciągu kilku dni od aktywacji profilu.</li>
+            <li><b>Jak rozliczenia?</b> — Proste zasady i szybkie płatności — szczegóły w umowie.</li>
+            <li><b>Kontakt:</b> 📩 <a href="mailto:partners@happydate.pl" class="text-blue-600 underline hover:text-cyan-400">partners@happydate.pl</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 
 </main>
 
-
-<!-- TEAM BLOCK -->
-<section class="max-w-4xl mx-auto py-12 px-4" data-aos="fade-up">
-  <div class="backdrop-blur-lg bg-white/60 border border-white/60 shadow-xl rounded-3xl p-8">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-8 text-center">Poznaj nasz zespół</h2>
-    <div class="flex flex-wrap justify-center gap-8">
-      <div class="bg-white/80 border border-blue-100 rounded-2xl shadow-sm p-6 w-60 text-center">
-        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-pink-200 via-cyan-200 to-yellow-200 mx-auto mb-3 flex items-center justify-center text-3xl">👩‍💻</div>
-        <div class="font-bold text-lg">Maria Bilohlazova</div>
-        <div class="text-sm text-gray-600 mb-1">Founder & CEO</div>
-        <div class="text-xs text-gray-400">Wizja, rozwój, serce projektu</div>
-      </div>
-      <div class="bg-white/80 border border-blue-100 rounded-2xl shadow-sm p-6 w-60 text-center">
-        <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-200 via-indigo-200 to-green-100 mx-auto mb-3 flex items-center justify-center text-3xl">🤖</div>
-        <div class="font-bold text-lg">AI Team</div>
-        <div class="text-sm text-gray-600 mb-1">Asystent AI</div>
-        <div class="text-xs text-gray-400">Wsparcie, pomysły, inspiracja</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="max-w-4xl mx-auto py-10 px-4" data-aos="fade-up">
-  <div class="backdrop-blur-lg bg-white/60 border border-white/60 shadow-xl rounded-3xl p-8">
-    <h2 class="text-2xl md:text-3xl font-semibold mb-7 text-center flex items-center justify-center gap-2">
-      <span class="text-xl">💬</span> Opinie naszych klientów
-    </h2>
-    <div class="flex flex-col gap-5 text-center">
-      <blockquote class="bg-blue-50/80 border border-blue-100 rounded-xl px-6 py-5 shadow-md text-lg transition hover:shadow-xl hover:-translate-y-1 duration-200 before:content-['“'] before:text-3xl before:opacity-60 after:content-['”'] after:text-3xl after:opacity-60 relative">
-        HappyDate uratowało moje urodziny! – <span class="font-semibold">Ania, Poznań</span>
-      </blockquote>
-      <blockquote class="bg-pink-50/80 border border-pink-100 rounded-xl px-6 py-5 shadow-md text-lg transition hover:shadow-xl hover:-translate-y-1 duration-200 before:content-['“'] before:text-3xl before:opacity-60 after:content-['”'] after:text-3xl after:opacity-60 relative">
-        Dostałem najlepszy prezent, jaki mogłem sobie wymarzyć. – <span class="font-semibold">Bartek, Warszawa</span>
-      </blockquote>
-    </div>
-  </div>
-</section>
-
-
-<!-- PARTNER BLOCK (faq) -->
-<section class="max-w-4xl mx-auto py-12 px-4" data-aos="fade-up">
-  <div class="backdrop-blur-lg bg-white/70 border border-cyan-100 shadow-xl rounded-3xl p-8">
-    <div class="border-t-4 border-cyan-400 pt-4">
-      <h2 class="text-2xl md:text-3xl font-semibold mb-4 flex items-center gap-2">
-        <span class="text-lg">🤝</span> Warunki współpracy z HappyDate
-      </h2>
-      <p class="mb-4 text-gray-800 dark:text-gray-200">
-        Szukasz nowych klientów i rozwoju? Zapraszamy do współpracy sklepy z prezentami, florystów, rękodzielników, animatorów, firmy kurierskie oraz wszystkich, którzy razem z nami chcą budować pozytywne emocje.
-      </p>
-      <ul class="list-disc list-inside space-y-2 mb-5 text-gray-900 dark:text-gray-200">
-        <li><strong>Kto nam odpowiada:</strong> sklepy, kwiaciarnie, cukiernie, animatorzy, kurierzy, twórcy handmade, dostawcy dekoracji.</li>
-        <li><strong>Oferujemy:</strong> nowych klientów, system zamówień, elastyczne zasady, branding, wsparcie AI, indywidualnego opiekuna.</li>
-        <li><strong>Wymagania:</strong> terminowość, jakość, poufność, przejrzyste zasady współpracy.</li>
-        <li><strong>Jak zacząć?</strong> Wypełnij <a href="/pages/partnerstwo.html" class="underline text-cyan-700 hover:text-cyan-400">formularz partnera</a>, podpisz umowę, dodaj swoje produkty i zacznij otrzymywać zamówienia!</li>
-      </ul>
-      <div class="mt-6 bg-blue-50/70 border border-blue-100 rounded-xl p-5">
-        <h3 class="font-semibold text-lg mb-2">Masz pytania? Odpowiadamy:</h3>
-        <ul class="list-disc list-inside text-gray-800 dark:text-gray-200 text-base space-y-1">
-          <li><b>Czy trzeba mieć własny sklep?</b> — Nie, możesz działać jako freelancer lub twórca.</li>
-          <li><b>Jak szybko zaczynam otrzymywać zamówienia?</b> — Zwykle w ciągu kilku dni od aktywacji profilu.</li>
-          <li><b>Jak się rozliczamy?</b> — Jasne zasady, szybkie płatności, szczegóły w umowie.</li>
-          <li><b>Jak się skontaktować?</b> — 📩 <a href="mailto:partners@happydateservice.pl" class="text-blue-600 underline hover:text-cyan-400 transition" target="_blank" rel="noopener noreferrer">partners@happydateservice.pl</a> lub przez <a href="/pages/partnerstwo.html" class="underline hover:text-cyan-400 transition">formularz Partnerstwo</a>.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-
 <!-- FOOTER -->
 <footer class="bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-500 text-white py-7 w-full mt-16 shadow-inner" aria-label="Stopka HappyDate">
-  <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base" data-i18n="footer.text">
+  <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base">
     &copy; 2025 HappyDate. <span class="font-semibold">Z miłością tworzymy niezapomniane chwile.</span><br>
     <span class="text-xs opacity-80">
       Projekt & UX: HappyDate Team |
-      <a href="/privacy.html" class="underline hover:text-yellow-200 transition-colors">Polityka prywatności</a>
+      <a href="/pages/privacy.html" class="underline hover:text-yellow-200 transition-colors">Polityka prywatności</a>
     </span>
   </div>
 </footer>
 
-<!-- MULTILANG, AOS, COOKIES SCRIPTS -->
-<script src="https://unpkg.com/i18next@21.6.14/i18next.min.js"></script>
-<script src="https://unpkg.com/i18next-http-backend@1.4.1/i18nextHttpBackend.min.js"></script>
+<!-- SCRIPTS -->
 <script>
-const langBtn = document.getElementById('langDropdownBtn');
-const langDropdown = document.getElementById('langDropdown');
-const langFlag = document.getElementById('langFlag');
-const langMap = { pl: "🇵🇱", ua: "🇺🇦", en: "🇬🇧", ru: "🇷🇺", de: "🇩🇪" };
+  // AOS
+  AOS.init({ duration: 700, once: true, offset: 60 });
 
-function updateLangFlag() {
-  const lang = localStorage.getItem("lang") || (navigator.language?.slice(0, 2) ?? "pl");
-  langFlag.textContent = langMap[lang] || "🌐";
-}
-updateLangFlag();
+  // Audio modal
+  const audioBtn = document.getElementById('audioBtn');
+  audioBtn?.addEventListener('click', () => document.getElementById('audioModal')?.showModal());
 
-// Dropdown accessibility & logic
-langBtn.addEventListener('click', e => {
-  langDropdown.classList.toggle('hidden');
-  langDropdown.classList.toggle('scale-100');
-  langDropdown.classList.toggle('opacity-100');
-  langDropdown.classList.toggle('scale-95');
-  langDropdown.classList.toggle('opacity-0');
-  langDropdown.classList.toggle('pointer-events-none');
-  langBtn.setAttribute('aria-expanded', langDropdown.classList.contains('hidden') ? "false" : "true");
-  langBtn.querySelector('svg').classList.toggle('rotate-180');
-  e.stopPropagation();
-});
-document.addEventListener('click', () => {
-  if (!langDropdown.classList.contains('hidden')) {
-    langDropdown.classList.add('hidden', 'scale-95', 'opacity-0', 'pointer-events-none');
-    langDropdown.classList.remove('scale-100', 'opacity-100');
-    langBtn.setAttribute('aria-expanded', "false");
-    langBtn.querySelector('svg').classList.remove('rotate-180');
-  }
-});
-langDropdown.querySelectorAll('button').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const lang = this.getAttribute('data-lang');
-    localStorage.setItem('lang', lang);
-    updateLangFlag();
-    location.reload();
+  // Mobile menu
+  const mobileBtn = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  mobileBtn?.addEventListener('click', () => {
+    const hidden = mobileMenu.classList.toggle('hidden');
+    mobileBtn.setAttribute('aria-expanded', String(!hidden));
+    if (!hidden) { mobileMenu.classList.remove('-translate-x-full'); mobileMenu.classList.add('translate-x-0'); }
+    else { mobileMenu.classList.add('-translate-x-full'); mobileMenu.classList.remove('translate-x-0'); }
   });
-});
-</script>
 
-<!-- Головний JS (опційно для авторизації/анім) -->
-<script src="/js/main.js" defer></script>
-<script>
-  AOS.init({
-    duration: 700,
-    once: true,
-    offset: 60
-  });
+  // Lang dropdown
+  const langBtn = document.getElementById('langDropdownBtn');
+  const langDropdown = document.getElementById('langDropdown');
+  const langWrap = document.getElementById('lang-dropdown-wrap');
+  const langFlag = document.getElementById('langFlag');
+  const langMap = { pl:'🇵🇱', ua:'🇺🇦', en:'🇬🇧', ru:'🇷🇺', de:'🇩🇪' };
+  const curLang = () => localStorage.getItem('lang') || (navigator.language?.slice(0,2) ?? 'pl');
+  const updateFlag = () => langFlag && (langFlag.textContent = langMap[curLang()] || '🌐');
+  updateFlag();
+  function openLang(){ langDropdown.classList.remove('hidden','scale-95','opacity-0','pointer-events-none'); langDropdown.classList.add('scale-100','opacity-100'); langBtn.setAttribute('aria-expanded','true'); langBtn.querySelector('svg')?.classList.add('rotate-180'); }
+  function closeLang(){ langDropdown.classList.add('hidden','scale-95','opacity-0','pointer-events-none'); langDropdown.classList.remove('scale-100','opacity-100'); langBtn.setAttribute('aria-expanded','false'); langBtn.querySelector('svg')?.classList.remove('rotate-180'); }
+  langBtn?.addEventListener('click', e => { e.stopPropagation(); langDropdown.classList.contains('hidden') ? openLang() : closeLang(); });
+  document.addEventListener('click', e => { if (!langWrap?.contains(e.target)) closeLang(); });
+  langDropdown?.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { localStorage.setItem('lang', b.dataset.lang); updateFlag(); location.reload(); }));
+  document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => { localStorage.setItem('lang', b.dataset.lang); updateFlag(); location.reload(); }));
+
+  // Cookies
+  const cookieConsent = document.getElementById('cookieConsent');
+  const acceptBtn = document.getElementById('acceptCookies');
+  if (!localStorage.getItem('happydate_cookie_consent')) cookieConsent.classList.remove('hidden');
+  acceptBtn?.addEventListener('click', () => { localStorage.setItem('happydate_cookie_consent', 'true'); cookieConsent.classList.add('hidden'); });
 </script>
 
 <!-- Cookies popup -->
-<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-900 bg-opacity-80 text-white py-4 px-6 z-50 hidden rounded-t-2xl shadow-2xl backdrop-blur-lg" role="dialog" aria-modal="true" aria-label="Informacja o plikach cookies">
+<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-900/90 text-white py-4 px-6 z-50 hidden rounded-t-2xl shadow-2xl backdrop-blur-lg" role="dialog" aria-modal="true" aria-label="Informacja o plikach cookies">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <p class="text-sm md:text-base" data-i18n="cookies.text">
+    <p class="text-sm md:text-base">
       Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą
-      <a href="/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
+      <a href="/pages/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
     </p>
     <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition focus:ring-2 focus:ring-blue-400" aria-label="Akceptuję cookies">
-      <span data-i18n="cookies.accept">Akceptuję</span>
+      Akceptuję
     </button>
   </div>
 </div>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const cookieConsent = document.getElementById('cookieConsent');
-  const acceptBtn = document.getElementById('acceptCookies');
-  if (!localStorage.getItem('happydate_cookie_consent')) {
-    cookieConsent.classList.remove('hidden');
-  }
-  acceptBtn.addEventListener('click', () => {
-    localStorage.setItem('happydate_cookie_consent', 'true');
-    cookieConsent.classList.add('hidden');
-  });
-});
-</script>
+
+</body>
+</html>

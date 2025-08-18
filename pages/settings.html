@@ -1,99 +1,167 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Ustawienia — HappyDate</title>
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <!-- Supabase JS v2 (UMD) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    @media (prefers-reduced-motion: reduce) { .animate-pulse{animation:none!important} }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen py-10">
-  <main class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow">
-    <h1 class="text-2xl font-bold mb-6">Ustawienia konta</h1>
-    <form id="settings-form" class="space-y-4">
-      <input type="text" id="displayName" placeholder="Imię i nazwisko" class="w-full p-2 border rounded">
-      <input type="url" id="photoURL" placeholder="Link do zdjęcia profilowego (opcjonalnie)" class="w-full p-2 border rounded">
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Zapisz zmiany</button>
-    </form>
-    <p class="mt-4 text-sm text-gray-500">Zmiany zostaną zastosowane natychmiast i będą widoczne w panelu użytkownika.</p>
+<body class="bg-gray-100 min-h-screen">
+  <!-- Header (lekki) -->
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 sticky top-0 z-40 shadow">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
+      <a href="/index.html" class="text-white font-bold text-xl">🎁 HappyDate</a>
+      <nav class="hidden sm:flex gap-5 text-white/95 text-sm">
+        <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
+        <a href="/pages/profile.html" class="hover:underline">Profil</a>
+        <span class="underline font-semibold">Ustawienia</span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-white font-semibold shadow-xl transition-all duration-300 opacity-0 pointer-events-none"></div>
+
+  <main class="max-w-xl mx-auto px-4 py-10">
+    <section class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-t-4 border-pink-300 dark:border-cyan-400">
+      <div class="flex items-center gap-4 mb-6">
+        <img id="avatarPreview" alt="Avatar" class="w-16 h-16 rounded-full object-cover ring-4 ring-blue-100 dark:ring-gray-700 bg-white"
+             src="https://api.dicebear.com/8.x/fun-emoji/svg?seed=gift">
+        <div>
+          <h1 class="text-2xl font-bold">Ustawienia konta</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400" id="userEmail">—</p>
+        </div>
+        <button id="logoutBtn" type="button"
+                class="ml-auto px-3 py-2 rounded-lg bg-red-600 text-white text-sm hover:bg-red-700">
+          Wyloguj się
+        </button>
+      </div>
+
+      <form id="settings-form" class="space-y-4">
+        <label class="block">
+          <span class="block text-sm font-medium mb-1">Imię i nazwisko</span>
+          <input type="text" id="displayName" class="w-full p-2.5 border rounded-lg dark:bg-gray-700"
+                 placeholder="np. Jan Kowalski" autocomplete="name">
+        </label>
+
+        <label class="block">
+          <span class="block text-sm font-medium mb-1">Link do zdjęcia profilowego (opcjonalnie)</span>
+          <input type="url" id="photoURL" class="w-full p-2.5 border rounded-lg dark:bg-gray-700"
+                 placeholder="https://.../avatar.jpg" inputmode="url">
+          <p class="text-xs text-gray-500 mt-1">Podaj pełny URL. Podgląd zaktualizuje się automatycznie.</p>
+        </label>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold">
+          Zapisz zmiany
+        </button>
+      </form>
+
+      <p class="mt-4 text-sm text-gray-500">
+        Zmiany zapisujemy w <code>user_metadata</code> Twojego konta Supabase i będą widoczne w panelu oraz innych stronach.
+      </p>
+    </section>
   </main>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCJmddWXQKRGw1nnQ6Evje4qMqHcddSulY",
-      authDomain: "happydate-4e42f.firebaseapp.com",
-      projectId: "happydate-4e42f",
-      storageBucket: "happydate-4e42f.firebaseapp.com",
-      messagingSenderId: "169631163082",
-      appId: "1:169631163082:web:b4295c7840898da42aca33"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+  <footer class="bg-blue-500 text-white text-center py-4 mt-12">
+    &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.
+  </footer>
 
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        window.location.href = 'login.html';
-      } else {
-        document.getElementById('displayName').value = user.displayName || '';
-        document.getElementById('photoURL').value = user.photoURL || '';
-      }
-    });
-
-    document.getElementById('settings-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const displayName = document.getElementById('displayName').value;
-      const photoURL = document.getElementById('photoURL').value;
-      const user = auth.currentUser;
-
-      try {
-        await user.updateProfile({ displayName, photoURL });
-        showNotification("Zapisano zmiany ✅");
-      } catch (error) {
-        showNotification(error.message, true);
-      }
-    });
-
-    function showNotification(message, isError = false) {
-      const note = document.createElement('div');
-      note.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 ' +
-        (isError ? 'bg-red-500' : 'bg-green-500') +
-        ' text-white px-4 py-2 rounded shadow z-50';
-      note.textContent = message;
-      document.body.appendChild(note);
-      setTimeout(() => note.remove(), 2500);
-    }
-  </script>
-
-  <!-- GDPR Cookies Consent Popup -->
-<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden">
-  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <p class="text-sm md:text-base">
-      This website uses cookies to enhance your browsing experience. By continuing to use this site, you agree to our 
-      <a href="privacy.html" class="underline hover:text-blue-300">Privacy Policy</a>.
-    </p>
-    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
-      Accept
-    </button>
+  <!-- Cookies (PL) -->
+  <div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-95 text-white py-4 px-6 z-50 hidden" role="dialog" aria-modal="true" aria-label="Informacja o plikach cookies">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm md:text-base">
+        Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą
+        <a href="/pages/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
+      </p>
+      <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
+        Akceptuję
+      </button>
+    </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const cookieConsent = document.getElementById('cookieConsent');
-    const acceptBtn = document.getElementById('acceptCookies');
+  <script>
+    // ==== Supabase init ====
+    (function ensureConfig() {
+      if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
+        console.warn('Brak SUPABASE_URL / SUPABASE_ANON_KEY. Zainicjuj je globalnie przed tą stroną.');
+      }
+    })();
+    const { createClient } = window.supabase;
+    const sb = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
-    if (!localStorage.getItem('happydate_cookie_consent')) {
-      cookieConsent.classList.remove('hidden');
+    // ==== Helpers ====
+    const $ = (s, r=document)=>r.querySelector(s);
+    const toastEl = $('#toast');
+    function toast(msg, type='ok'){
+      const palette = { ok:'bg-green-600', error:'bg-red-600', info:'bg-gray-900' };
+      toastEl.textContent = msg;
+      toastEl.className = `fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-white font-semibold shadow-xl transition ${palette[type]||palette.info} opacity-0`;
+      requestAnimationFrame(()=>{ toastEl.style.opacity = 1; });
+      setTimeout(()=>{ toastEl.style.opacity = 0; }, 2400);
     }
+    const setAvatar = (url) => {
+      const img = $('#avatarPreview');
+      if (url && /^https?:\/\//i.test(url)) img.src = url;
+      else img.src = 'https://api.dicebear.com/8.x/fun-emoji/svg?seed=gift';
+    };
 
-    acceptBtn.addEventListener('click', () => {
-      localStorage.setItem('happydate_cookie_consent', 'true');
-      cookieConsent.classList.add('hidden');
+    // ==== Auth guard + preload ====
+    (async function init(){
+      // Sprawdź sesję
+      const { data: { session }, error: sErr } = await sb.auth.getSession();
+      if (sErr) console.warn(sErr);
+      if (!session) { window.location.href = '/pages/login.html'; return; }
+
+      // Pobierz użytkownika
+      const { data: { user }, error } = await sb.auth.getUser();
+      if (error || !user) { window.location.href = '/pages/login.html'; return; }
+
+      // Ustaw pola
+      $('#userEmail').textContent = user.email || '—';
+      const displayName = user.user_metadata?.display_name || user.user_metadata?.name || '';
+      const photoURL = user.user_metadata?.photo_url || user.user_metadata?.avatar_url || '';
+      $('#displayName').value = displayName;
+      $('#photoURL').value = photoURL;
+      setAvatar(photoURL);
+
+      // Podgląd avatara w locie
+      $('#photoURL').addEventListener('input', (e)=> setAvatar(e.target.value));
+
+      // Zapis profilu (user_metadata)
+      $('#settings-form').addEventListener('submit', async (ev) => {
+        ev.preventDefault();
+        const payload = {
+          display_name: $('#displayName').value.trim(),
+          photo_url: $('#photoURL').value.trim()
+        };
+        const { error: upErr } = await sb.auth.updateUser({ data: payload });
+        if (upErr) { toast(upErr.message || 'Nie udało się zapisać', 'error'); return; }
+        toast('Zapisano zmiany ✅', 'ok');
+        setAvatar(payload.photo_url);
+      });
+
+      // Wylogowanie
+      $('#logoutBtn')?.addEventListener('click', async () => {
+        await sb.auth.signOut();
+        window.location.href = '/pages/login.html';
+      });
+    })();
+
+    // ==== Cookies ====
+    document.addEventListener('DOMContentLoaded', () => {
+      const cc = $('#cookieConsent'); const btn = $('#acceptCookies');
+      if (!localStorage.getItem('happydate_cookie_consent')) cc.classList.remove('hidden');
+      btn?.addEventListener('click', () => { localStorage.setItem('happydate_cookie_consent','true'); cc.classList.add('hidden'); });
     });
-  });
-</script>
-
+  </script>
 </body>
-
 </html>

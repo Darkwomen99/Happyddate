@@ -1,65 +1,309 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Znajdź idealny prezent dzięki HappyDate — wpisz budżet i preferencje, a my zrobimy resztę!">
-  <title>Co podarować? - HappyDate</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Co podarować? – HappyDate</title>
+  <meta name="description" content="Znajdź idealny prezent dzięki HappyDate — podaj budżet, osobę i preferencje, a my podpowiemy trafione pomysły." />
+  <link rel="canonical" href="https://www.happydate.pl/pages/generator.html" />
+  <meta name="robots" content="index, follow" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Co podarować? – HappyDate" />
+  <meta property="og:description" content="Kilka kliknięć i masz 3 trafione pomysły na prezent w Twoim budżecie." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.happydate.pl/pages/generator.html" />
+  <meta property="og:image" content="https://www.happydate.pl/assets/img/social-banner.jpg" />
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
+    .sr-only-focusable:focus{position:static;width:auto;height:auto;clip:auto}
+  </style>
 </head>
-<body class="bg-white text-gray-900">
-  <section class="min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100">
-    <div class="max-w-xl w-full bg-white p-8 rounded-2xl shadow-xl">
-      <h1 class="text-3xl font-bold text-center text-pink-600 mb-6">🎁 Co podarować?</h1>
-      <p class="text-center mb-6 text-gray-600">Wpisz kilka informacji o osobie i znajdziemy prezent, który wzruszy do łez.</p>
 
-      <form id="giftForm" class="space-y-4">
-        <div>
-          <label class="block font-semibold mb-1">Dla kogo?</label>
-          <select id="forWho" class="w-full border rounded px-3 py-2" required>
-            <option value="">Wybierz...</option>
-            <option>Dla dziewczyny</option>
-            <option>Dla chłopaka</option>
-            <option>Dla mamy</option>
-            <option>Dla taty</option>
-            <option>Dla przyjaciela/przyjaciółki</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-semibold mb-1">Budżet (PLN)</label>
-          <input type="number" id="budget" min="0" class="w-full border rounded px-3 py-2" placeholder="np. 50" required>
-        </div>
-
-        <div>
-          <label class="block font-semibold mb-1">Co lubi ta osoba?</label>
-          <input type="text" id="preferences" class="w-full border rounded px-3 py-2" placeholder="np. koty, książki, kawa" required>
-        </div>
-
-        <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 rounded-lg transition">Pokaż pomysł 🎉</button>
-      </form>
-
-      <div id="result" class="mt-6 hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-        <p><strong>Pomysł na prezent:</strong> <span id="ideaText"></span></p>
-      </div>
+<body class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sticky top-0 z-50 shadow-none" aria-label="Główna nawigacja">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
+      <a href="/index.html" class="text-2xl font-bold text-white hover:underline" aria-label="HappyDate — Strona główna">🎁 HappyDate</a>
+      <nav class="hidden sm:flex gap-5 items-center text-white font-medium" aria-label="Główne menu">
+        <a href="/index.html" class="hover:underline">Strona główna</a>
+        <a href="/pages/services.html" class="hover:underline">Usługi</a>
+        <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
+        <a href="/pages/partnerstwo.html" class="hover:underline">Partnerstwo</a>
+        <a href="/pages/about.html" class="hover:underline">O nas</a>
+        <a href="/pages/reviews.html" class="hover:underline">Opinie</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <script>
-    const examples = [
-      { match: ['koty'], idea: 'Personalizowana filiżanka z grafiką kota + aromatyczna kawa (za 49 zł)' },
-      { match: ['kawa'], idea: 'Zestaw kaw smakowych i kubek z grawerem (za 45 zł)' },
-      { match: ['książki'], idea: 'Bestseller książkowy + zakładka magnetyczna (za 39 zł)' },
-      { match: ['muzyka'], idea: 'Płyta ulubionego artysty + słodka niespodzianka (za 55 zł)' },
-      { match: ['rower'], idea: 'Lampka na rower + bidon z motywem (za 35 zł)' }
+  <!-- Main -->
+  <main class="flex-1 bg-gradient-to-br from-pink-100 via-yellow-50 to-blue-100">
+    <section class="max-w-3xl mx-auto px-4 py-12">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-center text-pink-600 mb-3">🎁 Co podarować?</h1>
+      <p class="text-center text-gray-700 dark:text-gray-300 mb-8">
+        Podaj kilka szczegółów o osobie, a zaproponujemy 3 trafione pomysły w Twoim budżecie.
+      </p>
+
+      <!-- Card -->
+      <div class="bg-white dark:bg-gray-800 border border-blue-100/50 rounded-2xl shadow-xl p-6 md:p-8">
+        <form id="giftForm" class="space-y-5" novalidate>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="block text-sm font-medium">
+              Dla kogo?
+              <select id="forWho" class="mt-1 w-full border rounded px-3 py-2 dark:bg-gray-900" required>
+                <option value="">Wybierz…</option>
+                <option value="dziewczyna">Dla dziewczyny</option>
+                <option value="chłopak">Dla chłopaka</option>
+                <option value="mama">Dla mamy</option>
+                <option value="tata">Dla taty</option>
+                <option value="przyjaciel">Dla przyjaciela/przyjaciółki</option>
+              </select>
+            </label>
+
+            <label class="block text-sm font-medium">
+              Okazja
+              <input id="occasion" class="mt-1 w-full border rounded px-3 py-2 dark:bg-gray-900" placeholder="np. urodziny, rocznica" required />
+            </label>
+
+            <label class="block text-sm font-medium">
+              Wiek (lata)
+              <input id="age" type="number" min="0" max="120" class="mt-1 w-full border rounded px-3 py-2 dark:bg-gray-900" placeholder="np. 28" required />
+            </label>
+
+            <label class="block text-sm font-medium">
+              Budżet (PLN)
+              <input id="budget" type="number" min="0" step="1" class="mt-1 w-full border rounded px-3 py-2 dark:bg-gray-900" placeholder="np. 150" required />
+            </label>
+          </div>
+
+          <label class="block text-sm font-medium">
+            Co lubi ta osoba?
+            <input id="preferences" class="mt-1 w-full border rounded px-3 py-2 dark:bg-gray-900" placeholder="np. koty, książki, kawa" required />
+          </label>
+
+          <!-- Quick chips -->
+          <div class="flex flex-wrap gap-2" aria-label="Szybkie podpowiedzi zainteresowań">
+            <button type="button" class="chip">kawa</button>
+            <button type="button" class="chip">koty</button>
+            <button type="button" class="chip">muzyka</button>
+            <button type="button" class="chip">rower</button>
+            <button type="button" class="chip">książki</button>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            <button id="submitBtn" type="submit" class="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2.5 rounded-lg transition">
+              Pokaż pomysły 🎉
+            </button>
+            <button id="resetBtn" type="button" class="px-4 py-2.5 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-700">
+              Wyczyść
+            </button>
+          </div>
+
+          <p class="text-xs text-gray-500">
+            * Generowanie odbywa się po stronie serwera. Nie przechowujemy poufnych danych z formularza.
+          </p>
+        </form>
+
+        <!-- Results -->
+        <section id="results" class="mt-8" aria-live="polite" aria-busy="false">
+          <!-- Skeletons -->
+          <div id="skeleton" class="hidden grid gap-4 md:grid-cols-3">
+            <div class="h-40 rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
+            <div class="h-40 rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
+            <div class="h-40 rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse"></div>
+          </div>
+
+          <div id="ideas" class="grid gap-4 md:grid-cols-3"></div>
+
+          <!-- Fallback info -->
+          <div id="fallback" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded mt-4 text-sm">
+            <strong>Podpowiedź offline:</strong> <span id="fallbackText"></span>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-blue-500 text-white py-6 mt-12" aria-label="Stopka HappyDate">
+    <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base">
+      &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.<br>
+      <span class="text-xs opacity-80">Projekt & UX: HappyDate Team | <a href="/pages/privacy.html" class="underline hover:text-yellow-200">Polityka prywatności</a></span>
+    </div>
+  </footer>
+
+  <!-- Page logic -->
+  <script type="module">
+    // (opcjonalnie) Supabase — zapis i load sesji, ale strona działa także bez tego pliku
+    let supabase = null, currentUser = null;
+    try {
+      ({ supabase } = await import('/js/supabaseClient.js'));
+      const { data: { session } } = await supabase.auth.getSession();
+      currentUser = session?.user || null;
+      supabase?.auth.onAuthStateChange((_e, s) => { currentUser = s?.user || null; });
+    } catch(_) { /* brak supabaseClient.js — tryb standalone */ }
+
+    // --- Helpers ---
+    const $  = (s, r=document)=>r.querySelector(s);
+    const $$ = (s, r=document)=>Array.from(r.querySelectorAll(s));
+    const ideasBox = $('#ideas');
+    const skeleton = $('#skeleton');
+    const fallback = $('#fallback');
+    const fallbackText = $('#fallbackText');
+    const results = $('#results');
+
+    const showSkeleton = (show)=> {
+      results.setAttribute('aria-busy', show ? 'true' : 'false');
+      skeleton.classList.toggle('hidden', !show);
+      ideasBox.classList.toggle('hidden', show);
+      fallback.classList.add('hidden');
+    };
+
+    const toast = (msg, type='info') => {
+      // prosta, nieintruztywna informacja (bez dodatkowego UI tutaj)
+      console[type === 'error' ? 'error' : 'log']('[info]', msg);
+    };
+
+    // Quick chips
+    $$('.chip').forEach(btn=>{
+      btn.className = 'px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm';
+      btn.addEventListener('click', ()=>{
+        const p = $('#preferences');
+        const v = btn.textContent.trim();
+        if (!p.value.toLowerCase().includes(v)) {
+          p.value = (p.value ? p.value + ', ' : '') + v;
+        }
+        p.focus();
+      });
+    });
+
+    // Local fallback ideas
+    const offlineExamples = [
+      { match: ['koty'],    idea: 'Personalizowana filiżanka z kotem + dobra kawa (ok. 49 zł)' },
+      { match: ['kawa'],    idea: 'Zestaw kaw smakowych i kubek z grawerem (ok. 45 zł)' },
+      { match: ['książki'], idea: 'Bestseller + zakładka magnetyczna (ok. 39 zł)' },
+      { match: ['muzyka'],  idea: 'Album ulubionego artysty + słodka niespodzianka (ok. 55 zł)' },
+      { match: ['rower'],   idea: 'Lampka na rower + bidon (ok. 35 zł)' }
     ];
+    const offlineSuggest = (prefs) => {
+      const val = prefs.toLowerCase();
+      const hit = offlineExamples.find(ex => ex.match.some(k => val.includes(k)));
+      return hit ? hit.idea : 'Voucher do Empiku lub kwiaty w pudełku (ok. 50 zł)';
+    };
 
-    document.getElementById('giftForm').addEventListener('submit', function(e) {
+    // Render ideas safely
+    function renderIdeas(ideas=[]) {
+      ideasBox.replaceChildren();
+      if (!ideas.length) {
+        const p = document.createElement('p');
+        p.className = 'text-center text-gray-600 dark:text-gray-300';
+        p.textContent = 'Brak propozycji. Spróbuj doprecyzować preferencje.';
+        ideasBox.appendChild(p);
+        return;
+      }
+      for (const i of ideas.slice(0, 3)) {
+        const card = document.createElement('article');
+        card.className = 'rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 flex flex-col gap-2 shadow-sm';
+        const h = document.createElement('h3');
+        h.className = 'font-bold';
+        h.textContent = i.title || 'Pomysł na prezent';
+        const d = document.createElement('p');
+        d.className = 'text-sm text-gray-700 dark:text-gray-300';
+        d.textContent = i.desc || '';
+        const meta = document.createElement('div');
+        meta.className = 'text-xs text-gray-500';
+        meta.textContent = i.price ? `Szacowany koszt: ~${i.price} PLN` : '';
+        const actions = document.createElement('div');
+        actions.className = 'mt-2 flex gap-2';
+        const copyBtn = document.createElement('button');
+        copyBtn.type='button';
+        copyBtn.className='px-3 py-1 rounded bg-pink-500 text-white text-sm hover:bg-pink-600';
+        copyBtn.textContent='Kopiuj';
+        copyBtn.addEventListener('click', async ()=>{
+          const text = `${h.textContent} — ${d.textContent} ${meta.textContent? '('+meta.textContent+')':''}`;
+          try { await navigator.clipboard.writeText(text); copyBtn.textContent='Skopiowano ✔'; setTimeout(()=>copyBtn.textContent='Kopiuj',1200);} catch(_){ /* ignore */ }
+        });
+
+        const saveBtn = document.createElement('button');
+        saveBtn.type='button';
+        saveBtn.className='px-3 py-1 rounded border text-sm hover:bg-gray-50 dark:hover:bg-gray-700';
+        saveBtn.textContent = currentUser ? 'Zapisz' : 'Zapisz (zaloguj się)';
+        saveBtn.addEventListener('click', async ()=>{
+          if (!currentUser || !supabase) { toast('Zaloguj się, aby zapisać pomysł'); return; }
+          try {
+            const person   = $('#forWho').value || '';
+            const occasion = $('#occasion').value || '';
+            const age      = Number($('#age').value) || null;
+            const budget   = Number($('#budget').value) || null;
+            const { error } = await supabase.from('gift_ideas').insert([{
+              uid: currentUser.id,
+              person, occasion, age, budget,
+              title: i.title || null,
+              desc:  i.desc  || null,
+              price_estimate: i.price || null
+            }]);
+            if (error) throw error;
+            saveBtn.textContent = 'Zapisano ✔';
+            setTimeout(()=> saveBtn.textContent='Zapisz', 1200);
+          } catch (e) { console.error(e); toast('Nie udało się zapisać', 'error'); }
+        });
+
+        actions.append(copyBtn, saveBtn);
+        card.append(h, d, meta, actions);
+        ideasBox.appendChild(card);
+      }
+    }
+
+    // Form handlers
+    $('#resetBtn').addEventListener('click', ()=>{
+      $('#giftForm').reset();
+      ideasBox.replaceChildren();
+      fallback.classList.add('hidden');
+    });
+
+    $('#giftForm').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      const prefs = document.getElementById('preferences').value.toLowerCase();
-      const match = examples.find(ex => ex.match.some(word => prefs.includes(word)));
-      document.getElementById('ideaText').textContent = match ? match.idea : 'Voucher do Empiku lub kwiaty w ozdobnym pudełku (za 50 zł)';
-      document.getElementById('result').classList.remove('hidden');
+      const forWho = $('#forWho').value.trim();
+      const occasion = $('#occasion').value.trim();
+      const age = Number($('#age').value);
+      const budget = Number($('#budget').value);
+      const preferences = $('#preferences').value.trim();
+
+      if (!forWho || !occasion || !preferences || !Number.isFinite(age) || !Number.isFinite(budget)) {
+        toast('Uzupełnij poprawnie wszystkie pola', 'warn');
+        return;
+      }
+
+      showSkeleton(true);
+      try {
+        const res = await fetch('/api/gift-ideas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ person: forWho, occasion, age, budget, preferences })
+        });
+
+        if (!res.ok) throw new Error('Błąd serwera');
+
+        const data = await res.json(); // { ideas: [{title, desc, price?}], disclaimer? }
+        const ideas = Array.isArray(data.ideas) ? data.ideas : [];
+        renderIdeas(ideas);
+        if (!ideas.length) {
+          fallbackText.textContent = offlineSuggest(preferences);
+          fallback.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error(err);
+        // Fallback offline
+        renderIdeas([]);
+        fallbackText.textContent = offlineSuggest(preferences);
+        fallback.classList.remove('hidden');
+      } finally {
+        showSkeleton(false);
+      }
     });
   </script>
 </body>

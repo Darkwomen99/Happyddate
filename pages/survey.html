@@ -1,44 +1,50 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ankieta powitalna — HappyDate</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <meta name="color-scheme" content="light dark" />
 </head>
 <body class="bg-gradient-to-br from-pink-100 via-white to-blue-100 dark:from-gray-800 dark:to-gray-900 min-h-screen py-12 px-4">
   <div class="max-w-3xl mx-auto text-center">
     <h1 class="text-3xl font-bold mb-2">Opowiedz nam coś o sobie 💌</h1>
-    <p class="mb-6 text-sm text-gray-700 dark:text-gray-300">Twoje odpowiedzi pomogą nam lepiej się Tobą zaopiekować. W zamian otrzymasz 20 punktów 🎁</p>
+    <p class="mb-6 text-sm text-gray-700 dark:text-gray-300">
+      Twoje odpowiedzi pomogą nam lepiej się Tobą zaopiekować. W zamian otrzymasz 20 punktów 🎁
+    </p>
 
-    <form id="survey-form" class="text-left bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl space-y-5">
+    <form id="survey-form" class="text-left bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl space-y-5" novalidate>
       <label class="block">
         <span class="text-sm font-medium">Imię *</span>
-        <input type="text" name="firstName" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required>
+        <input type="text" name="firstName" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required />
       </label>
+
       <label class="block">
         <span class="text-sm">Nazwisko (opcjonalnie)</span>
-        <input type="text" name="lastName" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+        <input type="text" name="lastName" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" />
       </label>
+
       <label class="block">
         <span class="text-sm font-medium">Wiek *</span>
-        <input type="number" name="age" min="1" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required>
+        <input type="number" name="age" min="1" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required />
       </label>
+
       <label class="block">
         <span class="text-sm font-medium">Co lubisz? Jak spędzasz wolny czas? *</span>
         <textarea name="interests" rows="3" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" required></textarea>
       </label>
+
       <label class="block">
         <span class="text-sm">Czy był w Twoim życiu moment, który Cię zranił? (opcjonalnie)</span>
         <textarea name="lifePain" rows="3" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700"></textarea>
       </label>
+
       <label class="block">
         <span class="text-sm">Data lub rocznica trudnego dnia (opcjonalnie)</span>
-        <input type="date" name="lifePainDate" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+        <input type="date" name="lifePainDate" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" />
       </label>
+
       <label class="block">
         <span class="text-sm">Jakie emocje chcesz czuć, gdy dostajesz prezent?</span>
         <select name="giftEmotion" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
@@ -49,6 +55,7 @@
           <option>Inspiracja</option>
         </select>
       </label>
+
       <label class="block">
         <span class="text-sm">Czy lubisz niespodzianki?</span>
         <select name="likesSurprises" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
@@ -56,24 +63,27 @@
           <option>Raczej nie</option>
         </select>
       </label>
+
       <label class="block">
         <span class="text-sm">Czego nie lubisz dostawać? (opcjonalnie)</span>
-        <input type="text" name="dislikes" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+        <input type="text" name="dislikes" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" />
       </label>
+
       <label class="block">
         <span class="text-sm">Ulubione kolory lub motywy (opcjonalnie)</span>
-        <input type="text" name="colors" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+        <input type="text" name="colors" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" />
       </label>
+
       <label class="block">
         <span class="text-sm">Ulubiony cytat lub motto (opcjonalnie)</span>
-        <input type="text" name="motto" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700">
+        <input type="text" name="motto" class="w-full p-3 rounded-xl bg-gray-100 dark:bg-gray-700" />
       </label>
 
       <label class="block text-sm text-gray-600 dark:text-gray-400">
-        <input type="checkbox" required class="mr-2"> Zgadzam się na przetwarzanie moich danych zgodnie z polityką prywatności.
+        <input type="checkbox" required class="mr-2" /> Zgadzam się na przetwarzanie moich danych zgodnie z polityką prywatności.
       </label>
 
-      <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded-xl shadow transition">
+      <button type="submit" id="submitBtn" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 px-6 rounded-xl shadow transition">
         Zapisz ankietę i odbierz 20 punktów 🎁
       </button>
     </form>
@@ -81,57 +91,140 @@
     <p id="confirmation" class="mt-6 text-green-600 font-medium hidden">Dziękujemy! Twoje odpowiedzi zostały zapisane 💛</p>
   </div>
 
- <script>
-    const firebaseConfig = {
-  apiKey: "AIzaSyCJmddWXQKRGw1nnQ6Evje4qMqHcddSulY",
-  authDomain: "happydate-4e42f.firebaseapp.com",
-  projectId: "happydate-4e42f",
-  storageBucket: "happydate-4e42f.firebasestorage.app",
-  messagingSenderId: "169631163082",
-  appId: "1:169631163082:web:b4295c7840898da42aca33",
-  measurementId: "G-YLM20HD2FY"
-};
-firebase.initializeApp(firebaseConfig);
+  <!-- 🔑 (opcjonalnie) wstaw swoje klucze globalnie przed modułem:
+  <script>
+    window.SUPABASE_URL = 'https://xxx.supabase.co';
+    window.SUPABASE_ANON_KEY = 'ey...';
+  </script>
+  -->
 
-firebase.auth().onAuthStateChanged(user => {
-  if (!user) {
-    alert("Zaloguj się, aby wypełnić ankietę.");
-    window.location.href = "login.html";
-  }
-});
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-    document.getElementById('survey-form').addEventListener('submit', async (e) => {
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    // === Konfiguracja Supabase ===
+    const SUPABASE_URL = window.SUPABASE_URL || 'SUPABASE_URL';
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'SUPABASE_ANON_KEY';
+
+    if (!SUPABASE_URL || SUPABASE_URL === 'SUPABASE_URL' || !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === 'SUPABASE_ANON_KEY') {
+      console.error('Brak konfiguracji Supabase. Ustaw SUPABASE_URL i SUPABASE_ANON_KEY.');
+      alert('Błąd konfiguracji. Skontaktuj się z administratorem.');
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true }
+    });
+
+    // === Pomocnicze ===
+    const form = document.getElementById('survey-form');
+    const confirmation = document.getElementById('confirmation');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const toast = (msg, type = 'success') => {
+      const el = document.createElement('div');
+      el.className = `fixed top-4 left-1/2 -translate-x-1/2 ${type === 'error' ? 'bg-red-500' : 'bg-green-600'} text-white px-4 py-2 rounded shadow z-50`;
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 2600);
+    };
+
+    // === Sprawdź sesję; jeśli brak — przekieruj na logowanie ===
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session) {
+      alert('Zaloguj się, aby wypełnić ankietę.');
+      window.location.href = '/pages/login.html';
+    }
+
+    // === Obsługa wysyłki formularza ===
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const user = auth.currentUser;
-      if (!user) return alert("Musisz być zalogowany, aby zapisać ankietę.");
 
-      const form = e.target;
-      const data = {
-        firstName: form.firstName.value,
-        lastName: form.lastName.value,
-        age: parseInt(form.age.value),
-        interests: form.interests.value,
-        lifePain: form.lifePain.value,
-        lifePainDate: form.lifePainDate.value,
-        giftEmotion: form.giftEmotion.value,
-        likesSurprises: form.likesSurprises.value,
-        dislikes: form.dislikes.value,
-        colors: form.colors.value,
-        motto: form.motto.value,
-        completedAt: new Date().toISOString(),
-        pointsGiven: 20
+      // Walidacja prostych pól wymaganych
+      if (!form.reportValidity()) return;
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+      const { data: authData } = await supabase.auth.getUser();
+      const userId = authData?.user?.id;
+      if (!userId) {
+        toast('Problem z autoryzacją. Zaloguj się ponownie.', 'error');
+        window.location.href = '/pages/login.html';
+        return;
+      }
+
+      // Zbierz dane
+      const payload = {
+        user_id: userId,
+        first_name: form.firstName.value.trim(),
+        last_name: form.lastName.value.trim() || null,
+        age: form.age.value ? parseInt(form.age.value, 10) : null,
+        interests: form.interests.value.trim(),
+        life_pain: form.lifePain.value.trim() || null,
+        life_pain_date: form.lifePainDate.value || null,
+        gift_emotion: form.giftEmotion.value || null,
+        likes_surprises: form.likesSurprises.value || null,
+        dislikes: form.dislikes.value.trim() || null,
+        colors: form.colors.value.trim() || null,
+        motto: form.motto.value.trim() || null,
+        completed_at: new Date().toISOString(),
+        points_given: 20
       };
 
+      // Nazwy tabel (dopasuj do swojej bazy)
+      const SURVEY_TABLE = 'onboarding_surveys';
+      const PROFILES_TABLE = 'profiles';
+
       try {
-        await db.collection("users").doc(user.uid).collection("onboarding").doc("survey").set(data);
-        await db.collection("users").doc(user.uid).update({ points: firebase.firestore.FieldValue.increment(20) });
-        document.getElementById('confirmation').classList.remove('hidden');
+        // 1) Sprawdź, czy ankieta już istnieje dla użytkownika
+        const { data: existingSurvey, error: existingErr } = await supabase
+          .from(SURVEY_TABLE)
+          .select('id')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (existingErr && existingErr.code !== 'PGRST116') {
+          // PGRST116 = no rows
+          throw existingErr;
+        }
+
+        const alreadyCompleted = !!existingSurvey;
+
+        // 2) Zapis/aktualizacja ankiety (upsert po user_id)
+        const { error: upsertErr } = await supabase
+          .from(SURVEY_TABLE)
+          .upsert(payload, { onConflict: 'user_id' });
+
+        if (upsertErr) throw upsertErr;
+
+        // 3) Przyznaj punkty tylko za pierwsze wypełnienie
+        if (!alreadyCompleted) {
+          // Pobierz aktualne punkty
+          let currentPoints = 0;
+          const { data: prof, error: profErr } = await supabase
+            .from(PROFILES_TABLE)
+            .select('points')
+            .eq('id', userId)
+            .maybeSingle();
+
+          if (profErr && profErr.code !== 'PGRST116') throw profErr;
+          currentPoints = prof?.points ?? 0;
+
+          const { error: pointsErr } = await supabase
+            .from(PROFILES_TABLE)
+            .upsert({ id: userId, points: currentPoints + 20 });
+
+          if (pointsErr) throw pointsErr;
+        }
+
+        confirmation.classList.remove('hidden');
+        toast('Ankieta zapisana. Dziękujemy! ✅');
         form.reset();
       } catch (err) {
-        console.error("Błąd zapisu ankiety:", err);
-        alert("Coś poszło nie tak. Spróbuj ponownie później.");
+        console.error('Błąd zapisu ankiety:', err);
+        toast('Coś poszło nie tak. Spróbuj ponownie później.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
       }
     });
   </script>

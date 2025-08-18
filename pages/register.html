@@ -1,55 +1,155 @@
-<!-- register.html (bez Analytics, poprawiona wersja) -->
+<!-- register.html (Supabase, bez Analytics) -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rejestracja — HappyDate</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <main class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
     <h1 class="text-2xl font-bold mb-6 text-center">Zarejestruj się w HappyDate</h1>
-    <form id="register-form" class="space-y-4">
-      <input type="text" id="name" placeholder="Imię i nazwisko" required class="w-full p-2 border rounded">
-      <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded">
-      <input type="password" id="password" placeholder="Hasło" required class="w-full p-2 border rounded">
-      <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded">Zarejestruj się</button>
+
+    <form id="register-form" class="space-y-4" autocomplete="off">
+      <input type="text" id="name" placeholder="Imię i nazwisko" required class="w-full p-2 border rounded" />
+
+      <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded" />
+
+      <div class="relative">
+        <input type="password" id="password" placeholder="Hasło (min. 6 znaków)" minlength="6" required class="w-full p-2 border rounded pr-10" />
+        <button type="button" id="toggle-pass" class="absolute inset-y-0 right-2 text-sm text-blue-600">Pokaż</button>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded transition">
+        Zarejestruj się
+      </button>
     </form>
-    <p class="mt-4 text-center text-sm">Masz już konto? <a href="/pages/login.html" class="text-blue-600 underline">Zaloguj się</a></p>
+
+    <div class="mt-6">
+      <button id="signup-google" class="w-full border hover:bg-gray-50 py-2 rounded transition">
+        Zarejestruj się przez Google
+      </button>
+    </div>
+
+    <p class="mt-4 text-center text-sm">
+      Masz już konto?
+      <a href="/pages/login.html" class="text-blue-600 underline">Zaloguj się</a>
+    </p>
   </main>
 
-  <script type="module">
-    import { auth } from '../js/firebaseConfig.js';
-    import { getFriendlyErrorMessage } from '../js/errorMessages.js';
+  <!-- Powiadomienia -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden"></div>
 
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    // --- PODMIEŃ TE WARTOŚCI NA SWOJE Z SUPABASE ---
+    const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_PUBLIC_ANON_KEY';
+    // ------------------------------------------------
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Helpers
+    const $ = (s, r=document) => r.querySelector(s);
+    const toastBox = $('#toast');
+    function showNotification(message, type='ok') {
+      toastBox.textContent = message;
+      toastBox.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded shadow ' +
+        (type==='error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white');
+      toastBox.classList.remove('hidden');
+      setTimeout(()=> toastBox.classList.add('hidden'), 2600);
+    }
+    function mapError(code, msg) {
+      // Supabase zwykle zwraca message, ale możemy podać ładniejsze komunikaty:
+      const m = (msg||'').toLowerCase();
+      if (m.includes('invalid email')) return 'Podaj poprawny adres e-mail.';
+      if (m.includes('password') && m.includes('length')) return 'Hasło musi mieć co najmniej 6 znaków.';
+      if (m.includes('user already registered')) return 'Ten e-mail jest już zarejestrowany.';
+      return msg || 'Wystąpił błąd. Spróbuj ponownie.';
+    }
+
+    // Pokaż/ukryj hasło
+    $('#toggle-pass')?.addEventListener('click', () => {
+      const inp = $('#password');
+      const isPwd = inp.type === 'password';
+      inp.type = isPwd ? 'text' : 'password';
+      $('#toggle-pass').textContent = isPwd ? 'Ukryj' : 'Pokaż';
+    });
+
+    // Rejestracja email+hasło
+    $('#register-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      const fullName = $('#name').value.trim();
+      const email = $('#email').value.trim();
+      const password = $('#password').value;
+
+      if (!fullName || !email || !password) {
+        showNotification('Uzupełnij wszystkie pola.', 'error');
+        return;
+      }
+
+      // Rozbij imię i nazwisko (opcjonalnie)
+      const parts = fullName.split(' ').filter(Boolean);
+      const name = parts.slice(0, -1).join(' ') || parts[0] || '';
+      const surname = parts.length > 1 ? parts.slice(-1)[0] : '';
 
       try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        await userCredential.user.updateProfile({ displayName: name });
-        showNotification("Rejestracja zakończona sukcesem ✅");
-       setTimeout(() => window.location.href = 'survey.html', 1200);
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: fullName, name, surname },
+            emailRedirectTo: `${location.origin}/pages/login.html`
+          }
+        });
 
-      } catch (error) {
-        console.warn("Błąd rejestracji:", error.code);
-        showNotification(getFriendlyErrorMessage(error.code), true);
+        if (error) {
+          showNotification(mapError(error.code, error.message), 'error');
+          return;
+        }
+
+        // Jeżeli w projekcie wyłączone potwierdzanie e-mailem – dostaniemy session od razu.
+        // Wtedy tworzymy rekord profilu.
+        if (data.session?.user) {
+          const user = data.session.user;
+          await supabase.from('profiles').upsert({
+            id: user.id,
+            email,
+            name,
+            surname,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+
+          showNotification('Rejestracja zakończona sukcesem ✅');
+          setTimeout(() => window.location.href = 'survey.html', 1200);
+          return;
+        }
+
+        // Jeśli wymagane potwierdzenie e-mailem (brak session):
+        showNotification('Sprawdź skrzynkę i potwierdź adres e-mail ✉️');
+        // Możesz też przekierować na informacyjną stronę:
+        // setTimeout(() => window.location.href = '/pages/login.html', 2000);
+      } catch (err) {
+        console.error(err);
+        showNotification('Ups! Coś poszło nie tak.', 'error');
       }
     });
 
-    function showNotification(message, isError = false) {
-      const note = document.createElement('div');
-      note.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 ' +
-        (isError ? 'bg-red-500' : 'bg-green-500') +
-        ' text-white px-4 py-2 rounded shadow z-50';
-      note.textContent = message;
-      document.body.appendChild(note);
-      setTimeout(() => note.remove(), 2500);
-    }
+    // Rejestracja przez Google (jeśli włączona w Supabase → Authentication → Providers)
+    $('#signup-google')?.addEventListener('click', async () => {
+      try {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: `${location.origin}/pages/profile.html` }
+        });
+        if (error) showNotification(mapError(error.code, error.message), 'error');
+      } catch (e) {
+        console.error(e);
+        showNotification('Nie udało się rozpocząć logowania Google.', 'error');
+      }
+    });
   </script>
 </body>
 </html>

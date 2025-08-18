@@ -1,106 +1,297 @@
 <!DOCTYPE html>
-<html lang="pl" class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skontaktuj się z nami - HappyDate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kontakt — HappyDate</title>
+
+  <meta name="description" content="Skontaktuj się z zespołem HappyDate. Zostań partnerem lub zadaj pytania dotyczące współpracy i usług." />
+  <meta name="robots" content="index,follow" />
+  <link rel="icon" href="/assets/img/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" sizes="180x180" />
+  <meta property="og:title" content="Kontakt — HappyDate" />
+  <meta property="og:description" content="Masz pytania lub chcesz współpracować? Napisz do nas!" />
+  <meta property="og:image" content="/assets/img/social-banner.jpg" />
+  <meta property="og:type" content="website" />
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    .field-error { border-color:#ef4444 }
+    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
 
   <!-- Header -->
-  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 sticky top-0 shadow-md z-50">
-    <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
-      <h1 class="text-2xl font-bold">🎁 HappyDate</h1>
-      <nav class="flex gap-6 text-white">
-        <a href="/pages/index.html" class="hover:underline">Strona główna</a>
-        <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
-        <a href="/pages/partnerstwo.html" class="hover:underline">Partnerstwo</a>
-        <a href="/pages/about.html" class="hover:underline">O nas</a>
-        <a href="/pages/reviews.html" class="hover:underline">Opinie</a>
-      </nav>
+  <header id="mainHeader" class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <a href="/index.html" class="text-2xl font-bold text-white hover:underline" aria-label="HappyDate – Strona główna">🎁 HappyDate</a>
+          <span class="hidden md:inline text-white/90 italic">Twój ciepły asystent prezentowy</span>
+        </div>
+
+        <button id="mobile-menu-toggle" class="sm:hidden text-white text-3xl px-2 py-1 rounded hover:bg-white/10" aria-controls="mobile-menu" aria-expanded="false" aria-label="Menu">
+          ☰
+        </button>
+
+        <nav id="desktop-menu" class="hidden sm:flex items-center gap-5 text-white">
+          <a href="/index.html" class="hover:underline">Strona główna</a>
+          <a href="/pages/services.html" class="hover:underline">Usługi</a>
+          <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
+          <a href="/pages/partnerstwo.html" class="hover:underline">Partnerstwo</a>
+          <a href="/pages/about.html" class="hover:underline">O nas</a>
+          <a href="/pages/reviews.html" class="hover:underline">Opinie</a>
+          <a href="/pages/contact.html" class="underline font-semibold">Kontakt</a>
+
+          <!-- Lang -->
+          <div class="relative" id="lang-dropdown-wrap">
+            <button id="langDropdownBtn" type="button" class="flex items-center gap-2 px-3 py-2 rounded border bg-white/10 hover:bg-white/20">
+              <span id="langFlag">🌐</span>
+              <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="langDropdown" class="absolute right-0 mt-2 bg-white shadow-xl rounded-xl z-50 py-2 min-w-[150px] hidden text-left transition-all duration-200 scale-95 opacity-0 origin-top-right" role="menu">
+              <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="pl">🇵🇱 Polski</button>
+              <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="ua">🇺🇦 Українська</button>
+              <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="en">🇬🇧 English</button>
+              <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="ru">🇷🇺 Русский</button>
+              <button class="w-full px-4 py-3 text-left hover:bg-blue-100" data-lang="de">🇩🇪 Deutsch</button>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="sm:hidden hidden mt-3 text-white space-y-2" aria-label="Menu mobilne">
+        <div class="grid grid-cols-2 gap-2">
+          <a href="/index.html" class="px-2 py-1 rounded hover:bg-white/10">Strona główna</a>
+          <a href="/pages/services.html" class="px-2 py-1 rounded hover:bg-white/10">Usługi</a>
+          <a href="/pages/dashboard.html" class="px-2 py-1 rounded hover:bg-white/10">Moje wydarzenia</a>
+          <a href="/pages/partnerstwo.html" class="px-2 py-1 rounded hover:bg-white/10">Partnerstwo</a>
+          <a href="/pages/about.html" class="px-2 py-1 rounded hover:bg-white/10">O nas</a>
+          <a href="/pages/reviews.html" class="px-2 py-1 rounded hover:bg-white/10">Opinie</a>
+          <a href="/pages/contact.html" class="px-2 py-1 rounded bg-white/20 underline">Kontakt</a>
+        </div>
+        <div class="flex gap-2 pt-2" aria-label="Zmiana języka">
+          <button class="lang-btn px-2 py-1 rounded border" data-lang="pl">🇵🇱</button>
+          <button class="lang-btn px-2 py-1 rounded border" data-lang="ua">🇺🇦</button>
+          <button class="lang-btn px-2 py-1 rounded border" data-lang="en">🇬🇧</button>
+          <button class="lang-btn px-2 py-1 rounded border" data-lang="ru">🇷🇺</button>
+          <button class="lang-btn px-2 py-1 rounded border" data-lang="de">🇩🇪</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="max-w-4xl mx-auto px-4 py-12">
-    <section class="text-center">
-      <h2 class="text-3xl sm:text-4xl font-bold mb-4">Skontaktuj się z nami</h2>
-      <p class="text-lg mb-6">Aby stać się naszym partnerem, prosimy wypełnić formularz poniżej, aby dostarczyć niezbędne informacje kontaktowe oraz szczegóły na temat usług, które oferujesz.</p>
-      
-      <form action="submit_form.php" method="POST" class="space-y-6">
-        <!-- Name -->
-        <div class="flex flex-col">
-          <label for="name" class="text-lg font-semibold">Imię i nazwisko</label>
-          <input type="text" id="name" name="name" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz swoje imię i nazwisko" />
+  <!-- Toast -->
+  <div id="toast" class="fixed top-6 right-6 z-50 px-4 py-2 rounded-xl text-white shadow-lg opacity-0 pointer-events-none transition-all"></div>
+
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <section class="text-center mb-10">
+      <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">Skontaktuj się z nami</h1>
+      <p class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        Masz pytania, chcesz zostać partnerem lub otrzymać ofertę? Wypełnij krótki formularz — odpowiemy możliwie szybko.
+      </p>
+    </section>
+
+    <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
+      <form id="contact-form" class="space-y-5" novalidate>
+        <!-- Honeypot -->
+        <label class="visually-hidden">Leave this field empty
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" />
+        </label>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label for="name" class="block font-medium mb-1">Imię i nazwisko / Firma <span class="text-pink-500">*</span></label>
+            <input id="name" name="name" type="text" required maxlength="120" class="w-full px-4 py-2 rounded-lg border bg-gray-50 dark:bg-gray-700" placeholder="np. Anna Kowalska / Kwiaciarnia Róża" />
+            <p class="mt-1 text-xs text-red-500 hidden" id="err-name">To pole jest wymagane.</p>
+          </div>
+          <div>
+            <label for="email" class="block font-medium mb-1">E-mail <span class="text-pink-500">*</span></label>
+            <input id="email" name="email" type="email" required class="w-full px-4 py-2 rounded-lg border bg-gray-50 dark:bg-gray-700" placeholder="np. anna@firma.pl" autocomplete="email" />
+            <p class="mt-1 text-xs text-red-500 hidden" id="err-email">Podaj poprawny adres e-mail.</p>
+          </div>
+          <div>
+            <label for="phone" class="block font-medium mb-1">Telefon</label>
+            <input id="phone" name="phone" type="tel" pattern="^[0-9+ ()-]{6,}$" class="w-full px-4 py-2 rounded-lg border bg-gray-50 dark:bg-gray-700" placeholder="+48 600 000 000" autocomplete="tel" />
+            <p class="mt-1 text-xs text-red-500 hidden" id="err-phone">Podaj poprawny numer.</p>
+          </div>
+          <div>
+            <label for="years" class="block font-medium mb-1">Ile lat na rynku?</label>
+            <input id="years" name="years_in_business" type="number" min="0" max="100" inputmode="numeric" class="w-full px-4 py-2 rounded-lg border bg-gray-50 dark:bg-gray-700" placeholder="np. 3" />
+          </div>
+          <div class="sm:col-span-2">
+            <label for="services" class="block font-medium mb-1">Jakie usługi lub produkty oferujesz? <span class="text-pink-500">*</span></label>
+            <textarea id="services" name="services" rows="3" required class="w-full px-4 py-2 rounded-lg border bg-gray-50 dark:bg-gray-700" placeholder="Krótki opis oferty..."></textarea>
+            <p class="mt-1 text-xs text-red-500 hidden" id="err-services">To pole jest wymagane.</p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="message" class="block font-medium mb-1">Dodatkowe informacje</label>
+            <textarea id="message" name="message" rows="3" class="w-full px-4 py-2 rounded-lg border bg-gray-50 dark:bg-gray-700" placeholder="Np. miasto, preferowana forma współpracy, link do strony..."></textarea>
+          </div>
+          <div class="sm:col-span-2 text-sm text-gray-600 dark:text-gray-300">
+            Wysyłając formularz, akceptujesz
+            <a href="/pages/privacy.html" class="underline hover:text-blue-600">Politykę prywatności</a>.
+          </div>
         </div>
 
-        <!-- Email -->
-        <div class="flex flex-col">
-          <label for="email" class="text-lg font-semibold">Adres e-mail</label>
-          <input type="email" id="email" name="email" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz swój adres e-mail" />
-        </div>
-
-        <!-- Phone -->
-        <div class="flex flex-col">
-          <label for="phone" class="text-lg font-semibold">Numer telefonu</label>
-          <input type="tel" id="phone" name="phone" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz swój numer telefonu" />
-        </div>
-
-        <!-- Services Provided -->
-        <div class="flex flex-col">
-          <label for="services" class="text-lg font-semibold">Jakie usługi świadczysz?</label>
-          <textarea id="services" name="services" required class="p-3 border border-gray-300 rounded-lg" placeholder="Opisz usługi, które oferujesz"></textarea>
-        </div>
-
-        <!-- Years in Business -->
-        <div class="flex flex-col">
-          <label for="years_in_business" class="text-lg font-semibold">Ile lat działasz na rynku?</label>
-          <input type="number" id="years_in_business" name="years_in_business" required class="p-3 border border-gray-300 rounded-lg" placeholder="Wpisz liczbę lat" />
-        </div>
-
-        <!-- Submit Button -->
-        <div class="flex justify-center">
-          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-semibold">Wyślij</button>
+        <div class="flex items-center gap-3 pt-2">
+          <button id="submitBtn" type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold disabled:opacity-60 disabled:cursor-not-allowed">
+            Wyślij
+          </button>
+          <a href="mailto:kontakt@happydate.pl" class="text-sm underline">lub napisz: kontakt@happydate.pl</a>
         </div>
       </form>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-blue-500 text-white text-center py-4 mt-12">
-    <div>&copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.</div>
+  <footer class="bg-blue-500 text-white text-center py-6 mt-12">
+    <div class="max-w-4xl mx-auto px-4 text-sm md:text-base">
+      &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.
+      <div class="text-xs opacity-80">
+        <a href="/pages/privacy.html" class="underline hover:text-yellow-200">Polityka prywatności</a>
+      </div>
+    </div>
   </footer>
 
-
-  <!-- GDPR Cookies Consent Popup -->
-<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden">
-  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <p class="text-sm md:text-base">
-      This website uses cookies to enhance your browsing experience. By continuing to use this site, you agree to our 
-      <a href="privacy.html" class="underline hover:text-blue-300">Privacy Policy</a>.
-    </p>
-    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
-      Accept
-    </button>
+  <!-- Cookies -->
+  <div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800/95 text-white py-4 px-6 z-50 hidden" role="dialog" aria-modal="true" aria-label="Informacja o plikach cookies">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm md:text-base">
+        Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą
+        <a href="/pages/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
+      </p>
+      <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">Akceptuję</button>
+    </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
+  <!-- Scripts -->
+  <script>
+    // Mobile menu
+    const mobileBtn = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileBtn?.addEventListener('click', () => {
+      const hidden = mobileMenu.classList.toggle('hidden');
+      mobileBtn.setAttribute('aria-expanded', String(!hidden));
+    });
+
+    // Lang dropdown
+    const langBtn = document.getElementById('langDropdownBtn');
+    const langMenu = document.getElementById('langDropdown');
+    const langWrap = document.getElementById('lang-dropdown-wrap');
+    const langFlag = document.getElementById('langFlag');
+    const langMap = { pl:'🇵🇱', ua:'🇺🇦', en:'🇬🇧', ru:'🇷🇺', de:'🇩🇪' };
+    const curLang = () => localStorage.getItem('lang') || (navigator.language?.slice(0,2) ?? 'pl');
+    const updateFlag = () => langFlag && (langFlag.textContent = langMap[curLang()] || '🌐');
+    updateFlag();
+    function openLang(){ langMenu.classList.remove('hidden','scale-95','opacity-0'); langMenu.classList.add('scale-100','opacity-100'); }
+    function closeLang(){ langMenu.classList.add('hidden','scale-95','opacity-0'); langMenu.classList.remove('scale-100','opacity-100'); }
+    langBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); langMenu.classList.contains('hidden')?openLang():closeLang(); });
+    document.addEventListener('click', (e)=>{ if(!langWrap?.contains(e.target)) closeLang(); });
+    langMenu?.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ localStorage.setItem('lang', b.dataset.lang); updateFlag(); location.reload(); }));
+    document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=>{ localStorage.setItem('lang', b.dataset.lang); updateFlag(); location.reload(); }));
+
+    // Cookies
     const cookieConsent = document.getElementById('cookieConsent');
     const acceptBtn = document.getElementById('acceptCookies');
+    if (!localStorage.getItem('happydate_cookie_consent')) cookieConsent.classList.remove('hidden');
+    acceptBtn?.addEventListener('click', () => { localStorage.setItem('happydate_cookie_consent', 'true'); cookieConsent.classList.add('hidden'); });
 
-    if (!localStorage.getItem('happydate_cookie_consent')) {
-      cookieConsent.classList.remove('hidden');
+    // Toast
+    const toast = document.getElementById('toast');
+    function showToast(msg, type='success'){
+      toast.textContent = msg;
+      toast.className = 'fixed top-6 right-6 z-50 px-4 py-2 rounded-xl text-white shadow-lg transition-all ' +
+        (type==='success' ? 'bg-emerald-600' : type==='error' ? 'bg-red-600' : 'bg-blue-600');
+      requestAnimationFrame(()=>toast.style.opacity=1);
+      setTimeout(()=>toast.style.opacity=0, 3500);
     }
 
-    acceptBtn.addEventListener('click', () => {
-      localStorage.setItem('happydate_cookie_consent', 'true');
-      cookieConsent.classList.add('hidden');
-    });
-  });
-</script>
+    // Form validation + submit to /api/contact
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submitBtn');
+    const fields = {
+      name:    document.getElementById('name'),
+      email:   document.getElementById('email'),
+      phone:   document.getElementById('phone'),
+      years:   document.getElementById('years'),
+      services:document.getElementById('services'),
+      message: document.getElementById('message')
+    };
+    const errs = {
+      name: document.getElementById('err-name'),
+      email:document.getElementById('err-email'),
+      phone:document.getElementById('err-phone'),
+      services:document.getElementById('err-services')
+    };
 
+    function setError(el, errEl, state){
+      el.classList.toggle('field-error', state);
+      errEl?.classList.toggle('hidden', !state);
+    }
+
+    function validate(){
+      let ok = true;
+      setError(fields.name, errs.name, !fields.name.value.trim());
+      ok &&= !!fields.name.value.trim();
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim());
+      setError(fields.email, errs.email, !emailOk);
+      ok &&= emailOk;
+
+      if(fields.phone.value.trim()){
+        const phoneOk = /^[0-9+ ()-]{6,}$/.test(fields.phone.value.trim());
+        setError(fields.phone, errs.phone, !phoneOk);
+        ok &&= phoneOk;
+      } else { setError(fields.phone, errs.phone, false); }
+
+      setError(fields.services, errs.services, !fields.services.value.trim());
+      ok &&= !!fields.services.value.trim();
+
+      // honeypot
+      if (form.website && form.website.value) ok = false;
+
+      return ok;
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validate()) { showToast('Sprawdź poprawność pól.', 'error'); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wysyłanie...';
+
+      const payload = {
+        name: fields.name.value.trim(),
+        email: fields.email.value.trim(),
+        phone: fields.phone.value.trim() || null,
+        years_in_business: fields.years.value ? Number(fields.years.value) : null,
+        services: fields.services.value.trim(),
+        message: fields.message.value.trim() || null,
+        page: location.pathname,
+        user_agent: navigator.userAgent
+      };
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Błąd serwera');
+        form.reset();
+        showToast('Dziękujemy! Skontaktujemy się wkrótce. 📩', 'success');
+      } catch (err) {
+        showToast('Nie udało się wysłać. Spróbuj ponownie.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Wyślij';
+      }
+    });
+  </script>
 </body>
 </html>

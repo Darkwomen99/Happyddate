@@ -2,311 +2,471 @@
 <html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>HappyDate – Moje wydarzenia</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <!-- FullCalendar -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Custom Glass styles -->
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <!-- Анімації (за бажанням) -->
-  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css" />
   <style>
-    #ai-chat-toggle {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background-color: #3b82f6;
-      color: white;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      z-index: 1000;
-    }
+    @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
+    dialog::backdrop{background:rgba(0,0,0,.35)}
   </style>
 </head>
 
 <body class="min-h-screen flex flex-col">
- <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 shadow-none sticky top-0 z-50 transition-shadow duration-300">
-  <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
-    <h1 class="text-2xl font-bold text-white">🎁 HappyDate</h1>
-    <nav class="flex gap-4 text-white font-semibold">
-      <a href="/pages/index.html" class="hover:underline">Strona główna</a>
-      <a href="/pages/services.html" class="hover:underline">Usługi</a>
-      <a href="/pages/dashboard.html" class="underline font-bold">Moje wydarzenia</a>
-      <a href="/pages/settings.html" class="hover:underline">Ustawienia</a>
-      <button id="logout-btn" class="hover:underline">Wyloguj się</button>
-    </nav>
-  </div>
-</header>
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sticky top-0 z-50 shadow-none" aria-label="Główna nawigacja">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
+      <a href="/index.html" class="text-2xl font-bold text-white hover:underline" aria-label="HappyDate — Strona główna">🎁 HappyDate</a>
+      <nav class="hidden sm:flex gap-5 items-center text-white font-medium" aria-label="Główne menu">
+        <a href="/index.html" class="hover:underline">Strona główna</a>
+        <a href="/pages/services.html" class="hover:underline">Usługi</a>
+        <a href="/pages/dashboard.html" class="underline font-bold">Moje wydarzenia</a>
+        <a href="/pages/settings.html" class="hover:underline">Ustawienia</a>
+        <button id="logout-btn" class="hover:underline" type="button">Wyloguj się</button>
+      </nav>
+      <button id="logout-btn-mobile" class="sm:hidden text-white text-sm underline" type="button" aria-label="Wyloguj się">Wyloguj</button>
+    </div>
+  </header>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed top-6 right-6 z-50 px-4 py-3 rounded-xl bg-gray-900 text-white shadow-xl transition-all duration-300 opacity-0 pointer-events-none" role="status" aria-live="polite"></div>
 
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow">
-  <h2 class="text-3xl font-bold mb-6">📅 Moje wydarzenia</h2>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Календар -->
-    <div class="lg:col-span-2">
-      <div class="glass-card shadow-xl rounded-2xl p-4 min-h-[520px]" id="calendar"></div>
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-3xl font-extrabold">📅 Moje wydarzenia</h1>
+      <div class="flex gap-2">
+        <button id="addEventBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-xl shadow flex items-center gap-2" type="button">
+          <span class="text-xl">➕</span> Dodaj wydarzenie
+        </button>
+        <button id="exportIcsBtn" class="border px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800" type="button" title="Eksportuj do .ics">
+          Eksport .ics
+        </button>
+      </div>
     </div>
 
-    <!-- Бічна скляна панель -->
-    <aside>
-      <div class="glass-card shadow-xl rounded-2xl p-6 flex flex-col gap-6 items-center">
-        <h3 class="text-xl font-bold mb-2 text-center">🎁 Nadchodzące wydarzenia</h3>
-        <div id="event-list" class="space-y-4 w-full"></div>
-        <!-- Контактні іконки -->
-        <div class="flex gap-4 mt-2 w-full justify-center">
-          <a href="tel:+48123123123" class="rounded-full bg-white/60 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Zadzwoń">
-            <span class="text-2xl">📞</span>
-          </a>
-          <a href="mailto:happyddate@gmail.com" class="rounded-full bg-white/60 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Mail">
-            <span class="text-2xl">📩</span>
-          </a>
-          <button onclick="document.getElementById('ai-chat-toggle').click()"
-            class="rounded-full bg-white/60 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="AI Chat">
-            <span class="text-2xl">🤖</span>
-          </button>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Calendar -->
+      <section class="lg:col-span-2">
+        <div class="glass-card shadow-xl rounded-2xl p-3 min-h-[540px]">
+          <div id="calendar" aria-label="Kalendarz wydarzeń"></div>
+        </div>
+      </section>
+
+      <!-- Sidebar -->
+      <aside aria-labelledby="upcoming-heading">
+        <div class="glass-card shadow-xl rounded-2xl p-6 flex flex-col gap-5">
+          <h2 id="upcoming-heading" class="text-xl font-bold text-center">🎁 Nadchodzące wydarzenia</h2>
+
+          <!-- Skeleton -->
+          <div id="event-skeleton" class="space-y-3" aria-hidden="true">
+            <div class="h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl animate-pulse"></div>
+            <div class="h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl animate-pulse"></div>
+            <div class="h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl animate-pulse"></div>
+          </div>
+
+          <div id="event-list" class="space-y-3 w-full hidden"></div>
+
+          <!-- Quick actions -->
+          <div class="flex gap-3 mt-2 w-full justify-center">
+            <a href="tel:+48123123123" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Zadzwoń" aria-label="Zadzwoń">
+              <span class="text-2xl">📞</span>
+            </a>
+            <a href="mailto:happyddate@gmail.com" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Napisz e-mail" aria-label="Napisz e-mail">
+              <span class="text-2xl">📩</span>
+            </a>
+            <button id="aiToggle" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="AI Asystent" type="button" aria-controls="ai-chat-window" aria-expanded="false">
+              <span class="text-2xl">🤖</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="bg-blue-500 text-white py-6 mt-12" aria-label="Stopka HappyDate">
+    <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base">
+      &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.<br>
+      <span class="text-xs opacity-80">Projekt & UX: HappyDate Team | <a href="/pages/privacy.html" class="underline hover:text-yellow-200">Polityka prywatności</a></span>
+    </div>
+  </footer>
+
+  <!-- AI Chat -->
+  <div id="ai-chat-window" class="hidden fixed bottom-24 right-6 w-[22rem] max-w-full glass-card border shadow-2xl z-50 flex-col transition-all duration-300 dark:bg-gray-900 rounded-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="ai-title">
+    <div class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-semibold flex items-center gap-2">
+      <span id="ai-title">🎁 AI Prezentowy</span>
+      <button type="button" class="ml-auto bg-white/10 rounded-full px-2 py-1 hover:bg-white/20 transition text-lg" title="Zamknij" id="ai-chat-close" aria-label="Zamknij">×</button>
+    </div>
+    <div class="p-4 flex flex-col gap-2">
+      <label class="text-sm font-medium">Dla kogo?
+        <input id="gift-person" class="w-full p-2 border rounded mt-1" placeholder="np. mama, przyjaciółka" autocomplete="off" />
+      </label>
+      <label class="text-sm font-medium">Okazja
+        <input id="gift-occasion" class="w-full p-2 border rounded mt-1" placeholder="np. urodziny, rocznica" autocomplete="off" />
+      </label>
+      <div class="grid grid-cols-2 gap-2">
+        <label class="text-sm font-medium">Wiek
+          <input id="gift-age" type="number" min="0" max="120" class="w-full p-2 border rounded mt-1" placeholder="np. 32" />
+        </label>
+        <label class="text-sm font-medium">Budżet (PLN)
+          <input id="gift-budget" type="number" min="0" step="1" class="w-full p-2 border rounded mt-1" placeholder="np. 150" />
+        </label>
+      </div>
+      <button id="ai-gift-btn" class="w-full bg-blue-600 text-white p-2 rounded mt-2 hover:bg-blue-700 transition" type="button">Zaproponuj</button>
+      <div id="gift-result" class="mt-2 text-sm text-gray-800 dark:text-gray-200 max-h-44 overflow-y-auto"></div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Event Modal -->
+  <dialog id="eventModal" class="rounded-2xl shadow-lg p-0 w-full max-w-md">
+    <form id="eventForm" method="dialog" class="p-6 bg-white dark:bg-gray-800 flex flex-col gap-3">
+      <h3 id="eventModalTitle" class="text-lg font-bold mb-1">Dodaj wydarzenie</h3>
+      <input type="hidden" id="eventId">
+      <label class="text-sm font-medium">Nazwa wydarzenia
+        <input id="eventTitle" class="border rounded-lg py-2 px-3 w-full mt-1" placeholder="np. Urodziny Ani" required />
+      </label>
+      <label class="text-sm font-medium">Rodzaj
+        <select id="eventType" class="border rounded-lg py-2 px-3 w-full mt-1">
+          <option value="birthday">🎂 Urodziny</option>
+          <option value="anniversary">💍 Rocznica</option>
+          <option value="custom" selected>🔖 Inne</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium">Kogo dotyczy?
+        <input id="eventPerson" class="border rounded-lg py-2 px-3 w-full mt-1" placeholder="np. Ania" required />
+      </label>
+      <label class="text-sm font-medium">Data
+        <input id="eventDate" type="date" class="border rounded-lg py-2 px-3 w-full mt-1" required />
+      </label>
+      <div class="flex items-center justify-between mt-2">
+        <button type="submit" class="bg-blue-600 text-white rounded-xl px-4 py-2 hover:bg-blue-700">Zapisz</button>
+        <div class="flex gap-2">
+          <button type="button" id="deleteEventBtn" class="hidden text-red-600 border border-red-200 hover:bg-red-50 rounded-xl px-3 py-2">Usuń</button>
+          <button type="button" id="closeModalBtn" class="rounded-xl px-4 py-2 border">Anuluj</button>
         </div>
       </div>
-    </aside>
-  </div>
-</main>
-
-
- <footer class="bg-blue-500 text-white py-6 mt-12" aria-label="Stopka HappyDate">
-  <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base">
-    &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.<br>
-    <span class="text-xs opacity-80">Projekt & UX: HappyDate Team | <a href="privacy.html" class="underline hover:text-yellow-200">Polityka prywatności</a></span>
-  </div>
-</footer>
-
-
-
-
-<!-- Плаваюча кнопка AI -->
-<div id="ai-chat-toggle"
-     class="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-2xl text-2xl cursor-pointer transition-all duration-300"
-     title="Twój AI Asystent">
-  🤖
-</div>
-
-<!-- Glass AI-вікно -->
-<div id="ai-chat-window"
-     class="hidden fixed bottom-24 right-6 w-80 max-w-full glass-card border shadow-2xl z-50 flex-col transition-all duration-300 dark:bg-gray-900">
-  <div class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 rounded-t-2xl font-semibold flex items-center gap-2">
-    <span>🎁</span> AI Prezentowy
-    <button type="button"
-            class="ml-auto bg-white/10 rounded-full px-2 py-1 hover:bg-white/20 transition text-lg"
-            title="Zamknij"
-            id="ai-chat-close">×</button>
-  </div>
-  <div class="p-4 flex flex-col gap-2">
-    <input id="gift-person" class="w-full p-2 border rounded mb-1" placeholder="Dla kogo?" />
-    <input id="gift-occasion" class="w-full p-2 border rounded mb-1" placeholder="Okazja?" />
-    <input id="gift-age" type="number" class="w-full p-2 border rounded mb-1" placeholder="Wiek" />
-    <input id="gift-budget" type="number" class="w-full p-2 border rounded mb-1" placeholder="Budżet (PLN)" />
-    <button id="ai-gift-btn" class="w-full bg-blue-600 text-white p-2 rounded mt-2 hover:bg-blue-700 transition">Zaproponuj</button>
-    <div id="gift-result" class="mt-2 text-sm text-gray-800 dark:text-gray-200 max-h-40 overflow-y-auto"></div>
-  </div>
-</div>
-
-<!-- Glass-модалка для додавання події -->
-<div id="eventModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
-  <div class="glass-card w-full max-w-md p-6 rounded-2xl shadow-2xl">
-    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">➕ Dodaj wydarzenie</h2>
-    <form id="eventForm" class="flex flex-col gap-3">
-      <input id="eventTitle" class="border rounded p-2" placeholder="Nazwa wydarzenia" required autocomplete="off">
-      <select id="eventType" class="border rounded p-2">
-        <option value="birthday">🎂 Urodziny</option>
-        <option value="anniversary">💍 Rocznica</option>
-        <option value="custom" selected>🔖 Inne</option>
-      </select>
-      <input id="eventPerson" class="border rounded p-2" placeholder="Kogo dotyczy?" required autocomplete="off">
-      <input id="eventDate" type="date" class="border rounded p-2" required>
-      <div class="flex gap-2 justify-end pt-2">
-        <button type="button" id="closeModal" class="bg-gray-200 dark:bg-gray-700 rounded px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Anuluj</button>
-        <button type="submit" class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700">Dodaj</button>
-      </div>
     </form>
-  </div>
-</div>
+  </dialog>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
+  <!-- Supabase app logic -->
+  <script type="module">
+    import { supabase } from '/js/supabaseClient.js';
 
-  // === Firebase config ===
-  const firebaseConfig = {
-    apiKey: "AIzaSyCJmddWXQKRGw1nnQ6Evje4qMqHcddSulY",
-    authDomain: "happydate-4e42f.firebaseapp.com",
-    projectId: "happydate-4e42f",
-    storageBucket: "happydate-4e42f.appspot.com",
-    messagingSenderId: "169631163082",
-    appId: "1:169631163082:web:b4295c7840898da42aca33"
-  };
-  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // === Авторизація та ініціалізація календаря ===
-  firebase.auth().onAuthStateChanged(user => {
-    if (!user) return window.location.href = 'login.html';
-
-    // --- FullCalendar ---
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      selectable: true,
-      headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listMonth' },
-      eventDisplay: 'block',
-      dateClick(info) {
-        // Відкрити glass-модалку і підставити дату
-        document.getElementById('eventDate').value = info.dateStr;
-        document.getElementById('eventModal').classList.remove('hidden');
-        document.getElementById('eventTitle').focus();
-      },
-      events: async function (fetchInfo, successCallback) {
-        const snapshot = await db.collection('events').where('uid', '==', user.uid).get();
-        const events = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            title: `${data.person} 🎁`,
-            start: data.date,
-            color: data.type === 'birthday'
-              ? '#3b82f6'
-              : data.type === 'anniversary'
-                ? '#ec4899'
-                : '#10b981'
-          };
-        });
-        successCallback(events);
-        updateEventList(events);
-      }
-    });
-    calendar.render();
-
-    // --- Додавання події через модалку ---
-    const eventModal = document.getElementById('eventModal');
-    const eventForm = document.getElementById('eventForm');
-    document.getElementById('closeModal').onclick = () => {
-      eventModal.classList.add('hidden');
-      eventForm.reset();
+    // ---------- Helpers ----------
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const fmtDate = (isoStr) => {
+      try { return new Intl.DateTimeFormat('pl-PL', { dateStyle:'long' }).format(new Date(isoStr)); }
+      catch { return isoStr; }
     };
-    // Закриття по кліку поза вікном
-    eventModal.addEventListener('click', e => {
-      if (e.target === eventModal) {
-        eventModal.classList.add('hidden');
-        eventForm.reset();
-      }
-    });
-    eventForm.onsubmit = async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('eventTitle').value.trim();
-      const type = document.getElementById('eventType').value;
-      const person = document.getElementById('eventPerson').value.trim();
-      const date = document.getElementById('eventDate').value;
-      if (!title || !type || !person || !date) return;
-      await db.collection('events').add({
-        uid: firebase.auth().currentUser.uid,
-        title, type, person, date
-      });
-      eventModal.classList.add('hidden');
-      eventForm.reset();
-      calendar.refetchEvents();
+    const toast = (msg, type='info') => {
+      const el = $('#toast');
+      const colors = {
+        info:'bg-gray-900 text-white', ok:'bg-green-600 text-white',
+        warn:'bg-yellow-500 text-black', error:'bg-red-600 text-white'
+      };
+      el.className = `fixed top-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl transition-all duration-300 ${colors[type]||colors.info}`;
+      el.textContent = msg; el.style.opacity='1'; el.style.pointerEvents='auto';
+      setTimeout(()=>{ el.style.opacity='0'; el.style.pointerEvents='none'; }, 2500);
     };
+    const colorForType = (t) => t==='birthday' ? '#3b82f6' : t==='anniversary' ? '#ec4899' : '#10b981';
+    const labelForType = (t) => t==='birthday' ? 'Urodziny' : t==='anniversary' ? 'Rocznica' : 'Inne';
 
-    // --- Logout ---
-    document.getElementById('logout-btn')?.addEventListener('click', async () => {
-      await firebase.auth().signOut();
-      window.location.href = 'login.html';
-    });
-
-    // --- Оновлення списку збоку (Glass панель) ---
-    function updateEventList(events) {
-      const eventList = document.getElementById('event-list');
-      if (!eventList) return;
-      if (!events.length) {
-        eventList.innerHTML = `<div class="text-gray-500 text-center">Brak nadchodzących wydarzeń 🎈</div>`;
+    // ---------- Auth gate ----------
+    let currentUser = null;
+    async function requireAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        window.location.href = '/pages/login.html';
         return;
       }
-      eventList.innerHTML = events
-        .sort((a, b) => a.start.localeCompare(b.start))
-        .slice(0, 5)
-        .map(e =>
-          `<div class="bg-white/80 dark:bg-gray-800/60 rounded-xl px-4 py-3 shadow flex flex-col gap-1">
-              <span class="font-semibold">${e.title.replace('🎁','')} <span class="ml-1">${e.title.includes('🎁') ? '🎁' : ''}</span></span>
-              <span class="text-xs text-gray-600">${e.start}</span>
-           </div>`
-        )
-        .join('');
+      currentUser = session.user;
     }
-  });
+    await requireAuth();
+    supabase.auth.onAuthStateChange((_e, session) => {
+      if (!session?.user) window.location.href = '/pages/login.html';
+    });
 
-  // === AI-чат WOW popup ===
-  const chatToggle = document.getElementById('ai-chat-toggle');
-  const chatWindow = document.getElementById('ai-chat-window');
-  chatToggle?.addEventListener('click', () => {
-    chatWindow.classList.toggle('hidden');
-    if (!chatWindow.classList.contains('hidden')) {
-      setTimeout(() => chatWindow.querySelector('input')?.focus(), 200);
-    }
-  });
-  document.getElementById('ai-chat-close')?.addEventListener('click', () => {
-    chatWindow.classList.add('hidden');
-  });
+    // Logout
+    $('#logout-btn')?.addEventListener('click', async () => { await supabase.auth.signOut(); });
+    $('#logout-btn-mobile')?.addEventListener('click', async () => { await supabase.auth.signOut(); });
 
-  // === AI-пропозиції подарунків ===
-  document.getElementById('ai-gift-btn')?.addEventListener('click', async () => {
-    const person = document.getElementById('gift-person').value.trim();
-    const occasion = document.getElementById('gift-occasion').value.trim();
-    const age = document.getElementById('gift-age').value.trim();
-    const budget = document.getElementById('gift-budget').value.trim();
-    const result = document.getElementById('gift-result');
-
-    if (!person || !occasion || !age || !budget) {
-      result.innerHTML = '<span class="text-red-600">Wypełnij wszystkie pola.</span>';
-      return;
-    }
-
-    result.innerHTML = '⏳ Generuję propozycje...';
-
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer YOUR_OPENAI_API_KEY'
+    // ---------- FullCalendar ----------
+    let FC;
+    function initCalendar() {
+      FC = new FullCalendar.Calendar($('#calendar'), {
+        height: 'auto',
+        initialView: 'dayGridMonth',
+        locale: 'pl',
+        firstDay: 1,
+        selectable: true,
+        dayMaxEvents: true,
+        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listMonth' },
+        buttonText: { today: 'Dziś', month: 'Miesiąc', list: 'Lista' },
+        eventTimeFormat: { hour12: false, hour: '2-digit', minute: '2-digit' },
+        editable: true,
+        eventStartEditable: true,
+        eventDurationEditable: false,
+        select: (info) => openEventModal({ date: info.startStr }),
+        dateClick: (info) => openEventModal({ date: info.dateStr }),
+        eventClick: (info) => openEventModal(fromEvent(info.event)),
+        eventDrop: async (info) => {
+          try {
+            const id = info.event.id;
+            const { error } = await supabase.from('events').update({ date: info.event.startStr }).eq('id', id);
+            if (error) throw error;
+            toast('Data wydarzenia zaktualizowana', 'ok');
+            refreshUpcoming();
+          } catch (e) {
+            console.error(e); info.revert(); toast('Nie udało się zapisać zmiany daty', 'error');
+          }
         },
-        body: JSON.stringify({
-          model: 'gpt-4',
-          messages: [{
-            role: 'user',
-            content: `Proszę zaproponować 3 wyjątkowe prezenty dla osoby: ${person}, wiek ${age}, okazja: ${occasion}, budżet: ${budget} zł. Krótkie opisy i emocjonalne uzasadnienie.`
-          }]
-        })
+        events: [] // feed via loadEvents()
       });
-      const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content || 'Brak odpowiedzi.';
-      result.innerHTML = `<pre class="whitespace-pre-wrap">${reply}</pre>`;
-    } catch (err) {
-      result.innerHTML = `<span class="text-red-600">Błąd: ${err.message || "Spróbuj ponownie później."}</span>`;
+      FC.render();
     }
-  });
+    initCalendar();
 
-});
-</script>
+    function fromEvent(ev) {
+      const x = ev.extendedProps || {};
+      return { id: ev.id, title: x.title || ev.title || '', type: x.type || 'custom', person: x.person || '', date: ev.startStr };
+    }
 
+    async function loadEvents() {
+      const { data, error } = await supabase.from('events').select('*').eq('uid', currentUser.id).order('date', { ascending: true });
+      if (error) { console.error(error); toast('Błąd pobierania wydarzeń', 'error'); return; }
+      setCalendarEvents(data || []);
+      setUpcomingList(data || []);
+    }
 
+    function setCalendarEvents(rows) {
+      const mapped = rows.map(e => ({
+        id: e.id,
+        title: `${e.person} — ${labelForType(e.type)}`,
+        start: e.date,
+        allDay: true,
+        backgroundColor: colorForType(e.type),
+        borderColor: colorForType(e.type),
+        textColor: '#fff',
+        extendedProps: { title: e.title || '', type: e.type || 'custom', person: e.person || '' }
+      }));
+      FC.removeAllEvents();
+      FC.addEventSource(mapped);
+    }
 
+    // ---------- Realtime ----------
+    const channel = supabase
+      .channel('events-ch')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'events', filter: `uid=eq.${currentUser.id}` }, async () => { await loadEvents(); })
+      .subscribe();
+
+    // Initial load
+    await loadEvents();
+
+    // ---------- Sidebar upcoming ----------
+    function setUpcomingList(events) {
+      const box = $('#event-list'); const skel = $('#event-skeleton');
+      skel.classList.add('hidden'); box.classList.remove('hidden');
+      box.replaceChildren();
+
+      const next = [...events].sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
+      if (!next.length) {
+        const empty = document.createElement('div');
+        empty.className = 'text-gray-500 text-center';
+        empty.textContent = 'Brak nadchodzących wydarzeń 🎈';
+        box.appendChild(empty);
+        return;
+      }
+
+      for (const e of next) {
+        const card = document.createElement('div');
+        card.className = 'bg-white/85 dark:bg-gray-800/70 rounded-xl px-4 py-3 shadow flex flex-col gap-1';
+
+        const t = document.createElement('div');
+        t.className = 'font-semibold flex items-center justify-between gap-3';
+        const spanTitle = document.createElement('span');
+        spanTitle.textContent = `${e.person} — ${labelForType(e.type)}`;
+        const pill = document.createElement('span');
+        pill.className = 'text-xs rounded-full px-2 py-0.5';
+        pill.style.backgroundColor = colorForType(e.type);
+        pill.style.color = '#fff';
+        pill.textContent = e.type==='birthday'?'🎂':e.type==='anniversary'?'💍':'🔖';
+        t.appendChild(spanTitle); t.appendChild(pill);
+
+        const d = document.createElement('div');
+        d.className = 'text-xs text-gray-600 dark:text-gray-300';
+        d.textContent = fmtDate(e.date);
+
+        const actions = document.createElement('div');
+        actions.className = 'mt-1 flex gap-2';
+        const editBtn = document.createElement('button');
+        editBtn.className = 'text-blue-600 hover:underline text-xs'; editBtn.type='button'; editBtn.textContent='Edytuj';
+        editBtn.addEventListener('click', () => openEventModal({ id:e.id, title:e.title||'', type:e.type, person:e.person, date:e.date }));
+        const delBtn = document.createElement('button');
+        delBtn.className = 'text-red-600 hover:underline text-xs'; delBtn.type='button'; delBtn.textContent='Usuń';
+        delBtn.addEventListener('click', () => deleteEvent(e.id));
+
+        actions.append(editBtn, delBtn);
+        card.append(t, d, actions);
+        box.appendChild(card);
+      }
+    }
+    function refreshUpcoming(){ /* realtime already refreshes via channel */ }
+
+    // ---------- Modal & CRUD ----------
+    const eventDlg   = $('#eventModal');
+    const eventForm  = $('#eventForm');
+    const deleteBtn  = $('#deleteEventBtn');
+    const closeBtn   = $('#closeModalBtn');
+    const modalTitle = $('#eventModalTitle');
+
+    $('#addEventBtn')?.addEventListener('click', () => openEventModal());
+
+    function openEventModal(data = {}) {
+      $('#eventId').value     = data.id || '';
+      $('#eventTitle').value  = data.title || '';
+      $('#eventType').value   = data.type || 'custom';
+      $('#eventPerson').value = data.person || '';
+      $('#eventDate').value   = data.date || new Date().toISOString().slice(0,10);
+
+      modalTitle.textContent = data.id ? 'Edytuj wydarzenie' : 'Dodaj wydarzenie';
+      deleteBtn.classList.toggle('hidden', !data.id);
+
+      if (typeof eventDlg.showModal === 'function') eventDlg.showModal();
+      else eventDlg.classList.remove('hidden');
+      setTimeout(()=> $('#eventTitle').focus(), 50);
+    }
+
+    closeBtn?.addEventListener('click', () => { if (eventDlg.open) eventDlg.close(); else eventDlg.classList.add('hidden'); eventForm.reset(); });
+
+    deleteBtn?.addEventListener('click', async () => {
+      const id = $('#eventId').value; if (!id) return;
+      await deleteEvent(id);
+      if (eventDlg.open) eventDlg.close();
+      eventForm.reset();
+    });
+
+    eventForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id     = $('#eventId').value.trim();
+      const title  = $('#eventTitle').value.trim();
+      const type   = $('#eventType').value;
+      const person = $('#eventPerson').value.trim();
+      const date   = $('#eventDate').value;
+
+      if (!title || !person || !date) { toast('Uzupełnij wymagane pola', 'warn'); return; }
+
+      try {
+        if (id) {
+          const { error } = await supabase.from('events').update({ title, type, person, date }).eq('id', id);
+          if (error) throw error;
+          toast('Zapisano zmiany', 'ok');
+        } else {
+          const { error } = await supabase.from('events').insert([{ uid: currentUser.id, title, type, person, date }]);
+          if (error) throw error;
+          toast('Dodano wydarzenie', 'ok');
+        }
+        if (eventDlg.open) eventDlg.close();
+        eventForm.reset();
+      } catch (err) {
+        console.error(err); toast('Nie udało się zapisać', 'error');
+      }
+    });
+
+    async function deleteEvent(id) {
+      if (!confirm('Czy na pewno chcesz usunąć to wydarzenie?')) return;
+      try {
+        const { error } = await supabase.from('events').delete().eq('id', id);
+        if (error) throw error;
+        toast('Usunięto wydarzenie', 'ok');
+      } catch (err) {
+        console.error(err); toast('Nie udało się usunąć', 'error'); throw err;
+      }
+    }
+
+    // ---------- AI Assistant (server endpoint) ----------
+    const aiToggle = $('#aiToggle');
+    const aiWin    = $('#ai-chat-window');
+    const aiClose  = $('#ai-chat-close');
+
+    aiToggle?.addEventListener('click', () => {
+      const hidden = aiWin.classList.toggle('hidden');
+      aiToggle.setAttribute('aria-expanded', String(!hidden));
+      if (!hidden) setTimeout(()=> $('#gift-person')?.focus(), 60);
+    });
+    aiClose?.addEventListener('click', () => { aiWin.classList.add('hidden'); aiToggle.setAttribute('aria-expanded','false'); aiToggle.focus(); });
+
+    $('#ai-gift-btn')?.addEventListener('click', async () => {
+      const person = $('#gift-person').value.trim();
+      const occasion = $('#gift-occasion').value.trim();
+      const age = Number($('#gift-age').value);
+      const budget = Number($('#gift-budget').value);
+      const out = $('#gift-result');
+      out.textContent = '';
+
+      if (!person || !occasion || !age || !budget) { out.innerHTML = '<span class="text-red-600">Wypełnij wszystkie pola.</span>'; return; }
+      out.textContent = '⏳ Generuję propozycje...';
+
+      try {
+        const res = await fetch('/api/gift-ideas', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ person, occasion, age, budget }) });
+        if (!res.ok) throw new Error('Błąd serwera');
+        const data = await res.json();
+        const ideas = Array.isArray(data.ideas) ? data.ideas : [];
+
+        out.replaceChildren();
+        if (!ideas.length) { out.textContent = 'Brak propozycji. Spróbuj doprecyzować dane.'; return; }
+
+        const list = document.createElement('ol'); list.className = 'list-decimal list-inside space-y-2';
+        ideas.slice(0,3).forEach(i => {
+          const li = document.createElement('li');
+          const strong = document.createElement('strong'); strong.textContent = i.title || 'Pomysł';
+          const span = document.createElement('span'); span.className = 'block text-gray-600 dark:text-gray-300'; span.textContent = i.desc || '';
+          li.append(strong, span); list.appendChild(li);
+        });
+        out.appendChild(list);
+        if (data.disclaimer) { const d = document.createElement('p'); d.className = 'text-xs text-gray-500 mt-2'; d.textContent = data.disclaimer; out.appendChild(d); }
+      } catch (err) {
+        console.error(err); out.innerHTML = '<span class="text-red-600">Ups! Coś poszło nie tak. Spróbuj ponownie.</span>';
+      }
+    });
+
+    // ---------- Export .ics ----------
+    $('#exportIcsBtn')?.addEventListener('click', async () => {
+      try {
+        const { data, error } = await supabase.from('events').select('*').eq('uid', currentUser.id);
+        if (error) throw error;
+        const ics = buildIcs(data || []);
+        const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'happydate-events.ics';
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      } catch(e) { console.error(e); toast('Nie udało się wyeksportować .ics', 'error'); }
+    });
+
+    function buildIcs(rows) {
+      const NL = '\r\n';
+      const pad = (n) => String(n).padStart(2,'0');
+      const dateToYYYYMMDD = (iso) => { const d = new Date(iso + 'T00:00:00'); return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}`; };
+      let out = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//HappyDate//Calendar//PL'].join(NL) + NL;
+      rows.forEach(r => {
+        const dt = dateToYYYYMMDD(r.date);
+        const uid = (r.id || crypto.randomUUID()) + '@happydate';
+        const summary = `${r.person || ''} — ${r.title || labelForType(r.type)}`.trim();
+        out += ['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${dt}T000000Z`,`DTSTART;VALUE=DATE:${dt}`,`SUMMARY:${summary}`,`DESCRIPTION:${labelForType(r.type)}`,'END:VEVENT'].join(NL) + NL;
+      });
+      return out + 'END:VCALENDAR' + NL;
+    }
+
+    // ---------- Modal close by click outside (for browsers lacking <dialog> support) ----------
+    $('#eventModal')?.addEventListener('click', (e) => { if (e.target === e.currentTarget) { e.currentTarget.close?.(); } });
+  </script>
 </body>
 </html>

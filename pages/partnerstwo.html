@@ -1,182 +1,314 @@
+<!-- pages/partnerstwo.html — wersja produkcyjna (Vercel + Supabase-ready, dostępność, walidacja, anty-spam) -->
 <!DOCTYPE html>
 <html lang="pl" class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HappyDate - Partnerstwo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>HappyDate — Partnerstwo</title>
+
+  <meta name="description" content="Dołącz do sieci partnerów HappyDate. Zyskaj nowych klientów, widoczność i wsparcie AI. Wypełnij krótki formularz i zacznij współpracę." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://www.happydate.pl/pages/partnerstwo.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="HappyDate — Partnerstwo" />
+  <meta property="og:description" content="Dołącz do naszej sieci partnerów prezentowych. Nowi klienci, promocja i wsparcie AI." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.happydate.pl/pages/partnerstwo.html" />
+  <meta property="og:image" content="/assets/img/social-banner.jpg" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @media (prefers-reduced-motion: reduce){ .animate-bounce,.animate-ping,.animate-pulse{ animation:none !important; } }
+  </style>
 </head>
-<body>
+<body class="overflow-x-hidden">
+  <!-- Toast -->
+  <div id="toast" class="fixed top-6 right-6 z-50 hidden px-4 py-3 rounded-xl text-white font-semibold shadow-xl" role="status" aria-live="polite"></div>
 
   <!-- Header -->
-<body class="overflow-x-hidden">
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-none transition-shadow duration-300" aria-label="Główna nawigacja">
+    <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 flex justify-between items-center">
+      <!-- Logo & tagline -->
+      <div class="flex items-center gap-2">
+        <a href="/index.html" class="text-2xl font-bold text-white hover:underline" aria-label="HappyDate — strona główna">🎁 HappyDate</a>
+        <span class="hidden md:inline ml-2 text-base italic text-white/90">Twój ciepły asystent prezentowy</span>
+        <button id="audioBtn" class="text-white text-2xl p-2 rounded hover:bg-white/10 transition focus:ring-2 focus:ring-cyan-300" aria-label="Audio prezentacja" aria-controls="audioModal" type="button">✨</button>
+      </div>
 
-<!-- Header -->
-<header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sm:py-4 sticky top-0 z-50 shadow-none transition-shadow duration-300" aria-label="Główna nawigacja">
-  <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 flex justify-between items-center">
-    
-    <!-- Logo & hasło -->
-    <div class="flex items-center gap-2">
-      <h1 class="text-2xl font-bold text-white cursor-pointer hover:underline" aria-label="HappyDate – prezentowy asystent">
-        🎁 HappyDate
-      </h1>
-      <span class="hidden md:inline ml-2 text-base italic text-white opacity-80">
-        Twój ciepły asystent prezentowy
-      </span>
-      <button
-        onclick="document.getElementById('audioModal')?.showModal()"
-        title="Kliknij po magiczną myśl!"
-        class="text-white text-2xl p-2 rounded hover:bg-white/10 transition focus:ring-2 focus:ring-cyan-300"
-        aria-label="Audio prezentacja"
-      >✨</button>
-    </div>
+      <!-- Desktop nav -->
+      <nav class="hidden sm:flex gap-5 md:gap-6 items-center text-white font-medium" aria-label="Główne menu">
+        <a href="/index.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Strona główna</a>
+        <a href="/pages/services.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Usługi</a>
+        <a href="/pages/dashboard.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Moje wydarzenia</a>
+        <span class="px-1 py-0.5 rounded bg-white/20 underline font-semibold">Partnerstwo</span>
+        <a href="/pages/about.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">O nas</a>
+        <a href="/pages/reviews.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Opinie</a>
+      </nav>
 
-    <!-- Nawigacja -->
-    <nav class="hidden sm:flex gap-5 md:gap-6 items-center text-white font-medium">
-      <a href="/pages/index.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Strona główna</a>
-      <a href="/pages/services.html" class="px-1 py-0.5 rounded bg-white/20 font-semibold underline focus:bg-white/30 transition">Usługi</a>
-      <a href="/pages/dashboard.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Moje wydarzenia</a>
-      <a href="/pages/partnerstwo.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Partnerstwo</a>
-      <a href="/pages/about.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">O nas</a>
-      <a href="/pages/reviews.html" class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Opinie</a>
-    </nav>
-
-    <!-- Wybór języka -->
-    <div class="relative" id="lang-dropdown-wrap">
-      <button id="langDropdownBtn"
-        class="flex items-center gap-2 px-3 py-2 rounded border bg-white/10 text-white hover:bg-white/20 transition focus:ring-2 focus:ring-blue-300"
-        aria-label="Zmień język" type="button">
-        <span id="langFlag">🌐</span>
-        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </button>
-      <div id="langDropdown"
-        class="absolute right-0 mt-2 bg-white shadow-xl rounded-xl z-50 py-2 min-w-[150px] hidden text-left
-               transition-all duration-200 scale-95 opacity-0 origin-top-right">
-        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="pl"><span>🇵🇱</span> Polski</button>
-        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ua"><span>🇺🇦</span> Українська</button>
-        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="en"><span>🇬🇧</span> English</button>
-        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ru"><span>🇷🇺</span> Русский</button>
-        <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="de"><span>🇩🇪</span> Deutsch</button>
+      <!-- Language -->
+      <div class="relative" id="lang-dropdown-wrap">
+        <button id="langDropdownBtn" class="flex items-center gap-2 px-3 py-2 rounded border bg-white/10 text-white hover:bg-white/20 transition focus:ring-2 focus:ring-blue-300" aria-label="Zmień język" aria-haspopup="menu" aria-expanded="false" aria-controls="langDropdown" type="button">
+          <span id="langFlag">🌐</span>
+          <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="langDropdown" class="absolute right-0 mt-2 bg-white shadow-xl rounded-xl z-50 py-2 min-w-[150px] hidden text-left transition-all duration-200 scale-95 opacity-0 origin-top-right" role="menu">
+          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="pl" role="menuitem" tabindex="-1" aria-label="Polski"><span>🇵🇱</span> Polski</button>
+          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ua" role="menuitem" tabindex="-1" aria-label="Українська"><span>🇺🇦</span> Українська</button>
+          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="en" role="menuitem" tabindex="-1" aria-label="English"><span>🇬🇧</span> English</button>
+          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="ru" role="menuitem" tabindex="-1" aria-label="Русский"><span>🇷🇺</span> Русский</button>
+          <button class="flex items-center gap-2 w-full px-4 py-3 text-base hover:bg-blue-100 transition" data-lang="de" role="menuitem" tabindex="-1" aria-label="Deutsch"><span>🇩🇪</span> Deutsch</button>
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
- <script>
-  // Mobile menu toggle
-  document.getElementById('mobile-menu-toggle').addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.toggle('hidden');
-    // Animate slide-in for mobile menu
-    if (!menu.classList.contains('hidden')) {
-      menu.classList.remove('-translate-x-full');
-      menu.classList.add('translate-x-0');
-    } else {
-      menu.classList.add('-translate-x-full');
-      menu.classList.remove('translate-x-0');
-    }
-  });
-  // Close mobile menu
-  document.getElementById('close-mobile-menu').addEventListener('click', () => {
-    const menu = document.getElementById('mobile-menu');
-    menu.classList.add('hidden');
-    menu.classList.add('-translate-x-full');
-    menu.classList.remove('translate-x-0');
-  });
-</script>
+  <!-- Main -->
+  <main class="max-w-3xl mx-auto px-3 sm:px-4 md:px-8 py-14">
+    <!-- Hero -->
+    <section class="text-center mb-12">
+      <div class="inline-block bg-gradient-to-r from-cyan-500 to-pink-400 px-5 py-2 rounded-full shadow text-white font-bold tracking-wide text-lg mb-4">🤝 Partnerstwo z HappyDate</div>
+      <h1 class="text-4xl font-extrabold mb-3">Dołącz do naszej sieci partnerów!</h1>
+      <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-4">Zostań częścią nowoczesnej platformy prezentowej. Razem dostarczajmy radość i wyjątkowe chwile tysiącom użytkowników w Polsce!</p>
+      <div class="flex justify-center gap-2 mb-6">
+        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-xl text-sm font-medium">+ Nowi klienci</span>
+        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-xl text-sm font-medium">Wsparcie AI</span>
+        <span class="bg-pink-100 text-pink-700 px-3 py-1 rounded-xl text-sm font-medium">Widoczność w serwisie</span>
+      </div>
+    </section>
 
-  <!-- Main Content -->
-  <main class="max-w-3xl mx-auto px-2 py-16">
-  <!-- Hero block -->
-  <section class="text-center mb-12">
-    <div class="inline-block bg-gradient-to-r from-cyan-500 to-pink-400 px-5 py-2 rounded-full shadow text-white font-bold tracking-wide text-lg mb-4">
-      🤝 Partnerstwo z HappyDate
-    </div>
-    <h2 class="text-4xl font-extrabold mb-3">Dołącz do naszej sieci partnerów!</h2>
-    <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
-      Zostań częścią nowoczesnej platformy prezentowej. Razem dostarczajmy radość i wyjątkowe chwile tysiącom użytkowników w Polsce!
-    </p>
-    <div class="flex justify-center gap-2 mb-6">
-      <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-xl text-sm font-medium">+Nowi klienci</span>
-      <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-xl text-sm font-medium">Wsparcie AI</span>
-      <span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-xl text-sm font-medium">Promocja w serwisie</span>
-    </div>
-  </section>
+    <!-- Benefits -->
+    <section class="grid sm:grid-cols-2 gap-6 mb-12">
+      <article class="bg-white/90 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-2xl p-6 shadow">
+        <h3 class="font-semibold text-lg mb-1">Leady i sprzedaż</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Dopasowane zapytania klientów na podstawie preferencji i okazji.</p>
+      </article>
+      <article class="bg-white/90 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-2xl p-6 shadow">
+        <h3 class="font-semibold text-lg mb-1">Widoczność</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Wyróżnienia w katalogu prezentów i rekomendacjach AI.</p>
+      </article>
+      <article class="bg-white/90 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-2xl p-6 shadow">
+        <h3 class="font-semibold text-lg mb-1">Prosty start</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Szybka weryfikacja i wdrożenie — bez skomplikowanych integracji.</p>
+      </article>
+      <article class="bg-white/90 dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-2xl p-6 shadow">
+        <h3 class="font-semibold text-lg mb-1">Warunki win-win</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-300">Elastyczny model rozliczeń: prowizja od sprzedaży lub abonament.</p>
+      </article>
+    </section>
 
-  <!-- Form block -->
-  <form action="#" method="POST" class="bg-white/90 shadow-2xl border border-blue-100 rounded-2xl p-10 max-w-xl mx-auto space-y-6">
-    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">📝 Formularz zgłoszeniowy</h3>
-    <div>
-      <label for="company" class="block font-semibold mb-1">Nazwa firmy lub imię <span class="text-pink-500">*</span></label>
-      <input type="text" id="company" name="company" required
-        class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 shadow transition" />
-    </div>
-    <div>
-      <label for="email" class="block font-semibold mb-1">Email kontaktowy <span class="text-pink-500">*</span></label>
-      <input type="email" id="email" name="email" required
-        class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 shadow transition" />
-    </div>
-    <div>
-      <label for="phone" class="block font-semibold mb-1">Numer telefonu <span class="text-pink-500">*</span></label>
-      <input type="tel" id="phone" name="phone" required
-        class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 shadow transition" />
-    </div>
-    <div>
-      <label for="services" class="block font-semibold mb-1">Jakie usługi lub produkty oferujesz?</label>
-      <textarea id="services" name="services" rows="3"
-        class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 shadow transition"></textarea>
-    </div>
-    <div>
-      <label for="message" class="block font-semibold mb-1">Dodatkowe informacje</label>
-      <textarea id="message" name="message" rows="3"
-        class="w-full px-5 py-3 rounded-xl border border-gray-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 shadow transition"></textarea>
-    </div>
-    <button type="submit"
-      class="w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-indigo-500 hover:scale-105 shadow-xl hover:shadow-2xl text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 border-4 border-white/30">
-      Wyślij zgłoszenie
-    </button>
-  </form>
-</main>
+    <!-- Form -->
+    <form id="partnerForm" class="bg-white/95 dark:bg-gray-800 shadow-2xl border border-blue-100 dark:border-gray-700 rounded-2xl p-8 sm:p-10 max-w-xl mx-auto space-y-6" novalidate aria-describedby="form-status">
+      <h2 class="text-2xl font-bold mb-2 flex items-center gap-2">📝 Formularz zgłoszeniowy</h2>
+      <p class="text-sm text-gray-600 dark:text-gray-400 -mt-3">Pola oznaczone <span class="text-pink-500">*</span> są wymagane.</p>
 
+      <!-- Honeypot (anti-spam) -->
+      <div class="hidden" aria-hidden="true">
+        <label>Twoja strona (zostaw puste)
+          <input type="text" id="hp_website" autocomplete="off">
+        </label>
+      </div>
+
+      <input type="hidden" id="startedAt" value="">
+
+      <div>
+        <label for="company" class="block font-semibold mb-1">Nazwa firmy lub imię <span class="text-pink-500">*</span></label>
+        <input type="text" id="company" name="company" required maxlength="120" class="w-full px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 dark:bg-gray-900 transition" aria-invalid="false" aria-describedby="err-company" />
+        <p class="mt-1 text-xs text-red-600 hidden" id="err-company">Podaj nazwę firmy lub imię (min. 2 znaki).</p>
+      </div>
+
+      <div>
+        <label for="email" class="block font-semibold mb-1">Email kontaktowy <span class="text-pink-500">*</span></label>
+        <input type="email" id="email" name="email" required maxlength="160" class="w-full px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 dark:bg-gray-900 transition" aria-invalid="false" aria-describedby="err-email" />
+        <p class="mt-1 text-xs text-red-600 hidden" id="err-email">Podaj poprawny adres email.</p>
+      </div>
+
+      <div>
+        <label for="phone" class="block font-semibold mb-1">Numer telefonu <span class="text-pink-500">*</span></label>
+        <input type="tel" id="phone" name="phone" required inputmode="tel" pattern="[\+\d\s\-\(\)]{6,}" maxlength="40" class="w-full px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 dark:bg-gray-900 transition" aria-invalid="false" aria-describedby="err-phone" />
+        <p class="mt-1 text-xs text-red-600 hidden" id="err-phone">Podaj numer telefonu (min. 6 znaków, cyfry i symbole + - () spacja).</p>
+      </div>
+
+      <div>
+        <label for="services" class="block font-semibold mb-1">Jakie usługi lub produkty oferujesz?</label>
+        <textarea id="services" name="services" rows="3" maxlength="600" class="w-full px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 dark:bg-gray-900 transition" placeholder="np. kwiaty, kosze prezentowe, rękodzieło..."></textarea>
+      </div>
+
+      <div>
+        <label for="message" class="block font-semibold mb-1">Dodatkowe informacje</label>
+        <textarea id="message" name="message" rows="3" maxlength="800" class="w-full px-5 py-3 rounded-xl border border-gray-300 dark:border-gray-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 dark:bg-gray-900 transition" placeholder="Godziny dostaw, obszar działania, cennik, linki..."></textarea>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <input id="agree" type="checkbox" class="mt-1" required aria-describedby="err-agree" />
+        <label for="agree" class="text-sm text-gray-700 dark:text-gray-300">Wyrażam zgodę na kontakt w sprawie współpracy. <span class="text-pink-500">*</span></label>
+      </div>
+      <p class="mt-1 text-xs text-red-600 hidden" id="err-agree">Zaznacz zgodę na kontakt.</p>
+
+      <button id="submitBtn" type="submit" class="w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-indigo-500 hover:scale-105 shadow-xl hover:shadow-2xl text-white px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 border-4 border-white/30 disabled:opacity-60 disabled:cursor-not-allowed">
+        Wyślij zgłoszenie
+      </button>
+
+      <p class="text-xs text-gray-500 text-center" id="form-status">
+        Administratorem danych jest HappyDate. Dane wykorzystujemy wyłącznie do kontaktu w sprawie partnerstwa. <a href="/pages/privacy.html" class="underline">Polityka prywatności</a>.
+      </p>
+    </form>
+  </main>
 
   <!-- Footer -->
-  <footer class="bg-blue-500 text-white text-center py-4 mt-12">
-    <div data-i18n="footer.text">&copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.</div>
+  <footer class="bg-blue-500 text-white text-center py-6 mt-12">
+    <div class="text-sm md:text-base">&copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.</div>
   </footer>
 
-  <script src="js/main.js" defer></script>
-
-  <!-- GDPR Cookies Consent Popup -->
-<div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden">
-  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <p class="text-sm md:text-base">
-      This website uses cookies to enhance your browsing experience. By continuing to use this site, you agree to our 
-      <a href="/pages/privacy.html" class="underline hover:text-blue-300">Privacy Policy</a>.
-    </p>
-    <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition">
-      Accept
-    </button>
+  <!-- Cookies (PL) -->
+  <div id="cookieConsent" class="fixed bottom-0 inset-x-0 bg-gray-800 bg-opacity-90 text-white py-4 px-6 z-50 hidden" role="dialog" aria-modal="true" aria-label="Informacja o plikach cookies">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm md:text-base">Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą <a href="/pages/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.</p>
+      <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition" type="button">Akceptuję</button>
+    </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const cookieConsent = document.getElementById('cookieConsent');
-    const acceptBtn = document.getElementById('acceptCookies');
-
-    if (!localStorage.getItem('happydate_cookie_consent')) {
-      cookieConsent.classList.remove('hidden');
+  <!-- Scripts -->
+  <script>
+    // Utils
+    const qs  = (s,r=document)=>r.querySelector(s);
+    const qsa = (s,r=document)=>Array.from(r.querySelectorAll(s));
+    const toastEl = qs('#toast');
+    function showToast(msg, type='ok'){
+      toastEl.className = 'fixed top-6 right-6 z-50 px-4 py-3 rounded-xl text-white font-semibold shadow-xl';
+      toastEl.classList.add(type==='err' ? 'bg-red-600' : type==='warn' ? 'bg-yellow-500 text-black' : 'bg-green-600');
+      toastEl.textContent = msg;
+      toastEl.classList.remove('hidden');
+      setTimeout(()=> toastEl.classList.add('hidden'), 2800);
     }
 
-    acceptBtn.addEventListener('click', () => {
-      localStorage.setItem('happydate_cookie_consent', 'true');
-      cookieConsent.classList.add('hidden');
-    });
-  });
-</script>
+    // Audio (optional modal present elsewhere)
+    qs('#audioBtn')?.addEventListener('click', () => qs('#audioModal')?.showModal());
 
+    // Language dropdown
+    (function(){
+      const langBtn = qs('#langDropdownBtn');
+      const langMenu= qs('#langDropdown');
+      const langWrap= qs('#lang-dropdown-wrap');
+      const langFlag= qs('#langFlag');
+      const langMap = { pl:'🇵🇱', ua:'🇺🇦', en:'🇬🇧', ru:'🇷🇺', de:'🇩🇪' };
+      const current = () => localStorage.getItem('lang') || (navigator.language?.slice(0,2) ?? 'pl');
+      const update  = () => langFlag && (langFlag.textContent = langMap[current()] || '🌐');
+      update();
+      function open(){ langMenu.classList.remove('hidden','scale-95','opacity-0'); langMenu.classList.add('scale-100','opacity-100'); langBtn.setAttribute('aria-expanded','true'); langBtn.querySelector('svg')?.classList.add('rotate-180');}
+      function close(){ langMenu.classList.add('hidden','scale-95','opacity-0'); langMenu.classList.remove('scale-100','opacity-100'); langBtn.setAttribute('aria-expanded','false'); langBtn.querySelector('svg')?.classList.remove('rotate-180');}
+      langBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); langMenu.classList.contains('hidden')?open():close(); });
+      document.addEventListener('click', (e)=>{ if(!langWrap?.contains(e.target)) close(); });
+      qsa('#langDropdown [role="menuitem"]').forEach(btn => btn.addEventListener('click', ()=>{
+        localStorage.setItem('lang', btn.getAttribute('data-lang')); update(); close(); location.reload();
+      }));
+    })();
 
+    // Cookies
+    (function(){
+      const cc = qs('#cookieConsent');
+      if(!localStorage.getItem('happydate_cookie_consent')) cc.classList.remove('hidden');
+      qs('#acceptCookies')?.addEventListener('click', ()=>{ localStorage.setItem('happydate_cookie_consent','true'); cc.classList.add('hidden'); });
+    })();
+
+    // Form logic
+    (function(){
+      const form = qs('#partnerForm');
+      const btn  = qs('#submitBtn');
+      // time to submit (anti-bot)
+      const startedAt = Date.now();
+      qs('#startedAt').value = String(startedAt);
+
+      function setErr(input, errEl, hasErr){
+        input.setAttribute('aria-invalid', hasErr ? 'true' : 'false');
+        errEl.classList.toggle('hidden', !hasErr);
+      }
+
+      function validate(){
+        let ok = true;
+        const company = qs('#company');
+        const email   = qs('#email');
+        const phone   = qs('#phone');
+        const agree   = qs('#agree');
+
+        setErr(company, qs('#err-company'), !(company.value.trim().length >= 2));
+        if(!(company.value.trim().length >= 2)) ok = false;
+
+        setErr(email, qs('#err-email'), !email.validity.valid);
+        if(!email.validity.valid) ok = false;
+
+        const phoneOk = /[\+\d\s\-\(\)]{6,}/.test(phone.value);
+        setErr(phone, qs('#err-phone'), !phoneOk);
+        if(!phoneOk) ok = false;
+
+        qs('#err-agree').classList.toggle('hidden', agree.checked);
+        if(!agree.checked) ok = false;
+
+        // Honeypot filled?
+        const hp = qs('#hp_website').value.trim();
+        if(hp) ok = false;
+
+        return ok;
+      }
+
+      async function send(payload){
+        // POST do /api/partner (Vercel Edge Function -> Supabase)
+        try{
+          const res = await fetch('/api/partner', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          return await res.json();
+        }catch(e){
+          throw e;
+        }
+      }
+
+      form?.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        if(!validate()){ showToast('Sprawdź pola formularza', 'warn'); return; }
+
+        // Basic rate-limit by time on page
+        const elapsedMs = Date.now() - Number(qs('#startedAt').value||startedAt);
+        if(elapsedMs < 2500){ showToast('Wyślij po chwili — zabezpieczenie anty-spam.', 'warn'); return; }
+
+        const payload = {
+          company:  qs('#company').value.trim().slice(0,120),
+          email:    qs('#email').value.trim().slice(0,160),
+          phone:    qs('#phone').value.trim().slice(0,40),
+          services: qs('#services').value.trim().slice(0,600),
+          message:  qs('#message').value.trim().slice(0,800),
+          elapsedMs
+        };
+
+        btn.disabled = true;
+        btn.textContent = 'Wysyłanie…';
+
+        try{
+          await send(payload);
+          showToast('Dziękujemy! Skontaktujemy się wkrótce. ✅');
+          form.reset();
+        }catch(err){
+          // Fallback do mailto, jeżeli API nie odpowiada
+          const mailto = `mailto:partners@happydate.pl?subject=${encodeURIComponent('Zgłoszenie partnerskie')}&body=${encodeURIComponent(
+            `Firma/Imię: ${payload.company}\nEmail: ${payload.email}\nTelefon: ${payload.phone}\nUsługi/Produkty: ${payload.services}\nInformacje: ${payload.message}`
+          )}`;
+          window.location.href = mailto;
+          showToast('Wysłano poprzez e-mail ✉️ (fallback).', 'ok');
+        }finally{
+          btn.disabled = false;
+          btn.textContent = 'Wyślij zgłoszenie';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

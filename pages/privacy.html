@@ -1,82 +1,258 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Polityka prywatności – HappyDate</title>
-  <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+
+  <meta name="description" content="Polityka prywatności HappyDate: RODO, kategorie danych, cele, podstawy prawne, pliki cookies, prawa użytkownika oraz bezpieczeństwo danych." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://www.happydate.pl/pages/privacy.html" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    @media print {
+      .no-print { display:none !important; }
+      body { background:#fff; color:#000; }
+      a[href^="http"]:after { content:" (" attr(href) ")"; font-size:.85em; }
+    }
+    .prose a { text-decoration: underline; }
+  </style>
 </head>
 <body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
-  <main class="max-w-4xl mx-auto px-4 py-10">
-    <h1 class="text-4xl font-bold mb-6">Polityka prywatności</h1>
+  <!-- Header (minimal) -->
+  <header class="no-print bg-gradient-to-r from-blue-400 to-cyan-400 py-4 sticky top-0 z-40 shadow">
+    <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
+      <a href="/index.html" class="text-white font-bold text-xl">🎁 HappyDate</a>
+      <nav class="hidden sm:flex gap-5 text-white/95 text-sm" aria-label="Nawigacja pomocnicza">
+        <a href="/pages/about.html" class="hover:underline">O nas</a>
+        <a href="/pages/privacy.html" class="underline font-semibold">Prywatność</a>
+        <button onclick="window.print()" class="hover:underline" aria-label="Wersja do druku">Wersja do druku</button>
+      </nav>
+    </div>
+  </header>
 
-    <p class="mb-4">
-      Niniejsza Polityka prywatności określa zasady przetwarzania i ochrony danych osobowych użytkowników serwisu HappyDate dostępnego pod adresem <strong>happydate.pl</strong>.
-    </p>
+  <main class="max-w-4xl mx-auto px-4 lg:px-0 py-10">
+    <header class="mb-8">
+      <h1 class="text-4xl font-extrabold mb-2">Polityka prywatności</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Ostatnia aktualizacja: <time datetime="2025-08-15">15 sierpnia 2025 r.</time> • Wersja: 1.0
+      </p>
+      <p class="mt-3 text-gray-700 dark:text-gray-300">
+        Niniejszy dokument realizuje obowiązek informacyjny zgodnie z art. 13–14 RODO oraz właściwymi przepisami krajowymi.
+      </p>
+    </header>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">1. Administrator danych</h2>
-    <p class="mb-4">
-      Administratorem danych osobowych jest HappyDate Sp. z o.o. z siedzibą w Poznaniu. W sprawach związanych z ochroną danych osobowych można kontaktować się pod adresem: <a href="mailto:kontakt@happydate.pl" class="text-blue-600 underline">kontakt@happydate.pl</a>
-    </p>
+    <!-- Spis treści -->
+    <nav aria-label="Spis treści" class="no-print mb-8 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+      <ol class="grid sm:grid-cols-2 gap-2 list-decimal list-inside text-sm">
+        <li><a href="#admin">Administrator danych</a></li>
+        <li><a href="#kategorie">Kategorie danych i źródła</a></li>
+        <li><a href="#cele">Cele i podstawy prawne</a></li>
+        <li><a href="#odbiorcy">Odbiorcy i transfery poza EOG</a></li>
+        <li><a href="#retencja">Okres przechowywania (retencja)</a></li>
+        <li><a href="#prawa">Prawa użytkownika</a></li>
+        <li><a href="#profilowanie">Profilowanie / AI</a></li>
+        <li><a href="#cookies">Pliki cookies</a></li>
+        <li><a href="#bezpieczenstwo">Bezpieczeństwo</a></li>
+        <li><a href="#maloletni">Użytkownicy małoletni</a></li>
+        <li><a href="#zmiany">Zmiany dokumentu</a></li>
+        <li><a href="#kontakt">Kontakt / Wnioski RODO</a></li>
+      </ol>
+    </nav>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">2. Zakres zbieranych danych</h2>
-    <ul class="list-disc pl-6 mb-4">
-      <li>Imię i nazwisko</li>
-      <li>Adres e-mail, numer telefonu</li>
-      <li>Dane wydarzeń: daty, okazje, preferencje użytkownika i osoby obdarowywanej</li>
-      <li>Adres do dostawy (jeśli dotyczy)</li>
-      <li>Dane techniczne (adres IP, dane o przeglądarce i systemie operacyjnym)</li>
-    </ul>
+    <section id="admin" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">1. Administrator danych</h2>
+      <p>
+        Administratorem danych osobowych jest <strong>HappyDate Sp. z o.o.</strong>, ul. Przykładowa 1, 60-000 Poznań, KRS: 0000000000, NIP: 0000000000.
+        Kontakt w sprawach ochrony danych: <a href="mailto:kontakt@happydate.pl" class="text-blue-600 underline">kontakt@happydate.pl</a>.
+        Jeśli powołamy Inspektora Ochrony Danych (IOD), dane kontaktowe opublikujemy na tej stronie.
+      </p>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">3. Cel przetwarzania danych</h2>
-    <p class="mb-4">
-      Dane osobowe są przetwarzane w celu:
-    </p>
-    <ul class="list-disc pl-6 mb-4">
-      <li>Rejestracji konta i zarządzania profilem użytkownika</li>
-      <li>Realizacji usług (m.in. przypomnienia, dostawy, dobór prezentu)</li>
-      <li>Obsługi zapytań i kontaktu z klientem</li>
-      <li>Wysyłki automatycznych powiadomień (SMS, e-mail)</li>
-      <li>Poprawy jakości usług oraz celów statystycznych i analitycznych</li>
-    </ul>
+    <section id="kategorie" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">2. Kategorie danych i źródła</h2>
+      <ul class="list-disc pl-6 space-y-1">
+        <li><strong>Dane konta:</strong> e-mail, hasło (zahashowane), identyfikator użytkownika.</li>
+        <li><strong>Dane kontaktowe:</strong> imię/nazwisko (jeśli podasz), numer telefonu (jeśli podasz).</li>
+        <li><strong>Dane wydarzeń:</strong> daty, typ okazji, preferencje (wg informacji, które samodzielnie wprowadzasz).</li>
+        <li><strong>Dane transakcyjne i dostawy (jeśli składasz zamówienia):</strong> adres, produkty, płatności.</li>
+        <li><strong>Dane techniczne:</strong> adres IP, logi serwera, identyfikatory urządzenia/przeglądarki, pliki cookies.</li>
+        <li><strong>Dane z dostawców tożsamości (opcjonalnie):</strong> podstawowe dane profilu (np. od Google/Apple), gdy używasz logowania zewnętrznego.</li>
+      </ul>
+      <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+        Dane pochodzą bezpośrednio od Ciebie (formularze, panel), z plików cookies oraz od partnerów uwierzytelniania, jeżeli ich używasz.
+      </p>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">4. Bezpieczeństwo danych</h2>
-    <p class="mb-4">
-      Dane przechowywane są w sposób bezpieczny, z użyciem nowoczesnych zabezpieczeń technicznych i organizacyjnych. Dostęp do danych mają wyłącznie uprawnione osoby. Dane mogą być przechowywane na serwerach partnerów technologicznych (np. Firebase, Supabase), zgodnie z wymogami RODO.
-    </p>
+    <section id="cele" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">3. Cele przetwarzania i podstawy prawne</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border dark:border-gray-700 rounded-xl overflow-hidden">
+          <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr class="text-left">
+              <th class="p-3">Cel</th>
+              <th class="p-3">Podstawa prawna (RODO)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y dark:divide-gray-700">
+            <tr>
+              <td class="p-3">Rejestracja, logowanie, utrzymanie konta i świadczonych usług</td>
+              <td class="p-3">Art. 6 ust. 1 lit. b (niezbędność do wykonania umowy)</td>
+            </tr>
+            <tr>
+              <td class="p-3">Rekomendacje prezentów, przypomnienia, obsługa zamówień/dostaw</td>
+              <td class="p-3">Art. 6 ust. 1 lit. b; ulepszenia i diagnostyka — art. 6 ust. 1 lit. f</td>
+            </tr>
+            <tr>
+              <td class="p-3">Kontakt i wsparcie (formularze, e-mail)</td>
+              <td class="p-3">Art. 6 ust. 1 lit. b i/lub f</td>
+            </tr>
+            <tr>
+              <td class="p-3">Komunikacja marketingowa (newsletter, oferty)</td>
+              <td class="p-3">Art. 6 ust. 1 lit. a (zgoda); w zakresie prawnie uzasadnionego interesu — art. 6 ust. 1 lit. f; dodatkowo właściwe przepisy krajowe</td>
+            </tr>
+            <tr>
+              <td class="p-3">Analityka, statystyki, bezpieczeństwo i zapobieganie nadużyciom</td>
+              <td class="p-3">Art. 6 ust. 1 lit. f</td>
+            </tr>
+            <tr>
+              <td class="p-3">Obowiązki prawne (np. rachunkowość, roszczenia)</td>
+              <td class="p-3">Art. 6 ust. 1 lit. c oraz lit. f</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">
+        Jeżeli podstawą jest zgoda — możesz ją wycofać w dowolnym momencie; nie wpływa to na zgodność z prawem przetwarzania sprzed cofnięcia.
+      </p>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">5. Przekazywanie danych</h2>
-    <p class="mb-4">
-      Nie przekazujemy danych osobowych osobom trzecim bez zgody użytkownika, z wyjątkiem sytuacji wynikających z przepisów prawa lub koniecznych do realizacji usługi (np. firmy kurierskie).
-    </p>
+    <section id="odbiorcy" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">4. Odbiorcy danych i transfery poza EOG</h2>
+      <p>Przekazujemy dane wyłącznie podmiotom przetwarzającym je w naszym imieniu lub niezależnym odbiorcom, gdy to konieczne:</p>
+      <ul class="list-disc pl-6 space-y-1 mt-2">
+        <li><strong>Hosting/infrastruktura:</strong> Vercel (hosting aplikacji),</li>
+        <li><strong>Baza danych i uwierzytelnianie:</strong> Supabase (Postgres, Auth, Storage),</li>
+        <li><strong>Komunikacja:</strong> dostawcy e-mail/SMS,</li>
+        <li><strong>Płatności i dostawy (jeśli używasz):</strong> operator płatności, firmy kurierskie,</li>
+        <li><strong>Obsługa wsparcia/analityka:</strong> narzędzia serwisowe i analityczne.</li>
+      </ul>
+      <p class="mt-3">
+        Dane mogą być w wyjątkowych sytuacjach przekazywane poza EOG. W takich przypadkach stosujemy odpowiednie zabezpieczenia,
+        w szczególności <em>Standardowe Klauzule Umowne (SCC)</em> oraz dodatkowe środki techniczne/organizacyjne.
+      </p>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">6. Czas przechowywania danych</h2>
-    <p class="mb-4">
-      Dane są przechowywane przez okres maksymalnie 12 miesięcy od ostatniej aktywności użytkownika lub do momentu żądania ich usunięcia.
-    </p>
+    <section id="retencja" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">5. Okres przechowywania (retencja)</h2>
+      <ul class="list-disc pl-6 space-y-1">
+        <li>Dane konta — do czasu usunięcia konta lub do 24 miesięcy od ostatniej aktywności.</li>
+        <li>Dane transakcyjne/rozliczeniowe — do 6 lat (wymogi rachunkowe).</li>
+        <li>Zgody marketingowe — do czasu wycofania zgody.</li>
+        <li>Logi techniczne — zwykle do 12 miesięcy, chyba że bezpieczeństwo uzasadnia dłużej.</li>
+      </ul>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">7. Prawa użytkownika</h2>
-    <ul class="list-disc pl-6 mb-4">
-      <li>Prawo do dostępu do swoich danych</li>
-      <li>Prawo do poprawienia lub usunięcia danych</li>
-      <li>Prawo do ograniczenia przetwarzania</li>
-      <li>Prawo do wniesienia skargi do Prezesa UODO</li>
-    </ul>
+    <section id="prawa" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">6. Twoje prawa</h2>
+      <p>Przysługują Ci prawa: dostępu, sprostowania, usunięcia, ograniczenia, przenoszenia, sprzeciwu (w tym wobec profilowania),
+        wycofania zgody oraz skargi do Prezesa UODO.</p>
+      <ul class="list-disc pl-6 space-y-1 mt-2">
+        <li>Prezes UODO — ul. Stawki 2, 00-193 Warszawa, <a class="underline" href="https://uodo.gov.pl/" target="_blank" rel="noopener">uodo.gov.pl</a>.</li>
+      </ul>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">8. Pliki cookies</h2>
-    <p class="mb-4">
-      Serwis wykorzystuje pliki cookies w celu poprawy funkcjonalności, dostosowania treści oraz analizowania ruchu. Użytkownik może zarządzać plikami cookies poprzez ustawienia swojej przeglądarki.
-    </p>
+    <section id="profilowanie" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">7. Profilowanie i funkcje AI</h2>
+      <p>
+        Generator prezentów może przetwarzać podane przez Ciebie informacje (okazja, preferencje, budżet) w celu zaproponowania
+        dopasowanych pomysłów. Jest to profilowanie w rozumieniu RODO, lecz nie wywołuje skutków prawnych ani w podobny sposób
+        istotnie na Ciebie nie wpływa (art. 22 RODO nie ma zastosowania).
+      </p>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        Jeżeli korzystamy z modeli AI stron trzecich lub przetwarzamy dane w Supabase Edge Functions, treści są używane wyłącznie do wygenerowania odpowiedzi.
+        Nie przekazuj w promptach danych wrażliwych. Możesz w każdym momencie sprzeciwić się profilowaniu w celach marketingowych.
+      </p>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">9. Zmiany w polityce prywatności</h2>
-    <p class="mb-4">
-      Polityka może być okresowo aktualizowana. O wszelkich zmianach użytkownicy będą informowani poprzez naszą stronę internetową.
-    </p>
+    <section id="cookies" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">8. Pliki cookies</h2>
+      <p>
+        Używamy cookies niezbędnych do działania serwisu oraz — za Twoją zgodą — analitycznych i marketingowych.
+        Zgodami możesz zarządzać z poziomu banera cookies i ustawień przeglądarki.
+      </p>
+      <ul class="list-disc pl-6 space-y-1 mt-2">
+        <li><strong>Niezbędne</strong> — sesja, bezpieczeństwo, preferencje językowe.</li>
+        <li><strong>Analityczne</strong> — statystyki i poprawa działania serwisu.</li>
+        <li><strong>Marketingowe</strong> — pomiar skuteczności, personalizacja treści.</li>
+      </ul>
+      <div class="no-print mt-3">
+        <button id="openCookieManager" class="px-4 py-2 rounded-lg border shadow hover:bg-gray-50 dark:hover:bg-gray-800" type="button">
+          Zarządzaj zgodami cookies
+        </button>
+      </div>
+    </section>
 
-    <h2 class="text-2xl font-semibold mt-8 mb-2">10. Kontakt</h2>
-    <p class="mb-4">
-      W przypadku pytań dotyczących polityki prywatności prosimy o kontakt na adres <a href="mailto:kontakt@happydate.pl" class="text-blue-600 underline">kontakt@happydate.pl</a>.
-    </p>
+    <section id="bezpieczenstwo" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">9. Bezpieczeństwo</h2>
+      <p>
+        Stosujemy m.in. szyfrowanie transmisji (HTTPS), kontrolę dostępu, backupy, monitorowanie i testy bezpieczeństwa. Dostęp do danych mają wyłącznie upoważnione osoby/podmioty.
+      </p>
+    </section>
+
+    <section id="maloletni" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">10. Użytkownicy małoletni</h2>
+      <p>
+        Serwis jest przeznaczony dla osób pełnoletnich. Jeżeli masz mniej niż 16 lat, korzystaj z serwisu wyłącznie za zgodą opiekuna.
+        Jeśli uznasz, że dziecko przekazało nam dane bez właściwej zgody, skontaktuj się z nami — niezwłocznie podejmiemy działania.
+      </p>
+    </section>
+
+    <section id="zmiany" class="mb-8">
+      <h2 class="text-2xl font-semibold mb-2">11. Zmiany w dokumencie</h2>
+      <p>
+        Możemy aktualizować politykę prywatności (np. przy zmianach funkcjonalnych lub prawnych). Aktualną wersję publikujemy na tej stronie wraz z datą obowiązywania. O istotnych zmianach poinformujemy w serwisie lub e-mailem (jeśli adekwatne).
+      </p>
+    </section>
+
+    <section id="kontakt" class="mb-12">
+      <h2 class="text-2xl font-semibold mb-2">12. Kontakt / Wnioski RODO</h2>
+      <p>
+        W sprawach prywatności oraz wniosków o realizację praw (dostęp, usunięcie, ograniczenie, sprzeciw, przeniesienie)
+        napisz do nas: <a href="mailto:kontakt@happydate.pl" class="underline">kontakt@happydate.pl</a>.
+      </p>
+      <div class="no-print mt-4 flex flex-wrap gap-3">
+        <a href="mailto:kontakt@happydate.pl?subject=Żądanie%20dostępu%20do%20danych" class="px-4 py-2 rounded-lg border shadow hover:bg-gray-50 dark:hover:bg-gray-800">Poproś o kopię danych</a>
+        <a href="mailto:kontakt@happydate.pl?subject=Żądanie%20usunięcia%20konta%20i%20danych" class="px-4 py-2 rounded-lg border shadow hover:bg-gray-50 dark:hover:bg-gray-800">Usuń konto i dane</a>
+        <a href="mailto:kontakt@happydate.pl?subject=Sprzeciw%20wobec%20profilowania%20/ %20marketingu" class="px-4 py-2 rounded-lg border shadow hover:bg-gray-50 dark:hover:bg-gray-800">Sprzeciw / wycofaj zgodę</a>
+      </div>
+    </section>
+
+    <aside class="text-xs text-gray-500 dark:text-gray-400 border-t pt-4">
+      <p><strong>Zastrzeżenie:</strong> Niniejszy dokument ma charakter informacyjny i nie stanowi porady prawnej. Jeżeli Twoje przetwarzanie ma specyficzny charakter (np. szerokie transfery poza EOG, dane wrażliwe), skonsultuj się z prawnikiem.</p>
+      <p class="mt-2"><a href="#top" class="underline">Wróć na górę ▲</a></p>
+    </aside>
   </main>
+
+  <footer class="bg-blue-500 text-white text-center py-4 mt-12">
+    <div>&copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.</div>
+  </footer>
+
+  <!-- Optional cookie manager hook (integruje się z Twoim banerem) -->
+  <script>
+    document.getElementById('openCookieManager')?.addEventListener('click', () => {
+      // Jeżeli masz osobny moduł zarządzania cookies (baner), tu wywołaj jego UI.
+      // Przykład: window.__cookieBanner?.open();
+      alert('Panel zarządzania cookies: włącz/wyłącz zgody w banerze na stronie głównej.');
+    });
+  </script>
 </body>
 </html>
