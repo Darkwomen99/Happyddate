@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Головна -->
+  <url>
+    <loc>https://www.happydate.pl/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://www.happydate.pl/pl/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://www.happydate.pl/ua/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.happydate.pl/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://www.happydate.pl/ru/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.happydate.pl/de/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.happydate.pl/"/>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Статичні сторінки (приклад) -->
+  <url>
+    <loc>https://www.happydate.pl/about.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/services.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/reviews.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/partnerstwo.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/contact.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Кабінет/генератор (можуть бути noindex, але хай будуть у sitemap якщо відкриті) -->
+  <url>
+    <loc>https://www.happydate.pl/login.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/register.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/generator.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/dashboard.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/profile.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.happydate.pl/survey.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>

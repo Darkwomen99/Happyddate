@@ -8,31 +8,35 @@
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- FullCalendar -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
+  <!-- FullCalendar (CSS + JS) -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js" defer></script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/src/css/style.css" />
   <style>
     @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
     dialog::backdrop{background:rgba(0,0,0,.35)}
+    .glass-card{background:rgba(255,255,255,.7);backdrop-filter:saturate(180%) blur(10px)}
+    .dark .glass-card{background:rgba(17,24,39,.6)}
   </style>
 </head>
 
 <body class="min-h-screen flex flex-col">
   <!-- Header -->
-  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sticky top-0 z-50 shadow-none" aria-label="Główna nawigacja">
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sticky top-0 z-50" aria-label="Główna nawigacja">
     <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
       <a href="/index.html" class="text-2xl font-bold text-white hover:underline" aria-label="HappyDate — Strona główna">🎁 HappyDate</a>
+
       <nav class="hidden sm:flex gap-5 items-center text-white font-medium" aria-label="Główne menu">
         <a href="/index.html" class="hover:underline">Strona główna</a>
         <a href="/pages/services.html" class="hover:underline">Usługi</a>
-        <a href="/pages/dashboard.html" class="underline font-bold">Moje wydarzenia</a>
+        <a href="/pages/dashboard.html" class="underline font-bold" aria-current="page">Moje wydarzenia</a>
         <a href="/pages/settings.html" class="hover:underline">Ustawienia</a>
         <button id="logout-btn" class="hover:underline" type="button">Wyloguj się</button>
       </nav>
+
       <button id="logout-btn-mobile" class="sm:hidden text-white text-sm underline" type="button" aria-label="Wyloguj się">Wyloguj</button>
     </div>
   </header>
@@ -80,7 +84,7 @@
             <a href="tel:+48123123123" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Zadzwoń" aria-label="Zadzwoń">
               <span class="text-2xl">📞</span>
             </a>
-            <a href="mailto:happyddate@gmail.com" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Napisz e-mail" aria-label="Napisz e-mail">
+            <a href="mailto:happydate@gmail.com" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Napisz e-mail" aria-label="Napisz e-mail">
               <span class="text-2xl">📩</span>
             </a>
             <button id="aiToggle" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="AI Asystent" type="button" aria-controls="ai-chat-window" aria-expanded="false">
@@ -129,7 +133,7 @@
   <dialog id="eventModal" class="rounded-2xl shadow-lg p-0 w-full max-w-md">
     <form id="eventForm" method="dialog" class="p-6 bg-white dark:bg-gray-800 flex flex-col gap-3">
       <h3 id="eventModalTitle" class="text-lg font-bold mb-1">Dodaj wydarzenie</h3>
-      <input type="hidden" id="eventId">
+      <input type="hidden" id="eventId" />
       <label class="text-sm font-medium">Nazwa wydarzenia
         <input id="eventTitle" class="border rounded-lg py-2 px-3 w-full mt-1" placeholder="np. Urodziny Ani" required />
       </label>
@@ -156,13 +160,12 @@
     </form>
   </dialog>
 
-  <!-- Supabase app logic -->
+  <!-- App script (ESM). Підключаємо ПІСЛЯ FullCalendar через defer вище -->
   <script type="module">
-    import { supabase } from '/js/supabaseClient.js';
+    import { supabase, requireAuth, signOut } from '/src/js/supabaseClient.js';
 
     // ---------- Helpers ----------
     const $ = (sel, root=document) => root.querySelector(sel);
-    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
     const fmtDate = (isoStr) => {
       try { return new Intl.DateTimeFormat('pl-PL', { dateStyle:'long' }).format(new Date(isoStr)); }
       catch { return isoStr; }
@@ -182,27 +185,27 @@
 
     // ---------- Auth gate ----------
     let currentUser = null;
-    async function requireAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        window.location.href = '/pages/login.html';
-        return;
-      }
-      currentUser = session.user;
-    }
-    await requireAuth();
+    const user = await requireAuth('/pages/login.html');
+    if (user) currentUser = user;
+
     supabase.auth.onAuthStateChange((_e, session) => {
       if (!session?.user) window.location.href = '/pages/login.html';
     });
 
-    // Logout
-    $('#logout-btn')?.addEventListener('click', async () => { await supabase.auth.signOut(); });
-    $('#logout-btn-mobile')?.addEventListener('click', async () => { await supabase.auth.signOut(); });
+    // Logout (redirect)
+    document.getElementById('logout-btn')?.addEventListener('click', async () => {
+      await signOut();
+      window.location.href = '/pages/login.html';
+    });
+    document.getElementById('logout-btn-mobile')?.addEventListener('click', async () => {
+      await signOut();
+      window.location.href = '/pages/login.html';
+    });
 
     // ---------- FullCalendar ----------
     let FC;
     function initCalendar() {
-      FC = new FullCalendar.Calendar($('#calendar'), {
+      FC = new FullCalendar.Calendar(document.getElementById('calendar'), {
         height: 'auto',
         initialView: 'dayGridMonth',
         locale: 'pl',
@@ -224,12 +227,11 @@
             const { error } = await supabase.from('events').update({ date: info.event.startStr }).eq('id', id);
             if (error) throw error;
             toast('Data wydarzenia zaktualizowana', 'ok');
-            refreshUpcoming();
           } catch (e) {
             console.error(e); info.revert(); toast('Nie udało się zapisać zmiany daty', 'error');
           }
         },
-        events: [] // feed via loadEvents()
+        events: [] // ładowane via loadEvents()
       });
       FC.render();
     }
@@ -241,7 +243,12 @@
     }
 
     async function loadEvents() {
-      const { data, error } = await supabase.from('events').select('*').eq('uid', currentUser.id).order('date', { ascending: true });
+      const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('uid', currentUser.id)
+        .order('date', { ascending: true });
+
       if (error) { console.error(error); toast('Błąd pobierania wydarzeń', 'error'); return; }
       setCalendarEvents(data || []);
       setUpcomingList(data || []);
@@ -273,7 +280,8 @@
 
     // ---------- Sidebar upcoming ----------
     function setUpcomingList(events) {
-      const box = $('#event-list'); const skel = $('#event-skeleton');
+      const box = document.getElementById('event-list');
+      const skel = document.getElementById('event-skeleton');
       skel.classList.add('hidden'); box.classList.remove('hidden');
       box.replaceChildren();
 
@@ -299,7 +307,7 @@
         pill.style.backgroundColor = colorForType(e.type);
         pill.style.color = '#fff';
         pill.textContent = e.type==='birthday'?'🎂':e.type==='anniversary'?'💍':'🔖';
-        t.appendChild(spanTitle); t.appendChild(pill);
+        t.append(spanTitle, pill);
 
         const d = document.createElement('div');
         d.className = 'text-xs text-gray-600 dark:text-gray-300';
@@ -319,36 +327,39 @@
         box.appendChild(card);
       }
     }
-    function refreshUpcoming(){ /* realtime already refreshes via channel */ }
 
     // ---------- Modal & CRUD ----------
-    const eventDlg   = $('#eventModal');
-    const eventForm  = $('#eventForm');
-    const deleteBtn  = $('#deleteEventBtn');
-    const closeBtn   = $('#closeModalBtn');
-    const modalTitle = $('#eventModalTitle');
+    const eventDlg   = document.getElementById('eventModal');
+    const eventForm  = document.getElementById('eventForm');
+    const deleteBtn  = document.getElementById('deleteEventBtn');
+    const closeBtn   = document.getElementById('closeModalBtn');
+    const modalTitle = document.getElementById('eventModalTitle');
 
-    $('#addEventBtn')?.addEventListener('click', () => openEventModal());
+    document.getElementById('addEventBtn')?.addEventListener('click', () => openEventModal());
 
     function openEventModal(data = {}) {
-      $('#eventId').value     = data.id || '';
-      $('#eventTitle').value  = data.title || '';
-      $('#eventType').value   = data.type || 'custom';
-      $('#eventPerson').value = data.person || '';
-      $('#eventDate').value   = data.date || new Date().toISOString().slice(0,10);
+      document.getElementById('eventId').value     = data.id || '';
+      document.getElementById('eventTitle').value  = data.title || '';
+      document.getElementById('eventType').value   = data.type || 'custom';
+      document.getElementById('eventPerson').value = data.person || '';
+      document.getElementById('eventDate').value   = data.date || new Date().toISOString().slice(0,10);
 
       modalTitle.textContent = data.id ? 'Edytuj wydarzenie' : 'Dodaj wydarzenie';
       deleteBtn.classList.toggle('hidden', !data.id);
 
       if (typeof eventDlg.showModal === 'function') eventDlg.showModal();
       else eventDlg.classList.remove('hidden');
-      setTimeout(()=> $('#eventTitle').focus(), 50);
+      setTimeout(()=> document.getElementById('eventTitle').focus(), 50);
     }
 
-    closeBtn?.addEventListener('click', () => { if (eventDlg.open) eventDlg.close(); else eventDlg.classList.add('hidden'); eventForm.reset(); });
+    closeBtn?.addEventListener('click', () => {
+      if (eventDlg.open) eventDlg.close();
+      else eventDlg.classList.add('hidden');
+      eventForm.reset();
+    });
 
     deleteBtn?.addEventListener('click', async () => {
-      const id = $('#eventId').value; if (!id) return;
+      const id = document.getElementById('eventId').value; if (!id) return;
       await deleteEvent(id);
       if (eventDlg.open) eventDlg.close();
       eventForm.reset();
@@ -356,11 +367,11 @@
 
     eventForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const id     = $('#eventId').value.trim();
-      const title  = $('#eventTitle').value.trim();
-      const type   = $('#eventType').value;
-      const person = $('#eventPerson').value.trim();
-      const date   = $('#eventDate').value;
+      const id     = document.getElementById('eventId').value.trim();
+      const title  = document.getElementById('eventTitle').value.trim();
+      const type   = document.getElementById('eventType').value;
+      const person = document.getElementById('eventPerson').value.trim();
+      const date   = document.getElementById('eventDate').value;
 
       if (!title || !person || !date) { toast('Uzupełnij wymagane pola', 'warn'); return; }
 
@@ -392,38 +403,42 @@
       }
     }
 
-    // ---------- AI Assistant (server endpoint) ----------
-    const aiToggle = $('#aiToggle');
-    const aiWin    = $('#ai-chat-window');
-    const aiClose  = $('#ai-chat-close');
-
-    aiToggle?.addEventListener('click', () => {
-      const hidden = aiWin.classList.toggle('hidden');
-      aiToggle.setAttribute('aria-expanded', String(!hidden));
-      if (!hidden) setTimeout(()=> $('#gift-person')?.focus(), 60);
-    });
-    aiClose?.addEventListener('click', () => { aiWin.classList.add('hidden'); aiToggle.setAttribute('aria-expanded','false'); aiToggle.focus(); });
-
-    $('#ai-gift-btn')?.addEventListener('click', async () => {
-      const person = $('#gift-person').value.trim();
-      const occasion = $('#gift-occasion').value.trim();
-      const age = Number($('#gift-age').value);
-      const budget = Number($('#gift-budget').value);
-      const out = $('#gift-result');
+    // ---------- AI Assistant ----------
+    document.getElementById('ai-gift-btn')?.addEventListener('click', async () => {
+      const person = document.getElementById('gift-person').value.trim();
+      const occasion = document.getElementById('gift-occasion').value.trim();
+      const age = Number(document.getElementById('gift-age').value);
+      const budget = Number(document.getElementById('gift-budget').value);
+      const out = document.getElementById('gift-result');
       out.textContent = '';
 
       if (!person || !occasion || !age || !budget) { out.innerHTML = '<span class="text-red-600">Wypełnij wszystkie pola.</span>'; return; }
       out.textContent = '⏳ Generuję propozycje...';
 
       try {
-        const res = await fetch('/api/gift-ideas', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ person, occasion, age, budget }) });
+        // Vercel Functions (jeśli masz /api/gift-ideas w root)
+        const res = await fetch('/api/gift-ideas', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ person, occasion, age, budget })
+        });
+
         if (!res.ok) throw new Error('Błąd serwera');
         const data = await res.json();
-        const ideas = Array.isArray(data.ideas) ? data.ideas : [];
+        renderIdeas(data.ideas || [], data.disclaimer);
+      } catch (err) {
+        // Fallback (gdy funkcція відсутня): локальна генерація ідей
+        const ideas = [
+          { title: 'Personalizowany kubek', desc: 'Z imieniem i krótkim cytatem dopasowanym do okazji.' },
+          { title: 'Zestaw spa w domu', desc: 'Sole i olejki do kąpieli + świeca zapachowa.' },
+          { title: 'Ramka z wydrukiem zdjęcia', desc: 'Wspólne zdjęcie + krótka dedykacja.' }
+        ].filter(Boolean);
+        renderIdeas(ideas, 'Sugestie lokalne — doprecyzuj w AI, aby dostać lepsze pomysły.');
+      }
 
+      function renderIdeas(ideas, disclaimer){
         out.replaceChildren();
         if (!ideas.length) { out.textContent = 'Brak propozycji. Spróbuj doprecyzować dane.'; return; }
-
         const list = document.createElement('ol'); list.className = 'list-decimal list-inside space-y-2';
         ideas.slice(0,3).forEach(i => {
           const li = document.createElement('li');
@@ -432,14 +447,15 @@
           li.append(strong, span); list.appendChild(li);
         });
         out.appendChild(list);
-        if (data.disclaimer) { const d = document.createElement('p'); d.className = 'text-xs text-gray-500 mt-2'; d.textContent = data.disclaimer; out.appendChild(d); }
-      } catch (err) {
-        console.error(err); out.innerHTML = '<span class="text-red-600">Ups! Coś poszło nie tak. Spróbuj ponownie.</span>';
+        if (disclaimer) {
+          const d = document.createElement('p'); d.className = 'text-xs text-gray-500 mt-2'; d.textContent = disclaimer;
+          out.appendChild(d);
+        }
       }
     });
 
     // ---------- Export .ics ----------
-    $('#exportIcsBtn')?.addEventListener('click', async () => {
+    document.getElementById('exportIcsBtn')?.addEventListener('click', async () => {
       try {
         const { data, error } = await supabase.from('events').select('*').eq('uid', currentUser.id);
         if (error) throw error;
@@ -458,15 +474,37 @@
       let out = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//HappyDate//Calendar//PL'].join(NL) + NL;
       rows.forEach(r => {
         const dt = dateToYYYYMMDD(r.date);
-        const uid = (r.id || crypto.randomUUID()) + '@happydate';
+        const uid = (r.id || (crypto?.randomUUID?.() || Math.random().toString(36).slice(2))) + '@happydate';
         const summary = `${r.person || ''} — ${r.title || labelForType(r.type)}`.trim();
         out += ['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${dt}T000000Z`,`DTSTART;VALUE=DATE:${dt}`,`SUMMARY:${summary}`,`DESCRIPTION:${labelForType(r.type)}`,'END:VEVENT'].join(NL) + NL;
       });
       return out + 'END:VCALENDAR' + NL;
     }
 
-    // ---------- Modal close by click outside (for browsers lacking <dialog> support) ----------
-    $('#eventModal')?.addEventListener('click', (e) => { if (e.target === e.currentTarget) { e.currentTarget.close?.(); } });
+    // ---------- Modal close by click outside ----------
+    document.getElementById('eventModal')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) { e.currentTarget.close?.(); }
+    });
+  </script>
+
+  <!-- MINI-SKRYPT: незалежний toggle для 🤖 (працює навіть якщо ESM впаде) -->
+  <script>
+    (function(){
+      const aiToggle = document.getElementById('aiToggle');
+      const aiWin = document.getElementById('ai-chat-window');
+      const aiClose = document.getElementById('ai-chat-close');
+      if (!aiToggle || !aiWin) return;
+      aiToggle.addEventListener('click', () => {
+        const hidden = aiWin.classList.toggle('hidden');
+        aiToggle.setAttribute('aria-expanded', String(!hidden));
+        if (!hidden) setTimeout(() => document.getElementById('gift-person')?.focus(), 60);
+      });
+      aiClose?.addEventListener('click', () => {
+        aiWin.classList.add('hidden');
+        aiToggle.setAttribute('aria-expanded','false');
+        aiToggle.focus();
+      });
+    })();
   </script>
 </body>
 </html>

@@ -3,25 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>HappyDate - Nie zapomnij o ważnych chwilach</title>
+  <title>HappyDate — Asystent prezentowy z AI: przypomnienia, kalendarz, dostawa</title>
+
+  <!-- Canonical / Hreflang -->
+  <link rel="canonical" href="https://www.happydate.pl/" />
+  <link rel="alternate" hreflang="pl" href="https://www.happydate.pl/pl/" />
+  <link rel="alternate" hreflang="uk" href="https://www.happydate.pl/ua/" />
+  <link rel="alternate" hreflang="en" href="https://www.happydate.pl/en/" />
+  <link rel="alternate" hreflang="ru" href="https://www.happydate.pl/ru/" />
+  <link rel="alternate" hreflang="de" href="https://www.happydate.pl/de/" />
+  <link rel="alternate" hreflang="x-default" href="https://www.happydate.pl/" />
 
   <!-- SEO -->
-  <meta name="description" content="HappyDate — Twój osobisty asystent prezentowy. Zaplanuj wyjątkowe prezenty z AI i emocjami!" />
+  <meta name="description" content="HappyDate — Twój osobisty asystent prezentowy. Nie zapomnij o ważnych chwilach: przypomnienia, kalendarz i inteligentne propozycje prezentów z AI." />
   <meta name="keywords" content="prezenty, asystent prezentowy, kalendarz prezentów, prezent dla niej, prezent dla niego, AI gifts, prezenty online, HappyDate" />
   <meta name="author" content="HappyDate" />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://www.happydate.pl/" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="HappyDate - Magiczne prezenty na każdą okazję" />
+  <!-- Open Graph / Twitter -->
+  <meta property="og:title" content="HappyDate — Magiczne prezenty na każdą okazję" />
   <meta property="og:description" content="Zaskocz bliskich wyjątkowymi prezentami i nie zapomnij o ważnych chwilach!" />
-  <meta property="og:image" content="/assets/img/social-banner.jpg" />
+  <meta property="og:image" content="/img/social-banner.jpg" />
   <meta property="og:url" content="https://www.happydate.pl/" />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pl_PL" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HappyDate — Asystent prezentowy z AI" />
+  <meta name="twitter:description" content="Prezenty z sercem, na czas. Przypomnienia, kalendarz i AI-podpowiedzi." />
+  <meta name="twitter:image" content="/img/social-banner.jpg" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#2563eb"/>
+
+  <!-- Favicons (public/img) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+
+  <!-- Performance -->
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -34,15 +55,47 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
-  <!-- Custom -->
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/src/css/style.css" />
 
-  <!-- Prefer-reduced-motion -->
+  <!-- Prefer-reduced-motion + Skip link style -->
   <style>
-    @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
+    @media (prefers-reduced-motion: reduce){
+      .animate-bounce,.animate-ping,.animate-pulse{animation:none!important}
+    }
+    .sr-only:not(:focus){position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @keyframes fade-in { from { opacity: 0; transform: translateY(5px);} to { opacity: 1; transform: translateY(0);} }
+    .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
   </style>
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"HappyDate",
+    "url":"https://www.happydate.pl/",
+    "logo":"/img/apple-touch-icon.png",
+    "sameAs":[]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "url":"https://www.happydate.pl/",
+    "potentialAction":{
+      "@type":"SearchAction",
+      "target":"https://www.happydate.pl/search?q={query}",
+      "query-input":"required name=query"
+    }
+  }
+  </script>
 </head>
 <body class="overflow-x-hidden">
+
+<!-- Skip link -->
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-white text-blue-700 p-2 rounded">Przejdź do treści</a>
 
 <!-- Header -->
 <header id="mainHeader"
@@ -84,7 +137,8 @@
       <div class="flex justify-between items-center flex-wrap gap-4">
         <div class="flex gap-4 md:gap-6 items-center">
           <a href="/index.html" data-i18n="header.home" tabindex="0"
-             class="px-1 py-0.5 rounded bg-white/20 underline font-semibold focus:bg-white/30 transition">Strona główna</a>
+             class="px-1 py-0.5 rounded bg-white/20 underline font-semibold focus:bg-white/30 transition"
+             aria-current="page">Strona główna</a>
           <a href="/pages/services.html" data-i18n="header.services" tabindex="0"
              class="px-1 py-0.5 rounded hover:bg-white/20 focus:bg-white/30 transition">Usługi</a>
           <a href="/pages/dashboard.html" data-i18n="header.dashboard" tabindex="0"
@@ -128,23 +182,20 @@
           <!-- Auth shortcuts (desktop) -->
           <a href="/pages/login.html"
              id="login-link"
-             class="px-3 py-1.5 rounded-xl bg-white text-blue-700 font-semibold text-sm transition hover:bg-blue-50 hidden">Zaloguj się</a>
+             class="px-3 py-1.5 rounded-xl bg-white text-blue-700 font-semibold text-sm transition hover:bg-blue-50">Zaloguj się</a>
           <a href="/pages/register.html"
              id="register-link"
-             class="px-3 py-1.5 rounded-xl bg-white/10 text-white font-semibold text-sm transition hover:bg-white/20 hidden">Rejestracja</a>
+             class="px-3 py-1.5 rounded-xl bg-white/10 text-white font-semibold text-sm transition hover:bg-white/20">Rejestracja</a>
 
           <a href="/pages/profile.html"
              id="dashboard-link"
              class="hidden px-4 py-2 rounded-xl bg-green-600 text-white font-semibold text-sm transition hover:bg-green-700 focus:ring-2 focus:ring-green-300"
-             aria-label="Panel użytkownika">
-             Panel użytkownika
-          </a>
+             aria-label="Panel użytkownika">Panel użytkownika</a>
+
           <button id="logout-btn"
                   class="hidden px-4 py-2 rounded-xl bg-red-600 text-white font-semibold text-sm transition hover:bg-red-700 focus:ring-2 focus:ring-red-300"
                   aria-label="Wyloguj się"
-                  type="button">
-                  Wyloguj się
-          </button>
+                  type="button">Wyloguj się</button>
         </div>
       </div>
     </nav>
@@ -181,8 +232,8 @@
   <form method="dialog" class="p-6 bg-white dark:bg-gray-800 flex flex-col gap-4">
     <h3 class="text-lg font-bold">Krótka zapowiedź</h3>
     <p class="text-sm text-gray-600 dark:text-gray-300">Ciepło, emocje i prezenty — odkryj HappyDate w 30 sekund 💛</p>
-    <audio controls class="w-full">
-      <source src="/assets/audio/intro.mp3" type="audio/mpeg" />
+    <audio controls preload="none" class="w-full">
+      <source src="/audio/ElevenLabs_2025-04-09T21_13_18....mp3" type="audio/mpeg" />
       Twoja przeglądarka nie wspiera audio.
     </audio>
     <div class="flex justify-end">
@@ -256,39 +307,24 @@
     >
       <p class="text-gray-800 font-semibold mb-1">Potrzebujesz pomocy?</p>
       <p><a href="tel:+48123123123" class="text-blue-600 hover:underline" aria-label="Zadzwoń do nas">📱 +48 123 123 123</a></p>
-      <p><a href="mailto:happyddate@gmail.com" class="text-blue-600 hover:underline" aria-label="Napisz do nas">📩 happyddate@gmail.com</a></p>
+      <p><a href="mailto:happydate@gmail.com" class="text-blue-600 hover:underline" aria-label="Napisz do nas">📩 happydate@gmail.com</a></p>
     </div>
   </div>
 </div>
-<style>
-@keyframes fade-in { from { opacity: 0; transform: translateY(5px);} to { opacity: 1; transform: translateY(0);} }
-.animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
-</style>
-<script>
-(() => {
-  const helpBtn   = document.getElementById('helpBtn');
-  const helpPopup = document.getElementById('helpPopup');
-  const isOpen = () => !helpPopup.classList.contains('hidden');
-  function openHelp(){ helpPopup.classList.remove('hidden'); helpBtn.setAttribute('aria-expanded','true'); helpPopup.querySelector('a,button')?.focus(); }
-  function closeHelp(){ helpPopup.classList.add('hidden'); helpBtn.setAttribute('aria-expanded','false'); helpBtn.focus(); }
-  helpBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); isOpen()?closeHelp():openHelp(); });
-  document.addEventListener('click', (e)=>{ if(isOpen() && !helpPopup.contains(e.target) && e.target!==helpBtn) closeHelp(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && isOpen()) closeHelp(); });
-})();
-</script>
 
 <!-- HERO -->
+<main id="main">
 <section class="bg-gradient-to-r from-pink-100 via-yellow-100 to-blue-100 py-16 sm:py-20 px-2 md:px-12 text-center relative overflow-hidden">
   <div class="max-w-4xl mx-auto z-10 relative" data-aos="fade-up">
-    <h2 class="text-4xl md:text-5xl font-extrabold mb-6 text-gray-900 leading-tight" data-i18n="hero.title">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-6 text-gray-900 leading-tight" data-i18n="hero.title">
       HappyDate — ciepły asystent, który przypomina o ważnych chwilach i pomaga wybrać prezenty prosto z serca 💛
-    </h2>
+    </h1>
     <p class="text-lg md:text-xl text-gray-700 mb-8" data-i18n="hero.description">
       Zatrzymaj czas, spraw komuś niespodziankę i zobacz łzy radości...
     </p>
     <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 min-w-0">
       <a
-        href="/generator.html"
+        href="/pages/generator.html"
         class="px-6 py-3 bg-pink-500 text-white rounded-xl text-lg font-semibold shadow-md
                hover:bg-pink-600 hover:scale-105 hover:shadow-xl
                focus:bg-pink-600 focus:scale-105 focus:shadow-xl
@@ -322,7 +358,7 @@
 <!-- How it works -->
 <section id="wowBlock" class="transition-all duration-700 ease-in-out translate-y-10 opacity-0 py-16 bg-white dark:bg-gray-900" aria-label="Jak to działa?">
   <div class="max-w-4xl mx-auto text-center px-4">
-    <h3 class="text-2xl font-semibold mb-10" data-i18n="howItWorks.title">Jak to działa?</h3>
+    <h2 class="text-2xl font-semibold mb-10" data-i18n="howItWorks.title">Jak to działa?</h2>
     <div class="grid sm:grid-cols-3 gap-8">
       <div data-aos="zoom-in" data-aos-delay="0">
         <span class="block text-3xl mb-2 font-extrabold text-blue-400">1</span>
@@ -343,36 +379,36 @@
 <!-- Advantages -->
 <section class="py-20 bg-gray-100 dark:bg-gray-800" aria-label="Dlaczego HappyDate?">
   <div class="max-w-4xl mx-auto px-4">
-    <h3 class="text-2xl font-semibold text-center mb-12" data-i18n="advantages.title">Dlaczego HappyDate?</h3>
+    <h2 class="text-2xl font-semibold text-center mb-12" data-i18n="advantages.title">Dlaczego HappyDate?</h2>
     <div class="space-y-10 md:space-y-8">
       <div>
-        <h4 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.ai">
+        <h3 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.ai">
           <span>🤖</span> <span>AI — Inteligentny dobór prezentów</span>
-        </h4>
+        </h3>
         <p class="text-gray-700 dark:text-gray-300" data-i18n="advantages.aiDesc">
           Nasz AI pomoże Ci wybrać idealny prezent, uwzględniając preferencje obdarowanej osoby.
         </p>
       </div>
       <div>
-        <h4 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.privacy">
+        <h3 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.privacy">
           <span>🔐</span> <span>Anonimowość i bezpieczeństwo</span>
-        </h4>
+        </h3>
         <p class="text-gray-700 dark:text-gray-300" data-i18n="advantages.privacyDesc">
           Twoje dane są bezpieczne. Gwarantujemy pełną anonimowość.
         </p>
       </div>
       <div>
-        <h4 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.delivery">
+        <h3 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.delivery">
           <span>🚚</span> <span>Wygodna dostawa na czas</span>
-        </h4>
+        </h3>
         <p class="text-gray-700 dark:text-gray-300" data-i18n="advantages.deliveryDesc">
           Prezent dotrze dokładnie wtedy, kiedy powinien — bez stresu.
         </p>
       </div>
       <div>
-        <h4 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.emotions">
+        <h3 class="text-xl font-bold mb-2 flex items-center gap-2" data-i18n="advantages.emotions">
           <span>❤️</span> <span>Emocje na pierwszym miejscu</span>
-        </h4>
+        </h3>
         <p class="text-gray-700 dark:text-gray-300" data-i18n="advantages.emotionsDesc">
           HappyDate to więcej niż prezent — to chwila, wspomnienie i miłość.
         </p>
@@ -384,7 +420,7 @@
 <!-- Reviews -->
 <section class="bg-white dark:bg-gray-900 py-16" aria-label="Opinie użytkowników">
   <div class="max-w-4xl mx-auto px-4 text-center">
-    <h3 class="text-2xl font-semibold mb-10" data-i18n="reviews.title">Opinie naszych użytkowników 💬</h3>
+    <h2 class="text-2xl font-semibold mb-10" data-i18n="reviews.title">Opinie naszych użytkowników 💬</h2>
     <div class="grid gap-6 md:grid-cols-3">
       <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow">
         <p data-i18n="reviews.adam.text">🎁 “Dzięki HappyDate nie zapomniałem o urodzinach żony. Prezent był strzałem w dziesiątkę!”</p>
@@ -405,35 +441,52 @@
 <!-- Gifts -->
 <section class="bg-gray-100 dark:bg-gray-800 py-20 pb-12" aria-label="Galeria przykładowych prezentów">
   <div class="max-w-6xl mx-auto px-4">
-    <h3 class="text-2xl font-semibold text-center mb-12" data-i18n="gifts.title">🎁 Przykładowe prezenty</h3>
+    <h2 class="text-2xl font-semibold text-center mb-12" data-i18n="gifts.title">🎁 Przykładowe prezenty</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 min-w-0">
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/assets/img/gift1.jpg" alt="Zestaw SPA i kartka Kocham Cię - prezent romantyczny"
-             class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-             loading="lazy">
+        <img
+          src="/img/gift1.jpg"
+          srcset="/img/gift1_400.jpg 400w, /img/gift1_800.jpg 800w, /img/gift1_1200.jpg 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+          width="800" height="533" loading="lazy" decoding="async"
+          alt="Zestaw SPA i kartka Kocham Cię - prezent romantyczny"
+          class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300">
         <p class="font-medium" data-i18n="gifts.romantic">Zestaw SPA + kartka „Kocham Cię”</p>
       </div>
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/assets/img/gift2.jpg" alt="Kwiaty i list z przeprosinami"
-             class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-             loading="lazy">
+        <img
+          src="/img/gift2.jpg"
+          srcset="/img/gift2_400.jpg 400w, /img/gift2_800.jpg 800w, /img/gift2_1200.jpg 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+          width="800" height="533" loading="lazy" decoding="async"
+          alt="Kwiaty i list z przeprosinami"
+          class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300">
         <p class="font-medium" data-i18n="gifts.flowers">Kwiaty + list z przeprosinami</p>
       </div>
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/assets/img/gift3.jpg" alt="Box niespodzianka i voucher"
-             class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-             loading="lazy">
+        <img
+          src="/img/gift3.jpg"
+          srcset="/img/gift3_400.jpg 400w, /img/gift3_800.jpg 800w, /img/gift3_1200.jpg 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+          width="800" height="533" loading="lazy" decoding="async"
+          alt="Box niespodzianka i voucher"
+          class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300">
         <p class="font-medium" data-i18n="gifts.box">Box z niespodzianką + voucher</p>
       </div>
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/assets/img/gift4.jpg" alt="Voucher na masaż i kolację"
-             class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-             loading="lazy">
+        <img
+          src="/img/gift4.jpg"
+          srcset="/img/gift4_400.jpg 400w, /img/gift4_800.jpg 800w, /img/gift4_1200.jpg 1200w"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+          width="800" height="533" loading="lazy" decoding="async"
+          alt="Voucher na masaż i kolację"
+          class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300">
         <p class="font-medium" data-i18n="gifts.voucher">Voucher na masaż i kolację</p>
       </div>
     </div>
   </div>
 </section>
+</main>
 
 <footer class="bg-blue-500 text-white py-6 mt-12" aria-label="Stopka HappyDate">
   <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base" data-i18n="footer.text">
@@ -442,8 +495,8 @@
   </div>
 </footer>
 
-<!-- Main JS (твій) -->
-<script src="/js/main.js" defer></script>
+<!-- Main JS -->
+<script src="/src/js/main.js" defer></script>
 
 <!-- Chatbot -->
 <div id="chatbot-toggle" class="fixed bottom-6 right-6 z-50" aria-label="Otwórz chatbota HappyBot">
@@ -460,10 +513,11 @@
   <div class="bg-blue-600 text-white p-4 font-semibold">
     🤖 HappyBot — Twój doradca prezentowy
   </div>
-  <div class="p-4 text-sm h-64 overflow-y-auto" id="chat-content">
-    <p class="text-gray-700 dark:text-gray-200">Cześć! Jak mogę Ci pomóc znaleźć idealny prezent? 🎁</p>
+  <div class="p-4 text-sm h-64 overflow-y-auto" id="chat-content" aria-live="polite">
+    <p class="text-gray-700 dark:text-gray-200"><strong>HappyBot: </strong><span>Cześć! Jak mogę Ci pomóc znaleźć idealny prezent? 🎁</span></p>
   </div>
   <div class="p-2 border-t flex items-center bg-gray-50 dark:bg-gray-700">
+    <label for="chat-input" class="sr-only">Twoja wiadomość</label>
     <input type="text" id="chat-input" class="flex-1 p-2 text-sm rounded-l border border-gray-300 dark:bg-gray-800 dark:text-white" placeholder="Zadaj pytanie..." aria-label="Twoja wiadomość">
     <button id="chatSendBtn" class="bg-blue-500 text-white px-3 py-2 rounded-r" type="button">Wyślij</button>
   </div>
@@ -487,7 +541,11 @@
   function appendMsg(text, who = 'user') {
     const p = document.createElement('p');
     p.className = who === 'user' ? 'mt-2 text-right text-blue-600 dark:text-blue-400' : 'mt-2 text-gray-700 dark:text-gray-200';
-    p.innerHTML = `<strong>${who === 'user' ? 'Ty: ' : 'HappyBot: '}</strong><span>${text}</span>`;
+    const strong = document.createElement('strong');
+    strong.textContent = who === 'user' ? 'Ty: ' : 'HappyBot: ';
+    const span = document.createElement('span');
+    span.textContent = text;
+    p.append(strong, span);
     chatBody.appendChild(p);
     chatBody.scrollTop = chatBody.scrollHeight;
   }
@@ -510,7 +568,7 @@
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
     <p class="text-sm md:text-base" data-i18n="cookies.text">
       Ta strona używa plików cookies, by ulepszyć Twój komfort. Korzystając dalej z serwisu, akceptujesz naszą
-      <a href="/pages/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener">Politykę Prywatności</a>.
+      <a href="/pages/privacy.html" class="underline hover:text-blue-300" target="_blank" rel="noopener noreferrer">Politykę Prywatności</a>.
     </p>
     <button id="acceptCookies" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md font-semibold transition focus:ring-2 focus:ring-blue-400" aria-label="Akceptuję cookies">
       <span data-i18n="cookies.accept">Akceptuję</span>
@@ -518,17 +576,28 @@
   </div>
 </div>
 <script>
+function loadScript(src){const s=document.createElement('script');s.src=src;s.async=true;document.head.appendChild(s);}
 document.addEventListener("DOMContentLoaded", () => {
   const cookieConsent = document.getElementById('cookieConsent');
   const acceptBtn = document.getElementById('acceptCookies');
-  if (!localStorage.getItem('happydate_cookie_consent')) cookieConsent.classList.remove('hidden');
-  acceptBtn.addEventListener('click', () => { localStorage.setItem('happydate_cookie_consent', 'true'); cookieConsent.classList.add('hidden'); });
+  const consent = localStorage.getItem('happydate_cookie_consent') === 'true';
+
+  if (!consent) cookieConsent.classList.remove('hidden'); else {
+    // GA można załadować tutaj
+  }
+
+  acceptBtn.addEventListener('click', () => {
+    localStorage.setItem('happydate_cookie_consent', 'true');
+    cookieConsent.classList.add('hidden');
+  });
 });
 </script>
 
 <!-- i18n init -->
 <script>
 (function() {
+  const html = document.documentElement;
+
   const repoBase = (() => {
     const parts = location.pathname.split('/').filter(Boolean);
     return parts.length > 0 ? `/${parts[0]}` : '';
@@ -537,13 +606,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const supportedLangs = ["pl", "ua", "en", "ru", "de"];
   const browserLang = navigator.language?.slice(0, 2) || "pl";
   const initialLang = localStorage.getItem("lang") || (supportedLangs.includes(browserLang) ? browserLang : "pl");
+  html.setAttribute('lang', initialLang);
 
   i18next
     .use(i18nextHttpBackend)
     .init({
       lng: initialLang,
       fallbackLng: "pl",
-      backend: { loadPath: `${repoBase}/assets/lang/{{lng}}.json` }
+      backend: { loadPath: `${repoBase}/src/i18n/{{lng}}.json` }
     }, function(err, t) {
       document.querySelectorAll("[data-i18n]").forEach(el => {
         const key = el.getAttribute("data-i18n");
@@ -551,11 +621,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-  document.querySelectorAll(".lang-btn").forEach(btn => {
+  document.querySelectorAll(".lang-btn,[data-lang]").forEach(btn => {
     btn.addEventListener("click", function () {
       const lang = this.getAttribute("data-lang");
       if (!supportedLangs.includes(lang)) return;
       localStorage.setItem("lang", lang);
+      html.setAttribute('lang', lang);
       i18next.changeLanguage(lang).then(() => {
         document.querySelectorAll("[data-i18n]").forEach(el => {
           const key = el.getAttribute("data-i18n");
@@ -567,9 +638,10 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 </script>
 
-<!-- AOS -->
+<!-- AOS z PRM -->
 <script>
-  AOS.init({ duration: 700, once: true, offset: 60 });
+  const prm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  AOS.init({ duration: prm ? 0 : 700, once: true, offset: 60, disable: prm });
 </script>
 
 <!-- WOW block reveal -->
@@ -590,14 +662,73 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<!-- ===== Supabase: env + client + header auth UI ===== -->
+<!-- ===== Supabase: env + client ===== -->
 <script>
-  // заповнюємо window.env із /api/env (Vercel Edge function)
+  // Pobierz jawnie tylko PUBLICZNE wartości (URL/ANON) z edge function
   window.env = {};
-  fetch('/api/env').then(r=>r.json()).then(e => window.env = e);
+  fetch('/api/env').then(r=>r.json()).then(e => window.env = e).catch(()=>{});
 </script>
-<script type="module" src="/js/supabaseClient.js"></script>
-<script type="module" src="/js/auth.js"></script>
+<script type="module" src="/src/js/supabaseClient.js"></script>
+
+<!-- ===== Header auth UI (Supabase) ===== -->
+<script type="module">
+  import { supabase } from '/src/js/supabaseClient.js';
+  const $ = (s, r=document)=>r.querySelector(s);
+
+  const els = {
+    login: $('#login-link'),
+    register: $('#register-link'),
+    profile: $('#dashboard-link'),
+    logout: $('#logout-btn'),
+    loginM: $('#login-link-mobile'),
+    registerM: $('#register-link-mobile'),
+    profileM: $('#dashboard-link-mobile'),
+    logoutM: $('#logout-btn-mobile'),
+  };
+
+  function show(el){ el?.classList.remove('hidden'); }
+  function hide(el){ el?.classList.add('hidden'); }
+
+  function setAuthUI(isAuthed){
+    if (isAuthed){
+      hide(els.login); hide(els.register);
+      show(els.profile); show(els.logout);
+      hide(els.loginM); hide(els.registerM);
+      show(els.profileM); show(els.logoutM);
+    } else {
+      show(els.login); show(els.register);
+      hide(els.profile); hide(els.logout);
+      show(els.loginM); show(els.registerM);
+      hide(els.profileM); hide(els.logoutM);
+    }
+  }
+
+  // Initial state
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    setAuthUI(!!session?.user);
+  } catch { setAuthUI(false); }
+
+  // Reactive changes
+  supabase.auth.onAuthStateChange((_event, session) => {
+    setAuthUI(!!session?.user);
+  });
+
+  // Logout handlers
+  els.logout?.addEventListener('click', async ()=>{ await supabase.auth.signOut(); });
+  els.logoutM?.addEventListener('click', async ()=>{ await supabase.auth.signOut(); });
+</script>
+
+<!-- Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('✅ Service Worker zarejestrowany'))
+      .catch(err => console.error('❌ SW error:', err));
+  });
+}
+</script>
 
 </body>
 </html>

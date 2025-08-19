@@ -1,4 +1,4 @@
-<!-- pages/login.html — Supabase version (email+password, magic link, OAuth) -->
+<!-- pages/login.html — HappyDate (Supabase: email+password, magic link, OAuth, redirect-back) -->
 <!DOCTYPE html>
 <html lang="pl" class="h-full">
 <head>
@@ -6,41 +6,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Logowanie — HappyDate</title>
   <meta name="description" content="Zaloguj się do HappyDate: e-mail i hasło, magic link lub Google/Apple." />
+
+  <!-- Ikony / PWA (dopasuj ścieżki do swoich plików) -->
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="manifest" href="/public/manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @media (prefers-reduced-motion: reduce){ .animate-spin{ animation: none !important; } }
   </style>
 </head>
 <body class="h-full bg-gray-100 flex items-center justify-center">
+  <noscript>
+    <div class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+      Ta strona wymaga JavaScript do działania (logowanie przez Supabase).
+    </div>
+  </noscript>
+
   <main class="bg-white w-full max-w-md mx-auto my-8 p-8 rounded-2xl shadow-xl">
-    <a href="/index.html" class="block text-center text-3xl mb-2">🎁</a>
+    <a href="/index.html" class="block text-center text-3xl mb-2" aria-label="Strona główna HappyDate">🎁</a>
     <h1 class="text-2xl font-bold mb-1 text-center">Zaloguj się do HappyDate</h1>
     <p class="text-sm text-center text-gray-500 mb-6">Szybko i bezpiecznie — wybierz metodę logowania</p>
 
     <!-- Email + password -->
-    <form id="login-form" class="space-y-4" autocomplete="on">
+    <form id="login-form" class="space-y-4" autocomplete="on" novalidate>
       <label class="block">
         <span class="block text-sm font-medium mb-1">Adres e-mail</span>
-        <input type="email" id="email" required inputmode="email"
-               class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400"
-               placeholder="np. jan.kowalski@email.pl" />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          inputmode="email"
+          autocomplete="username email"
+          spellcheck="false"
+          class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400"
+          placeholder="np. jan.kowalski@email.pl" />
       </label>
 
       <label class="block">
         <span class="block text-sm font-medium mb-1">Hasło</span>
         <div class="relative">
-          <input type="password" id="password" required minlength="6"
-                 class="w-full p-2.5 border rounded-lg pr-10 focus:ring-2 focus:ring-blue-400"
-                 placeholder="••••••••" />
-          <button type="button" id="togglePass"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700"
-                  aria-label="Pokaż/ukryj hasło">👁️</button>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="6"
+            autocomplete="current-password"
+            class="w-full p-2.5 border rounded-lg pr-10 focus:ring-2 focus:ring-blue-400"
+            placeholder="••••••••" />
+          <button
+            type="button"
+            id="togglePass"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700"
+            aria-label="Pokaż/ukryj hasło"
+            aria-pressed="false">👁️</button>
         </div>
       </label>
 
-      <button type="submit" id="emailPassBtn"
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
+      <button
+        type="submit"
+        id="emailPassBtn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
         Zaloguj się
       </button>
 
@@ -53,39 +83,43 @@
     </form>
 
     <!-- Divider -->
-    <div class="my-6 flex items-center gap-3 text-xs text-gray-400">
-      <div class="flex-1 h-px bg-gray-200"></div>
-      <span>lub</span>
-      <div class="flex-1 h-px bg-gray-200"></div>
+    <div class="my-6 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
+      <div class="flex-1 h-px bg-gray-200"></div><span>lub</span><div class="flex-1 h-px bg-gray-200"></div>
     </div>
 
     <!-- Magic link -->
-    <form id="magic-form" class="space-y-3">
+    <form id="magic-form" class="space-y-3" novalidate>
       <label class="block">
         <span class="block text-sm font-medium mb-1">Szybki dostęp (magic link)</span>
-        <input type="email" id="magic-email" inputmode="email"
-               class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-pink-400"
-               placeholder="Wpisz e-mail do wysłania linku" />
+        <input
+          type="email"
+          id="magic-email"
+          name="magicEmail"
+          inputmode="email"
+          autocomplete="email"
+          spellcheck="false"
+          class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-pink-400"
+          placeholder="Wpisz e-mail do wysłania linku" />
       </label>
-      <button type="submit" id="magicBtn"
-              class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
+      <button
+        type="submit"
+        id="magicBtn"
+        class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
         Wyślij magic link ✉️
       </button>
     </form>
 
     <!-- Divider -->
-    <div class="my-6 flex items-center gap-3 text-xs text-gray-400">
-      <div class="flex-1 h-px bg-gray-200"></div>
-      <span>lub</span>
-      <div class="flex-1 h-px bg-gray-200"></div>
+    <div class="my-6 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
+      <div class="flex-1 h-px bg-gray-200"></div><span>lub</span><div class="flex-1 h-px bg-gray-200"></div>
     </div>
 
     <!-- OAuth -->
     <div class="grid grid-cols-1 gap-3">
-      <button id="googleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
+      <button id="googleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed">
         Zaloguj przez Google
       </button>
-      <button id="appleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
+      <button id="appleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed">
         Zaloguj przez Apple
       </button>
     </div>
@@ -97,16 +131,14 @@
   </main>
 
   <!-- Toast -->
-  <div id="toast"
-       class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50 hidden"></div>
+  <div
+    id="toast"
+    class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50 hidden"
+    role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    /**
-     * WYMAGANE: utwórz /js/supabaseClient.js z:
-     *   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-     *   export const supabase = createClient(import.meta.env.VITE_SUPABASE_URL || 'https://...supabase.co', import.meta.env.VITE_SUPABASE_ANON_KEY || '...anon...');
-     */
-    import { supabase } from '../js/supabaseClient.js';
+    // ВАЖЛИВО: імпорт з публічного /js (а не /src/js)
+    import { supabase } from '/js/supabaseClient.js';
 
     // ---- Helpers ----
     const $ = (s, r=document) => r.querySelector(s);
@@ -123,20 +155,27 @@
       btn.disabled = loading;
       if (loading) {
         btn.dataset._label = btn.textContent;
-        btn.innerHTML = `<span class="inline-block align-middle w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></span>${labelWhenLoading}`;
+        btn.innerHTML = `<span class="inline-block align-middle w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin"></span>${labelWhenLoading}`;
       } else {
         btn.textContent = btn.dataset._label || btn.textContent;
       }
     };
     const redirectTo = (path) => window.location.href = path;
 
-    // ---- Jeśli już zalogowany -> przekieruj ----
+    // Focus на e-mail при завантаженні
+    $('#email')?.focus();
+
+    // ---- Якщо вже залогінений → поверни «туди, звідки викинуло», або на dashboard ----
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) redirectTo('/pages/dashboard.html');
+      if (session) {
+        const next = sessionStorage.getItem("happydate_post_login_redirect");
+        if (next) sessionStorage.removeItem("happydate_post_login_redirect");
+        redirectTo(next || '/pages/dashboard.html');
+      }
     } catch {}
 
-    // ---- Email+Password ----
+    // ---- Email + Password ----
     $('#login-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = $('#email').value.trim();
@@ -146,17 +185,17 @@
       if (!email || !password) return toast('Uzupełnij e-mail i hasło', 'warn');
 
       setLoading(btn, true, 'Logowanie…');
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       setLoading(btn, false);
+
       if (error) {
-        const msg = friendlyError(error);
-        toast(msg, 'err');
+        toast(friendlyError(error), 'err');
         return;
       }
-
       toast('Zalogowano pomyślnie ✅');
-      redirectTo('/pages/dashboard.html');
+      const next = sessionStorage.getItem("happydate_post_login_redirect");
+      if (next) sessionStorage.removeItem("happydate_post_login_redirect");
+      redirectTo(next || '/pages/dashboard.html');
     });
 
     // ---- Magic link ----
@@ -177,27 +216,38 @@
       toast('Sprawdź skrzynkę — wysłaliśmy link ✉️');
     });
 
-    // ---- OAuth (włączone w Supabase → Authentication → Providers) ----
+    // ---- OAuth ----
     $('#googleBtn')?.addEventListener('click', async () => {
+      const btn = $('#googleBtn');
+      setLoading(btn, true, 'Przekierowanie…');
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: `${location.origin}/pages/dashboard.html` }
       });
-      if (error) toast(friendlyError(error), 'err');
+      if (error) {
+        setLoading(btn, false);
+        toast(friendlyError(error), 'err');
+      }
     });
 
     $('#appleBtn')?.addEventListener('click', async () => {
+      const btn = $('#appleBtn');
+      setLoading(btn, true, 'Przekierowanie…');
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'apple',
         options: { redirectTo: `${location.origin}/pages/dashboard.html` }
       });
-      if (error) toast(friendlyError(error), 'err');
+      if (error) {
+        setLoading(btn, false);
+        toast(friendlyError(error), 'err');
+      }
     });
 
     // ---- Reset hasła ----
     $('#forgotBtn')?.addEventListener('click', async () => {
       const email = ($('#email').value || $('#magic-email').value).trim();
       if (!email) return toast('Najpierw wpisz e-mail', 'warn');
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${location.origin}/pages/reset-password.html`
       });
@@ -206,16 +256,18 @@
     });
 
     // ---- Show/Hide password ----
-    $('#togglePass')?.addEventListener('click', () => {
+    $('#togglePass')?.addEventListener('click', (ev) => {
       const input = $('#password');
-      input.type = input.type === 'password' ? 'text' : 'password';
+      const nextType = input.type === 'password' ? 'text' : 'password';
+      input.type = nextType;
+      ev.currentTarget.setAttribute('aria-pressed', String(nextType === 'text'));
     });
 
     // ---- Błędy „po ludzku” ----
     function friendlyError(err) {
       const msg = (err?.message || '').toLowerCase();
       if (msg.includes('invalid login') || msg.includes('invalid email or password')) return 'Nieprawidłowy e-mail lub hasło.';
-      if (msg.includes('email not confirmed')) return 'Potwierdź e-mail, zanim się zalogujesz.';
+      if (msg.includes('email not confirmed') || msg.includes('not confirmed')) return 'Potwierdź e-mail, zanim się zalogujesz.';
       if (msg.includes('too many requests')) return 'Zbyt wiele prób — spróbuj za kilka minut.';
       if (msg.includes('network')) return 'Problem z siecią — sprawdź połączenie.';
       return 'Ups! Coś poszło nie tak. Spróbuj ponownie.';
