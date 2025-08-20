@@ -20,6 +20,9 @@
   <!-- AOS (opcjonalnie) -->
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+  <style>
+    dialog::backdrop{background:rgba(0,0,0,.35)}
+  </style>
 </head>
 <body class="min-h-screen bg-gradient-to-tr from-blue-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 transition-colors duration-300">
 
@@ -204,17 +207,20 @@
 
 <!-- APP SCRIPT (Supabase) -->
 <script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-  // === KONFIG: podmień na swoje wartości z Supabase (anon key może być w kliencie) ===
-  const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-  const SUPABASE_ANON_KEY = 'YOUR_PUBLIC_ANON_KEY';
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  // 1) Spróbuj użyć wspólnego klienta Supabase tak jak w innych stronach
+  let supabase;
+  try {
+    ({ supabase } = await import('/js/supabaseClient.js'));
+  } catch {
+    // 2) Fallback: ESM + globalne/placeholdery
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const SUPABASE_URL = window.SUPABASE_URL || 'https://YOUR-PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_PUBLIC_ANON_KEY';
+    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
 
   // ===== Helpers =====
   const qs  = (s, r=document) => r.querySelector(s);
-  const qsa = (s, r=document) => Array.from(r.querySelectorAll(s));
   const toastEl = qs('#toast');
   const toast = (msg, type='success') => {
     toastEl.textContent = msg;
@@ -232,8 +238,6 @@
   const progressEl = qs('#profile-progress');
   const logoutBtn  = qs('#logout-btn');
   const referralBtn= qs('#referral-btn');
-  const addEventBtn= qs('#add-event-btn');
-  const emptyAdd   = qs('#event-empty-add');
   const eventList  = qs('#event-list');
   const eventEmpty = qs('#event-empty');
   const historyList= qs('#history-list');
@@ -265,19 +269,23 @@
     return session.user;
   }
 
-  // ===== Profile progress =====
+  // ===== Profile progress (тільки в UI, без зміни points) =====
   const fields = ['name','surname','phone','birthdate','gender','preferences'];
   const calcProgress = () => {
     const filled = fields.filter(id => (qs('#'+id)?.value || '').trim().length > 0).length;
     const pct = Math.round((filled / fields.length) * 100);
     progressEl.textContent = `Uzupełniono: ${pct}%`;
-    const pts = qs('#userPoints');
-    const lvl = qs('#user-level');
-    const score = pct >= 80 ? 20 : Math.floor(pct/10)*2; // 0..20
-    if (pts) pts.textContent = `${score} pkt`;
-    if (lvl) lvl.textContent = score < 10 ? 'Nowicjusz' : score < 20 ? 'Entuzjasta' : 'Mistrz';
-    return score;
+    return pct;
   };
+
+  function updateLevelUI(points) {
+    const ptsEl = qs('#userPoints');
+    const lvlEl = qs('#user-level');
+    if (typeof points === 'number') {
+      ptsEl.textContent = `${points} pkt`;
+      lvlEl.textContent = points < 10 ? 'Nowicjusz' : points < 20 ? 'Entuzjasta' : 'Mistrz';
+    }
+  }
 
   // ===== Profile load/save =====
   async function loadProfile() {
@@ -302,10 +310,7 @@
       qs('#gender').value = data.gender || '';
       qs('#preferences').value = data.preferences || '';
       if (data.photo_url) photoImg.src = data.photo_url;
-      if (typeof data.points === 'number') {
-        qs('#userPoints').textContent = `${data.points} pkt`;
-        qs('#user-level').textContent = data.points < 10 ? 'Nowicjusz' : data.points < 20 ? 'Entuzjasta' : 'Mistrz';
-      }
+      if (typeof data.points === 'number') updateLevelUI(data.points);
     } else {
       // utwórz pusty profil (lazy)
       await supabase.from('profiles').insert({ id: currentUser.id, email: currentUser.email });
@@ -326,14 +331,14 @@
       gender: qs('#gender').value,
       preferences: qs('#preferences').value.trim(),
       email: currentUser.email,
-      updated_at: new Date().toISOString(),
-      points: calcProgress()
+      updated_at: new Date().toISOString()
+      // ważne: NIE nadpisujemy points tutaj
     };
     const { error } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
     if (error) throw error;
   }
 
-  // ===== Events CRUD =====
+  // ===== Events CRUD (schema zgodna z dashboardem: uid, person, date, title, [comment], [type='custom']) =====
   function renderEventItem(row) {
     const wrap = document.createElement('div');
     wrap.className = 'rounded-xl border dark:border-gray-700 p-4 flex items-start justify-between gap-4 hover:shadow';
@@ -347,7 +352,7 @@
     meta.className = 'text-sm text-gray-500 dark:text-gray-400';
     const parts = [];
     if (row.date) parts.push(`📅 ${formatDate(row.date)}`);
-    if (row.for_who) parts.push(`🎁 dla: ${row.for_who}`);
+    if (row.person) parts.push(`🎁 dla: ${row.person}`);
     meta.textContent = parts.join('  •  ');
 
     const comment = document.createElement('div');
@@ -371,7 +376,7 @@
     delBtn.textContent = 'Usuń';
     delBtn.addEventListener('click', async () => {
       if (!confirm('Usunąć wydarzenie?')) return;
-      const { error } = await supabase.from('events').delete().eq('id', row.id).eq('user_id', currentUser.id);
+      const { error } = await supabase.from('events').delete().eq('id', row.id).eq('uid', currentUser.id);
       if (error) { console.error(error); toast('Błąd usuwania', 'error'); return; }
       wrap.remove();
       toggleEmpty();
@@ -394,7 +399,7 @@
     const { data, error } = await supabase
       .from('events')
       .select('*')
-      .eq('user_id', currentUser.id)
+      .eq('uid', currentUser.id)
       .order('date', { ascending: true });
 
     if (error) { console.error(error); toast('Nie udało się pobrać wydarzeń', 'error'); return; }
@@ -409,7 +414,7 @@
       efId.value = row.id;
       efTitle.value = row.title || '';
       efDate.value = row.date || todayISO();
-      efFor.value = row.for_who || '';
+      efFor.value = row.person || '';
       efComment.value = row.comment || '';
       deleteEventBtn.classList.remove('hidden');
     } else {
@@ -456,6 +461,12 @@
     } catch (e) { console.error(e); toast('Nie udało się zapisać profilu', 'error'); }
   });
 
+  const addEventHandlers = () => {
+    qs('#add-event-btn')?.addEventListener('click', () => openEventModal(null));
+    qs('#event-empty-add')?.addEventListener('click', () => openEventModal(null));
+  };
+  addEventHandlers();
+
   photoImg?.addEventListener('click', () => photoFile.click());
   photoFile?.addEventListener('change', async () => {
     const f = photoFile.files?.[0]; if (!f) return;
@@ -473,9 +484,6 @@
     window.location.href = '/pages/login.html';
   });
 
-  const openAdd = () => openEventModal(null);
-  qs('#add-event-btn')?.addEventListener('click', openAdd);
-  qs('#event-empty-add')?.addEventListener('click', openAdd);
   dlgClose?.addEventListener('click', () => dlg.close());
   dlgCancel?.addEventListener('click', () => dlg.close());
   dlg.addEventListener('cancel', (e) => { e.preventDefault(); dlg.close(); });
@@ -484,7 +492,7 @@
     const id = efId.value;
     if (!id) return;
     if (!confirm('Usunąć wydarzenie?')) return;
-    const { error } = await supabase.from('events').delete().eq('id', id).eq('user_id', currentUser.id);
+    const { error } = await supabase.from('events').delete().eq('id', id).eq('uid', currentUser.id);
     if (error) { console.error(error); toast('Błąd usuwania', 'error'); return; }
     dlg.close();
     await loadEvents();
@@ -494,11 +502,11 @@
 
   dlgForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const id     = efId.value.trim();
-    const title  = efTitle.value.trim();
-    const date   = efDate.value;
-    const forWho = efFor.value.trim();
-    const comment= efComment.value.trim();
+    const id      = efId.value.trim();
+    const title   = efTitle.value.trim();
+    const date    = efDate.value;
+    const person  = efFor.value.trim();
+    const comment = efComment.value.trim();
 
     if (!title || !date) { toast('Uzupełnij wymagane pola', 'error'); return; }
 
@@ -506,14 +514,14 @@
       if (id) {
         const { error } = await supabase
           .from('events')
-          .update({ title, date, for_who: forWho, comment, updated_at: new Date().toISOString() })
-          .eq('id', id).eq('user_id', currentUser.id);
+          .update({ title, date, person, comment, updated_at: new Date().toISOString() })
+          .eq('id', id).eq('uid', currentUser.id);
         if (error) throw error;
         toast('Wydarzenie zaktualizowane ✅'); addHistory(`Zaktualizowano: ${title}`);
       } else {
         const { error } = await supabase
           .from('events')
-          .insert([{ user_id: currentUser.id, title, date, for_who: forWho, comment }]);
+          .insert([{ uid: currentUser.id, title, date, person, comment, type: 'custom' }]);
         if (error) throw error;
         toast('Dodano wydarzenie ✅'); addHistory(`Dodano: ${title}`);
       }

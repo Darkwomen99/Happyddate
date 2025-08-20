@@ -317,3 +317,31 @@
     });
   });
 })();
+
+const avatarLink = document.getElementById("user-avatar-link");
+const avatarImg  = document.getElementById("user-avatar");
+
+async function updateUserUI() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    // Якщо є аватар
+    const avatarUrl = user.user_metadata?.avatar_url || "/assets/img/default-avatar.png";
+    avatarImg.src = avatarUrl;
+    avatarLink.classList.remove("hidden");
+    // Ховаємо кнопки login/register
+    document.getElementById("login-link")?.classList.add("hidden");
+    document.getElementById("register-link")?.classList.add("hidden");
+  } else {
+    avatarLink.classList.add("hidden");
+    document.getElementById("login-link")?.classList.remove("hidden");
+    document.getElementById("register-link")?.classList.remove("hidden");
+  }
+}
+
+// Виклик при завантаженні
+updateUserUI();
+
+// Виклик при зміні auth
+supabase.auth.onAuthStateChange(() => {
+  updateUserUI();
+});

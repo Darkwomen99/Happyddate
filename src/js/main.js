@@ -23,7 +23,7 @@
   }
 
   // ─────────────────────────────────────────
-  // TEMA: dark/light z preferencją systemową przy pierwszej wizycie
+  // TEMA: dark/light
   const themeToggle = $("#theme-toggle");
   const themeIcon   = $("#theme-icon");
 
@@ -34,20 +34,29 @@
     if (themeIcon) themeIcon.textContent = isDark ? "☀️" : "🌙";
   }
 
-  function initTheme() {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved) {
-      applyTheme(saved);
-    } else {
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      applyTheme(prefersDark ? "dark" : "light");
+  // Zastosuj zapisaną/systemową tematykę jak najwcześniej (anty-FOUC)
+  (function earlyThemeBoot() {
+    try {
+      const saved   = localStorage.getItem(THEME_KEY);
+      const prefers = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefers ? "dark" : "light"));
+    } catch {
+      applyTheme("light");
     }
+  })();
 
+  function initTheme() {
+    // toggle
     themeToggle?.addEventListener("click", () => {
       const isDark = !document.documentElement.classList.contains("dark");
       const next = isDark ? "dark" : "light";
-      localStorage.setItem(THEME_KEY, next);
+      try { localStorage.setItem(THEME_KEY, next); } catch {}
       applyTheme(next);
+    });
+
+    // synchronizacja między kartami
+    window.addEventListener("storage", (e) => {
+      if (e.key === THEME_KEY && e.newValue) applyTheme(e.newValue);
     });
   }
 
@@ -65,28 +74,30 @@
 
   function setHtmlLang(lng) {
     document.documentElement.setAttribute("lang", lng || "pl");
-    document.documentElement.setAttribute("dir", "ltr");
+    document.documentElement.setAttribute("dir", "ltr"); // wszystkie nasze języki LTR
   }
 
   async function setLanguage(lng) {
+    if (!lng) return;
     // Jeśli masz mój i18n bootstrap (window.i18n), zrobimy to bez przeładowania:
     if (window.i18n?.setLang) {
       await window.i18n.setLang(lng, { persist: true });
       setHtmlLang(window.i18n.getLang());
       return;
     }
-    // Jeśli i18n nie jest dostępny — zapisz i odśwież (fallback)
-    localStorage.setItem(LANG_KEY, lng);
+    // Fallback: zapis + reload
+    try { localStorage.setItem(LANG_KEY, lng); } catch {}
     location.reload();
   }
 
   function initLanguage() {
     migrateOldLangKey();
 
-    // Ustaw atrybut <html lang="…"> na starcie
-    const current = (window.i18n?.getLang?.()) || localStorage.getItem(LANG_KEY) || (navigator.language || "pl").slice(0,2);
+    // Ustaw <html lang> na starcie
+    const current = (window.i18n?.getLang?.()) || localStorageSafe(LANG_KEY) || (navigator.language || "pl").slice(0,2);
     setHtmlLang(current);
 
+    // Click na przyciskach języka
     $$(".lang-btn").forEach(btn => {
       btn.addEventListener("click", async () => {
         const lng = btn.dataset.lang;
@@ -95,7 +106,7 @@
       });
     });
 
-    // Aktywne oznaczenie wybranego języka (jeśli i18n działa)
+    // Aktywny stan przy i18n
     if (window.i18n?.onChange) {
       window.i18n.onChange((lng) => {
         setHtmlLang(lng);
@@ -106,6 +117,18 @@
         });
       });
     }
+
+    // synchronizacja między kartami
+    window.addEventListener("storage", (e) => {
+      if (e.key === LANG_KEY && e.newValue) {
+        setHtmlLang(e.newValue);
+        // jeżeli nie używamy window.i18n, to można tu warunkowo location.reload()
+      }
+    });
+  }
+
+  function localStorageSafe(key) {
+    try { return localStorage.getItem(key); } catch { return null; }
   }
 
   // ─────────────────────────────────────────
@@ -126,11 +149,11 @@
     logo:       $("#logo-link"),
   };
 
+  function show(el, vis) { el && el.classList.toggle("hidden", !vis); }
+
   function updateNav(session) {
     const signedIn = !!session?.user;
     currentUser = signedIn ? session.user : null;
-
-    const show = (el, vis) => el && el.classList.toggle("hidden", !vis);
 
     // Desktop
     show(els.login,     !signedIn);
@@ -166,7 +189,7 @@
     // Klik logo — przejście wg stanu auth
     els.logo?.addEventListener("click", (e) => {
       e.preventDefault();
-      const target = currentUser ? "dashboard.html" : "index.html";
+      const target = currentUser ? "/pages/dashboard.html" : "/index.html";
       window.location.href = target;
     });
 
