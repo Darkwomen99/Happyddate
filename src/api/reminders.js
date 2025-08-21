@@ -1,82 +1,61 @@
-// api/reminders.js — HappyDate Reminder Sender (Supabase + Resend, optimized)
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc.js';
-import timezone from 'dayjs/plugin/timezone.js';
-
-// Day.js setup
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY // тільки на сервері!
 );
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Обчислюємо "сьогодні" у зоні Європа/Варшава
+function getTodayWarsaw() {
+  const now = new Date();
+  // Отримаємо локальний час Варшави як рядок і створимо з нього Date-об'єкт
+  const warsawNow = new Date(now.toLocaleString('en-CA', { timeZone: 'Europe/Warsaw', hour12: false }));
+  const y = warsawNow.getFullYear();
+  const m = String(warsawNow.getMonth() + 1).padStart(2, '0');
+  const d = String(warsawNow.getDate()).padStart(2, '0');
+  const dayStart = new Date(`${y}-${m}-${d}T00:00:00+02:00`); // просте наближення (літо CEST)
+  const dayEnd   = new Date(`${y}-${m}-${d}T23:59:59+02:00`);
+  const isoDate = `${y}-${m}-${d}`;
+  return { isoDate, dayStart, dayEnd };
+}
+
 export default async function handler(req, res) {
-  // 1) Безпека: перевірка секрету
-  if (req.headers['x-reminders-secret'] !== process.env.REMINDERS_SECRET) {
-    return res.status(403).json({ error: 'Unauthorized' });
-  }
-
   try {
-    // 2) Поточна дата в таймзоні (Europe/Warsaw)
-    const today = dayjs().tz('Europe/Warsaw').format('YYYY-MM-DD');
-
-    // 3) Витягуємо події на сьогодні + email користувача
-    const { data: events, error } = await supabase
-      .from('events')
-      .select(`id, title, type, person, date, profiles ( email )`)
-      .eq('date', today);
-
-    if (error) throw error;
-    if (!events?.length) return res.json({ status: 'No events today' });
-
-    let sent = 0;
-
-    for (const ev of events) {
-      const email = ev.profiles?.email;
-      if (!email) continue;
-
-      const title = ev.title || 'Wydarzenie';
-      const person = ev.person || 'Bliska osoba';
-      const type = ev.type || 'inne';
-
-      const subject = `Przypomnienie: ${person} — ${title} 🎉`;
-      const html = `
-        <h2>Cześć!</h2>
-        <p>Przypominamy o ważnym wydarzeniu dzisiaj:</p>
-        <ul>
-          <li><b>Osoba:</b> ${person}</li>
-          <li><b>Rodzaj:</b> ${type}</li>
-          <li><b>Data:</b> ${ev.date}</li>
-        </ul>
-        <p>Sprawdź szczegóły w swoim kalendarzu HappyDate:</p>
-        <a href="${process.env.PUBLIC_BASE_URL}/pages/dashboard.html"
-           style="color:white;background:#3b82f6;padding:10px 18px;border-radius:8px;text-decoration:none">
-           Otwórz kalendarz
-        </a>
-      `;
-
-      try {
-        await resend.emails.send({
-          from: 'HappyDate <hello@happydate.pl>',
-          to: email,
-          subject,
-          html
-        });
-        sent++;
-      } catch (mailErr) {
-        console.error(`❌ Błąd wysyłania do ${email}:`, mailErr.message);
-      }
+    // Захист: тільки з секретом
+    if (req.headers['x-reminders-secret'] !== process.env.REMINDERS_SECRET) {
+      return res.status(403).json({ error: 'Unauthorized' });
     }
 
-    return res.json({ status: 'OK', sent });
+    const { isoDate } = getTodayWarsaw();
+
+    // Вибираємо події на сьогодні + email користувача (через service_role)
+    const { data, error } = await supabase
+      .from('events')
+      .select('id, uid, title, date, enabled, profiles:uid(email, full_name)')
+      .eq('date', isoDate)
+      .eq('enabled', true);
+
+    if (error) throw error;
+
+    const jobs = (data || []).map(async (ev) => {
+      const email = ev.profiles?.email;
+      if (!email) return;
+
+      await resend.emails.send({
+        from: 'HappyDate <reminder@happydate.pl>',
+        to: email,
+        subject: `Dzisiejsze wydarzenie: ${ev.title}`,
+        html: `<p>Cześć! Dziś masz wydarzenie: <b>${ev.title}</b>.</p>
+               <p>Wejdź do kalendarza: <a href="https://YOUR-APP.vercel.app/dashboard.html">HappyDate</a></p>`
+      });
+    });
+
+    await Promise.all(jobs);
+    return res.status(200).json({ ok: true, sent: jobs.length });
   } catch (err) {
-    console.error('❌ Błąd główny:', err);
-    return res.status(500).json({ error: err.message });
+    console.error(err);
+    return res.status(500).json({ error: String(err) });
   }
 }
