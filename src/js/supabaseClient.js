@@ -80,28 +80,35 @@ function must(val, name) {
 
 /** Ініціалізація singleton‑клієнта */
 async function initClient() {
-  // Якщо вже є ініціалізований — повертаємо
-  if (globalThis.window?.supabase) return globalThis.window.supabase;
+  // Якщо вже є КЛІЄНТ (а не UMD-неймспейс), використовуємо його
+  const maybe = globalThis.window?.supabase;
+  const isClient = !!(maybe && typeof maybe === 'object' && maybe.auth && typeof maybe.auth.getSession === 'function');
+  if (isClient) return maybe;
 
+  // 1) Витягуємо ENV
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = await getEnv();
   const url = must(SUPABASE_URL, "SUPABASE_URL");
   const key = must(SUPABASE_ANON_KEY, "SUPABASE_ANON_KEY");
 
-  const client = createClient(url, key, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true,
-    },
-    global: {
-      headers: { "x-happydate-client": "web" },
-    },
+  // 2) Визначаємо, чим створювати клієнт:
+  //    - якщо на сторінці вже підключено UMD, то там є window.supabase.createClient
+  //    - інакше — беремо ESM createClient з імпорту
+  const create = (globalThis.window?.supabase && typeof globalThis.window.supabase.createClient === 'function')
+    ? globalThis.window.supabase.createClient
+    : createClient;
+
+  const client = create(url, key, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+    global: { headers: { "x-happydate-client": "web" } },
   });
 
-  // Зберігаємо в window як singleton
+  // Зберігаємо саме клієнт у window
   try { globalThis.window.supabase = client; } catch {}
+
   return client;
 }
+
+
 
 // Singleton export (top‑level await доступний в ES-модулях)
 export const supabase = await initClient();

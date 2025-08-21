@@ -12,11 +12,7 @@
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     }
-  ]
-}
-{
-  "crons": [
-    { "path": "/api/reminders", "schedule": "0 7 * * *" }
+    
   ]
 }
 
