@@ -1,119 +1,113 @@
 <!DOCTYPE html>
-<html lang="pl" class="h-full bg-gray-100">
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Logowanie — HappyDate</title>
-
-  <!-- SEO / Meta -->
-  <meta name="description" content="Zaloguj się do HappyDate: e-mail i hasło, magiczny link lub Google OAuth." />
-  <meta name="robots" content="noindex, follow" />
-
-  <!-- Favicon / PWA -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
-  <link rel="manifest" href="/public/manifest.webmanifest" />
-  <meta name="theme-color" content="#ffffff" />
-
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/src/css/style.css" />
   <style>
-    @media (prefers-reduced-motion: reduce) {
-      .animate-spin { animation: none !important; }
-    }
+    @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
   </style>
 </head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-white to-blue-100 dark:from-gray-800 dark:to-gray-900">
 
-<body class="h-full flex items-center justify-center">
-  <noscript>
-    <div class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
-      Ta strona wymaga JavaScript do działania (logowanie przez Supabase).
-    </div>
-  </noscript>
+  <!-- ENV для локалки (зніми або заміни на свій файл) -->
+  <!-- <script src="/env.local.js"></script> -->
 
-  <main class="bg-white w-full max-w-md p-8 mx-auto rounded-2xl shadow-xl">
-    <a href="/index.html" class="block text-center text-3xl mb-2" aria-label="Strona główna HappyDate">🎁</a>
-    <h1 class="text-2xl font-bold text-center mb-1">Zaloguj się do HappyDate</h1>
-    <p class="text-sm text-center text-gray-500 mb-6">Wybierz sposób logowania</p>
-
-    <!-- Login: Email & Hasło -->
-    <form id="login-form" class="space-y-4" autocomplete="on" novalidate>
-      <label class="block">
-        <span class="block text-sm font-medium mb-1">Adres e-mail</span>
-        <input type="email" id="email" name="email" required inputmode="email"
-          autocomplete="username email" spellcheck="false"
-          class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400"
-          placeholder="np. jan.kowalski@email.pl" />
-      </label>
-
-      <label class="block">
-        <span class="block text-sm font-medium mb-1">Hasło</span>
-        <div class="relative">
-          <input type="password" id="password" name="password" required minlength="6"
-            autocomplete="current-password"
-            class="w-full p-2.5 border rounded-lg pr-10 focus:ring-2 focus:ring-blue-400"
-            placeholder="••••••••" />
-          <button type="button" id="togglePass"
-            class="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700"
-            aria-label="Pokaż lub ukryj hasło" aria-pressed="false">👁️</button>
-        </div>
-      </label>
-
-      <button type="submit" id="emailPassBtn"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
-        Zaloguj się
-      </button>
-
-      <div class="flex items-center justify-between text-sm">
-        <button type="button" id="forgotBtn" class="text-blue-600 hover:underline">Nie pamiętasz hasła?</button>
-        <a href="/pages/register.html" class="text-gray-600 hover:underline">Nie masz konta?</a>
-      </div>
-    </form>
-
-    <!-- Divider -->
-    <div class="my-6 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
-      <div class="flex-1 h-px bg-gray-200"></div>
-      <span>lub</span>
-      <div class="flex-1 h-px bg-gray-200"></div>
-    </div>
-
-    <!-- Magic Link -->
-    <form id="magic-form" class="space-y-3" novalidate>
-      <label class="block">
-        <span class="block text-sm font-medium mb-1">Szybki dostęp (magic link)</span>
-        <input type="email" id="magic-email" name="magicEmail" inputmode="email" autocomplete="email" spellcheck="false"
-          class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-pink-400"
-          placeholder="Wpisz e-mail do wysłania linku" />
-      </label>
-      <button type="submit" id="magicBtn"
-        class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
-        Wyślij magiczny link ✉️
-      </button>
-    </form>
-
-    <!-- Divider -->
-    <div class="my-6 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
-      <div class="flex-1 h-px bg-gray-200"></div>
-      <span>lub</span>
-      <div class="flex-1 h-px bg-gray-200"></div>
-    </div>
-
-    <!-- Google OAuth -->
-    <div class="grid grid-cols-1 gap-3">
-      <button id="googleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
-        Zaloguj przez Google
-      </button>
-    </div>
-
-    <p class="mt-6 text-xs text-center text-gray-500">
-      Logując się, akceptujesz naszą <a href="/pages/privacy.html" class="underline">Politykę prywatności</a>.
+  <main class="w-full max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl">
+    <h1 class="text-2xl font-bold text-center mb-2">Logowanie</h1>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-300 mb-6">
+      Zaloguj się, aby zarządzać wydarzeniami i pomysłami na prezenty.
     </p>
+
+    <div id="envError" class="hidden mb-4 p-3 rounded bg-red-600 text-white text-sm"></div>
+
+    <form id="loginForm" class="space-y-4" novalidate>
+      <label class="block">
+        <span class="text-sm font-medium">Adres e‑mail</span>
+        <input name="email" type="email" class="w-full mt-1 p-3 rounded-lg border dark:bg-gray-900" required />
+      </label>
+      <label class="block">
+        <span class="text-sm font-medium">Hasło</span>
+        <input name="password" type="password" class="w-full mt-1 p-3 rounded-lg border dark:bg-gray-900" required />
+      </label>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">Zaloguj się</button>
+    </form>
+
+    <div class="my-4 text-center text-sm text-gray-500">lub</div>
+
+    <form id="magicForm" class="space-y-3" novalidate>
+      <label class="block">
+        <span class="text-sm font-medium">Szybki dostęp (magic link)</span>
+        <input name="email" type="email" class="w-full mt-1 p-3 rounded-lg border dark:bg-gray-900" placeholder="Wpisz e‑mail do wysłania linku" />
+      </label>
+      <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg font-semibold">Wyślij magiczny link</button>
+    </form>
+
+    <div class="my-4 text-center">
+      <a href="/pages/register.html" class="text-blue-600 hover:underline text-sm">Nie masz konta? Zarejestruj się</a>
+    </div>
   </main>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50 hidden"
-    role="status" aria-live="polite" aria-atomic="true"></div>
+  <script type="module">
+    // 1) Спроба взяти ENV з /api/env (прод) або з window.ENV (локалка)
+    async function ensureEnv() {
+      if (window.ENV?.SUPABASE_URL && window.ENV?.SUPABASE_ANON_KEY) return window.ENV;
+      try {
+        const res = await fetch('/api/env',{cache:'no-store'});
+        if (res.ok) {
+          const json = await res.json();
+          window.ENV = {
+            SUPABASE_URL: json.SUPABASE_URL || json.NEXT_PUBLIC_SUPABASE_URL,
+            SUPABASE_ANON_KEY: json.SUPABASE_ANON_KEY || json.NEXT_PUBLIC_SUPABASE_ANON_KEY
+          };
+          return window.ENV;
+        }
+      } catch {}
+      return null;
+    }
 
-  <!-- Logika Supabase (modularna) -->
-  <script type="module" src="/src/js/login.js"></script>
+    const env = await ensureEnv();
+    const envError = document.getElementById('envError');
+
+    if (!env?.SUPABASE_URL || !env?.SUPABASE_ANON_KEY) {
+      envError.textContent = 'Brak konfiguracji Supabase. Ustaw ENV (window.ENV lub /api/env).';
+      envError.classList.remove('hidden');
+    }
+
+    // 2) Підключення нашого клієнта Supabase
+    import { supabase, rememberNext } from '/src/js/supabaseClient.js';
+
+    // Якщо прийшли на /login з приватної сторінки — запам’ятати редірект назад
+    try { if (!sessionStorage.getItem('happydate_post_login_redirect')) rememberNext('/pages/dashboard.html'); } catch {}
+
+    // Email+Password
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = loginForm.email.value.trim();
+      const password = loginForm.password.value.trim();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert('Nie udało się zalogować: ' + error.message);
+        return;
+      }
+      const next = sessionStorage.getItem('happydate_post_login_redirect') || '/pages/dashboard.html';
+      location.href = next;
+    });
+
+    // Magic link
+    const magicForm = document.getElementById('magicForm');
+    magicForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = magicForm.email.value.trim();
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: location.origin + '/pages/dashboard.html' }
+      });
+      alert(error ? ('Błąd: ' + error.message) : 'Wysłaliśmy link na e‑mail. Sprawdź skrzynkę 📩');
+    });
+  </script>
 </body>
 </html>

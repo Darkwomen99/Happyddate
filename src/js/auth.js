@@ -1,76 +1,120 @@
-// js/auth.js — HappyDate Auth (Supabase v2, production-ready)
+// /src/js/auth.js — HappyDate Auth (Supabase v2, production‑ready)
 (() => {
   const EVENTS = {
     AUTH_CHANGED: "happydate:authChanged",
     AUTH_ERROR: "happydate:authError",
   };
 
-  // --- Pomocnicze: inicjalizacja Supabase, nawet gdy nie masz supabaseClient.js ---
-  async function ensureSupabase() {
-    if (window.supabase) return window.supabase;
-
-    if (!window.ENV?.SUPABASE_URL || !window.ENV?.SUPABASE_ANON_KEY) {
-      console.error("[auth] Brak ENV.SUPABASE_URL/ENV.SUPABASE_ANON_KEY. Upewnij się, że masz env.js.");
-      return null;
-    }
-    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-    window.supabase = createClient(
-      window.ENV.SUPABASE_URL,
-      window.ENV.SUPABASE_ANON_KEY,
-      { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } }
-    );
-    return window.supabase;
-  }
-
-  const $ = (sel, root = document) => root.querySelector(sel);
+  // ===== Helpers (DOM / i18n / UI) =====
+  const $  = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-
-  const fire = (name, detail) =>
-    document.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }));
-
+  const fire = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail, bubbles: true }));
   const getLang = () => (window.i18n?.getLang?.() || localStorage.getItem("lang") || "pl");
 
-  // Prosty feedback UI
   function setFeedback(container, msg, type = "info") {
     if (!container) return;
     container.textContent = msg || "";
-    container.dataset.type = type; // możesz wystylować [data-type="error"]
+    container.dataset.type = type; // стилізуй [data-type="error"] у CSS
     container.hidden = !msg;
   }
 
-  // Pokaż/ukryj elementy w zależności od stanu zalogowania
   function toggleAuthVisibility(session) {
     const signedIn = !!session?.user;
     $$("[data-auth-visible='signed-in']").forEach(el => (el.hidden = !signedIn));
     $$("[data-auth-visible='signed-out']").forEach(el => (el.hidden = signedIn));
   }
 
-  // Wypełnianie danych użytkownika w UI: [data-auth-bind="email"|"name"|"avatar"]
   function bindUserUI(session) {
-    const user = session?.user;
-    const email = user?.email || "";
-    const name = user?.user_metadata?.full_name || user?.user_metadata?.name || "";
-    const avatar =
-      user?.user_metadata?.avatar_url ||
-      user?.user_metadata?.picture ||
-      "";
+    const user   = session?.user;
+    const email  = user?.email || "";
+    const name   = user?.user_metadata?.full_name || user?.user_metadata?.name || email.split("@")[0] || "";
+    const avatar = user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "";
 
     $$("[data-auth-bind]").forEach((el) => {
       const key = el.getAttribute("data-auth-bind");
       if (key === "email") el.textContent = email;
-      if (key === "name") el.textContent = name || email.split("@")[0] || "";
+      if (key === "name")  el.textContent = name;
       if (key === "avatar") {
         if (el.tagName === "IMG") {
-          if (avatar) el.setAttribute("src", avatar);
+          el.setAttribute("src", avatar || "/assets/img/default-avatar.png");
           el.setAttribute("alt", name || email || "avatar");
         } else {
           el.style.backgroundImage = avatar ? `url(${avatar})` : "";
         }
       }
     });
+
+    // Хедер‑навігація (якщо є такі елементи)
+    const loginLink    = document.getElementById("login-link");
+    const registerLink = document.getElementById("register-link");
+    const avatarLink   = document.getElementById("user-avatar-link");
+    const avatarImg    = document.getElementById("user-avatar");
+
+    if (user) {
+      loginLink   ?.classList.add("hidden");
+      registerLink?.classList.add("hidden");
+      if (avatarLink) {
+        avatarImg && (avatarImg.src = avatar || "/assets/img/default-avatar.png");
+        avatarLink.classList.remove("hidden");
+      }
+    } else {
+      loginLink   ?.classList.remove("hidden");
+      registerLink?.classList.remove("hidden");
+      avatarLink  ?.classList.add("hidden");
+    }
   }
 
-  // Ochrona trasy: <body data-auth-guard="required" data-auth-redirect="/login.html">
+  // ===== Supabase bootstrap =====
+  async function fetchEnvFromApi() {
+    try {
+      const res = await fetch("/api/env", {
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Accept": "application/json" }
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  }
+
+  async function ensureSupabase() {
+    if (window.supabase) return window.supabase;
+
+    // 1) спробуй спільний клієнт проєкту
+    try {
+      const mod = await import("/src/js/supabaseClient.js");
+      if (mod?.supabase) {
+        window.supabase = mod.supabase;
+        return window.supabase;
+      }
+      // якщо модуль експортує createClient + ENV
+      if (mod?.createClient && mod?.ENV?.SUPABASE_URL && mod?.ENV?.SUPABASE_ANON_KEY) {
+        const { createClient } = mod;
+        window.supabase = createClient(mod.ENV.SUPABASE_URL, mod.ENV.SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+        return window.supabase;
+      }
+    } catch (e) {
+      console.warn("[auth] /src/js/supabaseClient.js недоступний або помилка:", e);
+    }
+
+    // 2) window.ENV або /api/env
+    const env = window.ENV || await fetchEnvFromApi();
+    if (!env?.SUPABASE_URL || !env?.SUPABASE_ANON_KEY) {
+      console.error("[auth] Brak ENV.SUPABASE_URL/ENV.SUPABASE_ANON_KEY. Upewnij się, że masz env.js lub /api/env.");
+      return null;
+    }
+
+    // 3) створюємо локальний клієнт
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    window.supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+    return window.supabase;
+  }
+
+  // ===== Route guard =====
   async function routeGuard(supabase) {
     const body = document.body;
     const guard = body?.getAttribute("data-auth-guard");
@@ -79,13 +123,12 @@
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) {
       const next = location.pathname + location.search + location.hash;
-      const redirectTo = body.getAttribute("data-auth-redirect") || "/login.html";
+      const redirectTo = body.getAttribute("data-auth-redirect") || "/pages/login.html";
       try { sessionStorage.setItem("happydate_post_login_redirect", next); } catch {}
       location.href = redirectTo;
     }
   }
 
-  // Po zalogowaniu wracamy tam, gdzie użytkownik chciał wejść
   function postLoginRedirect() {
     try {
       const next = sessionStorage.getItem("happydate_post_login_redirect");
@@ -96,16 +139,16 @@
     } catch {}
   }
 
-  // --- Formularze i guziki (data-API) ---
+  // ===== Підключення форм/кнопок даними‑атрибутами =====
   function wireForms(supabase) {
-    // Logowanie: <form data-auth="sign-in"> z polami [name="email"], [name="password"]
+    // sign-in (email+password)
     $$('form[data-auth="sign-in"]').forEach((form) => {
       const fb = form.querySelector("[data-auth-feedback]");
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         setFeedback(fb, "Logowanie…", "info");
 
-        const email = form.querySelector('[name="email"]')?.value?.trim();
+        const email    = form.querySelector('[name="email"]')?.value?.trim();
         const password = form.querySelector('[name="password"]')?.value;
 
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -116,28 +159,27 @@
         }
         setFeedback(fb, "");
         postLoginRedirect();
-        // odśwież lub przejdź dalej
         const next = form.getAttribute("data-auth-next");
         if (next) location.href = next; else location.reload();
       });
     });
 
-    // Rejestracja: <form data-auth="sign-up"> + [name="email"], [name="password"]
+    // sign-up
     $$('form[data-auth="sign-up"]').forEach((form) => {
       const fb = form.querySelector("[data-auth-feedback]");
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
         setFeedback(fb, "Zakładanie konta…", "info");
 
-        const email = form.querySelector('[name="email"]')?.value?.trim();
+        const email    = form.querySelector('[name="email"]')?.value?.trim();
         const password = form.querySelector('[name="password"]')?.value;
-        const lang = getLang();
+        const lang     = getLang();
 
         const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
+          email, password,
           options: {
-            emailRedirectTo: location.origin + "/auth/callback.html",
+            // після підтвердження пошти користувача поверне сюди
+            emailRedirectTo: location.origin + "/pages/profile.html",
             data: { lang }
           }
         });
@@ -148,16 +190,14 @@
           return;
         }
 
-        // W Supabase zwykle wymagane jest potwierdzenie maila:
-        setFeedback(fb, "Konto utworzone. Sprawdź skrzynkę e-mail i potwierdź rejestrację.", "info");
+        setFeedback(fb, "Konto utworzone. Sprawdź e-mail i potwierdź rejestrację.", "info");
 
-        // Jeśli projekt ma wyłączone potwierdzenia e-mail — możesz przekierować:
         const next = form.getAttribute("data-auth-next");
         if (data?.user && next) location.href = next;
       });
     });
 
-    // Reset hasła: <form data-auth="reset"> + [name="email"]
+    // reset (send email)
     $$('form[data-auth="reset"]').forEach((form) => {
       const fb = form.querySelector("[data-auth-feedback]");
       form.addEventListener("submit", async (e) => {
@@ -166,7 +206,7 @@
 
         const email = form.querySelector('[name="email"]')?.value?.trim();
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: location.origin + "/auth/reset.html"
+          redirectTo: location.origin + "/pages/reset-password.html"
         });
 
         if (error) {
@@ -178,7 +218,7 @@
       });
     });
 
-    // Ustaw nowe hasło na stronie resetu: <form data-auth="update-password"> + [name="password"]
+    // update password (after reset link)
     $$('form[data-auth="update-password"]').forEach((form) => {
       const fb = form.querySelector("[data-auth-feedback]");
       form.addEventListener("submit", async (e) => {
@@ -198,29 +238,32 @@
       });
     });
 
-    // OAuth: <button data-auth-provider="google"> lub "apple"
+    // OAuth: <button data-auth-provider="google">, <button data-auth-provider="apple">
     $$("[data-auth-provider]").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const provider = btn.getAttribute("data-auth-provider");
-        const lang = getLang();
-        const callback = btn.getAttribute("data-auth-callback") || "/auth/callback.html";
+        const lang     = getLang();
+        // куди повернути користувача після успіху
+        const after    = btn.getAttribute("data-auth-callback") || "/pages/profile.html";
 
         const { error } = await supabase.auth.signInWithOAuth({
           provider,
           options: {
-            redirectTo: location.origin + callback,
+            redirectTo: location.origin + after,
+            // локаль для екранів Google, якщо підтримується
             queryParams: { ui_locales: lang }
           }
         });
 
         if (error) {
           fire(EVENTS.AUTH_ERROR, { error });
-          alert("Nie udało się rozpocząć logowania: " + error.message);
+          // без alert — не блокуємо UX; відобрази свій toast, якщо потрібно
+          console.error("[auth] OAuth start error:", error);
         }
       });
     });
 
-    // Wylogowanie: <button data-auth="sign-out">
+    // sign-out
     $$('[data-auth="sign-out"]').forEach((btn) => {
       btn.addEventListener("click", async () => {
         await supabase.auth.signOut();
@@ -230,7 +273,7 @@
     });
   }
 
-  // --- Publiczne API (window.auth) ---
+  // ===== Public API =====
   const api = {
     async getSession() {
       const supabase = await ensureSupabase();
@@ -242,13 +285,10 @@
       return user || null;
     },
     onAuth(cb) {
-      // natychmiastowe wywołanie z bieżącą sesją + subskrypcja
       ensureSupabase().then(async (supabase) => {
         const { data: { session } } = await supabase.auth.getSession();
         try { cb(session); } catch {}
-        supabase.auth.onAuthStateChange((_e, s) => {
-          try { cb(s); } catch {}
-        });
+        supabase.auth.onAuthStateChange((_e, s) => { try { cb(s); } catch {} });
       });
     },
     async requireAuth(opts = {}) {
@@ -257,7 +297,7 @@
       if (!session?.user) {
         const next = location.pathname + location.search + location.hash;
         try { sessionStorage.setItem("happydate_post_login_redirect", next); } catch {}
-        location.href = opts.redirectTo || "/login.html";
+        location.href = opts.redirectTo || "/pages/login.html";
         return null;
       }
       return session.user;
@@ -270,7 +310,10 @@
       const supabase = await ensureSupabase();
       return supabase.auth.signUp({
         email, password,
-        options: { emailRedirectTo: location.origin + "/auth/callback.html", data: { lang: getLang(), ...userMeta } }
+        options: {
+          emailRedirectTo: location.origin + "/pages/profile.html",
+          data: { lang: getLang(), ...userMeta }
+        }
       });
     },
     async signOut() {
@@ -279,31 +322,27 @@
     },
     async sendReset(email) {
       const supabase = await ensureSupabase();
-      return supabase.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/auth/reset.html" });
+      return supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: location.origin + "/pages/reset-password.html"
+      });
     },
-    // Przykładowe uaktualnienie profilu (wymaga polityki INSERT/UPDATE w public.profiles)
     async upsertProfile(partial) {
       const supabase = await ensureSupabase();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Brak użytkownika");
-      // W SQL dodaj: policy INSERT/UPDATE only own row.
       return supabase.from("profiles").upsert({ id: user.id, ...partial });
     }
   };
   window.auth = api;
 
-  // --- Bootstrapping na załadowanie dokumentu ---
+  // ===== Bootstrapping =====
   document.addEventListener("DOMContentLoaded", async () => {
     const supabase = await ensureSupabase();
     if (!supabase) return;
 
-    // Route guard (opcjonalny; aktywny jeśli <body data-auth-guard="required">)
     await routeGuard(supabase);
-
-    // UI wiązania
     wireForms(supabase);
 
-    // Aktualny stan + nasłuch zmian
     supabase.auth.getSession().then(({ data }) => {
       toggleAuthVisibility(data.session);
       bindUserUI(data.session);
@@ -317,31 +356,3 @@
     });
   });
 })();
-
-const avatarLink = document.getElementById("user-avatar-link");
-const avatarImg  = document.getElementById("user-avatar");
-
-async function updateUserUI() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) {
-    // Якщо є аватар
-    const avatarUrl = user.user_metadata?.avatar_url || "/assets/img/default-avatar.png";
-    avatarImg.src = avatarUrl;
-    avatarLink.classList.remove("hidden");
-    // Ховаємо кнопки login/register
-    document.getElementById("login-link")?.classList.add("hidden");
-    document.getElementById("register-link")?.classList.add("hidden");
-  } else {
-    avatarLink.classList.add("hidden");
-    document.getElementById("login-link")?.classList.remove("hidden");
-    document.getElementById("register-link")?.classList.remove("hidden");
-  }
-}
-
-// Виклик при завантаженні
-updateUserUI();
-
-// Виклик при зміні auth
-supabase.auth.onAuthStateChange(() => {
-  updateUserUI();
-});

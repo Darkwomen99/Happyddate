@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white transition-colors">
+<html lang="pl" class="bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>HappyDate – Moje wydarzenia</title>
+  <title>HappyDate — Moje wydarzenia</title>
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- FullCalendar (CSS + JS) -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js" defer></script>
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.global.min.js"></script>
 
-  <!-- Styles -->
   <link rel="stylesheet" href="/src/css/style.css" />
   <style>
     @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
@@ -24,24 +22,20 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
-  <!-- Header -->
-  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sticky top-0 z-50" aria-label="Główna nawigacja">
+  <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-3 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto flex justify-between items-center px-4">
-      <a href="/index.html" class="text-2xl font-bold text-white hover:underline" aria-label="HappyDate — Strona główna">🎁 HappyDate</a>
-
-      <nav class="hidden sm:flex gap-5 items-center text-white font-medium" aria-label="Główne menu">
+      <a href="/index.html" class="text-2xl font-bold text-white hover:underline">🎁 HappyDate</a>
+      <nav class="hidden sm:flex gap-5 items-center text-white font-medium">
         <a href="/index.html" class="hover:underline">Strona główna</a>
         <a href="/pages/services.html" class="hover:underline">Usługi</a>
         <a href="/pages/dashboard.html" class="underline font-bold" aria-current="page">Moje wydarzenia</a>
         <a href="/pages/settings.html" class="hover:underline">Ustawienia</a>
         <button id="logout-btn" class="hover:underline" type="button">Wyloguj się</button>
       </nav>
-
-      <button id="logout-btn-mobile" class="sm:hidden text-white text-sm underline" type="button" aria-label="Wyloguj się">Wyloguj</button>
+      <button id="logout-btn-mobile" class="sm:hidden text-white text-sm underline" type="button">Wyloguj</button>
     </div>
   </header>
 
-  <!-- Toast -->
   <div id="toast" class="fixed top-6 right-6 z-50 px-4 py-3 rounded-xl bg-gray-900 text-white shadow-xl transition-all duration-300 opacity-0 pointer-events-none" role="status" aria-live="polite"></div>
 
   <main class="max-w-7xl mx-auto px-4 py-6 flex-grow">
@@ -51,85 +45,39 @@
         <button id="addEventBtn" class="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-xl shadow flex items-center gap-2" type="button">
           <span class="text-xl">➕</span> Dodaj wydarzenie
         </button>
-        <button id="exportIcsBtn" class="border px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800" type="button" title="Eksportuj do .ics">
-          Eksport .ics
-        </button>
+        <button id="exportIcsBtn" class="border px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800" type="button" title="Eksportuj do .ics">Eksport .ics</button>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Calendar -->
       <section class="lg:col-span-2">
         <div class="glass-card shadow-xl rounded-2xl p-3 min-h-[540px]">
           <div id="calendar" aria-label="Kalendarz wydarzeń"></div>
         </div>
       </section>
 
-      <!-- Sidebar -->
       <aside aria-labelledby="upcoming-heading">
         <div class="glass-card shadow-xl rounded-2xl p-6 flex flex-col gap-5">
           <h2 id="upcoming-heading" class="text-xl font-bold text-center">🎁 Nadchodzące wydarzenia</h2>
-
-          <!-- Skeleton -->
           <div id="event-skeleton" class="space-y-3" aria-hidden="true">
             <div class="h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl animate-pulse"></div>
             <div class="h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl animate-pulse"></div>
             <div class="h-14 bg-white/50 dark:bg-gray-800/50 rounded-xl animate-pulse"></div>
           </div>
-
           <div id="event-list" class="space-y-3 w-full hidden"></div>
-
-          <!-- Quick actions -->
-          <div class="flex gap-3 mt-2 w-full justify-center">
-            <a href="tel:+48123123123" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Zadzwoń" aria-label="Zadzwoń">
-              <span class="text-2xl">📞</span>
-            </a>
-            <a href="mailto:happyddate@gmail.com" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Napisz e-mail" aria-label="Napisz e-mail">
-              <span class="text-2xl">📩</span>
-            </a>
-            <button id="aiToggle" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="AI Asystent" type="button" aria-controls="ai-chat-window" aria-expanded="false">
-              <span class="text-2xl">🤖</span>
-            </button>
-          </div>
         </div>
       </aside>
     </div>
   </main>
 
-  <footer class="bg-blue-500 text-white py-6 mt-12" aria-label="Stopka HappyDate">
+  <footer class="bg-blue-500 text-white py-6 mt-12">
     <div class="max-w-4xl mx-auto text-center px-4 text-sm md:text-base">
       &copy; 2025 HappyDate. Z miłością tworzymy niezapomniane chwile.<br>
       <span class="text-xs opacity-80">Projekt & UX: HappyDate Team | <a href="/pages/privacy.html" class="underline hover:text-yellow-200">Polityka prywatności</a></span>
     </div>
   </footer>
 
-  <!-- AI Chat -->
-  <div id="ai-chat-window" class="hidden fixed bottom-24 right-6 w-[22rem] max-w-full glass-card border shadow-2xl z-50 flex-col transition-all duration-300 dark:bg-gray-900 rounded-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="ai-title">
-    <div class="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-3 font-semibold flex items-center gap-2">
-      <span id="ai-title">🎁 AI Prezentowy</span>
-      <button type="button" class="ml-auto bg-white/10 rounded-full px-2 py-1 hover:bg-white/20 transition text-lg" title="Zamknij" id="ai-chat-close" aria-label="Zamknij">×</button>
-    </div>
-    <div class="p-4 flex flex-col gap-2">
-      <label class="text-sm font-medium">Dla kogo?
-        <input id="gift-person" class="w-full p-2 border rounded mt-1" placeholder="np. mama, przyjaciółka" autocomplete="off" />
-      </label>
-      <label class="text-sm font-medium">Okazja
-        <input id="gift-occasion" class="w-full p-2 border rounded mt-1" placeholder="np. urodziny, rocznica" autocomplete="off" />
-      </label>
-      <div class="grid grid-cols-2 gap-2">
-        <label class="text-sm font-medium">Wiek
-          <input id="gift-age" type="number" min="0" max="120" class="w-full p-2 border rounded mt-1" placeholder="np. 32" />
-        </label>
-        <label class="text-sm font-medium">Budżet (PLN)
-          <input id="gift-budget" type="number" min="0" step="1" class="w-full p-2 border rounded mt-1" placeholder="np. 150" />
-        </label>
-      </div>
-      <button id="ai-gift-btn" class="w-full bg-blue-600 text-white p-2 rounded mt-2 hover:bg-blue-700 transition" type="button">Zaproponuj</button>
-      <div id="gift-result" class="mt-2 text-sm text-gray-800 dark:text-gray-200 max-h-44 overflow-y-auto"></div>
-    </div>
-  </div>
-
-  <!-- Add/Edit Event Modal -->
+  <!-- Модал додавання/редагування -->
   <dialog id="eventModal" class="rounded-2xl shadow-lg p-0 w-full max-w-md">
     <form id="eventForm" method="dialog" class="p-6 bg-white dark:bg-gray-800 flex flex-col gap-3">
       <h3 id="eventModalTitle" class="text-lg font-bold mb-1">Dodaj wydarzenie</h3>
@@ -160,111 +108,88 @@
     </form>
   </dialog>
 
-  <!-- App script (ESM). Підключаємо ПІСЛЯ FullCalendar через defer вище -->
   <script type="module">
-    import { supabase, requireAuth, signOut } from '/src/js/supabaseClient.js';
+    import { supabase, requireAuth } from '/src/js/supabaseClient.js';
 
-    // ---------- Helpers ----------
-    const $ = (sel, root=document) => root.querySelector(sel);
-    const fmtDate = (isoStr) => {
-      try { return new Intl.DateTimeFormat('pl-PL', { dateStyle:'long' }).format(new Date(isoStr)); }
-      catch { return isoStr; }
-    };
+    // Helpers
+    const $  = (s, r=document)=>r.querySelector(s);
+    const fmtDate = (iso) => { try { return new Intl.DateTimeFormat('pl-PL',{dateStyle:'long'}).format(new Date(iso)); } catch { return iso; } };
     const toast = (msg, type='info') => {
       const el = $('#toast');
-      const colors = {
-        info:'bg-gray-900 text-white', ok:'bg-green-600 text-white',
-        warn:'bg-yellow-500 text-black', error:'bg-red-600 text-white'
-      };
-      el.className = `fixed top-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl transition-all duration-300 ${colors[type]||colors.info}`;
-      el.textContent = msg; el.style.opacity='1'; el.style.pointerEvents='auto';
-      clearTimeout(el._t); el._t = setTimeout(()=>{ el.style.opacity='0'; el.style.pointerEvents='none'; }, 2600);
+      const colors = { info:'bg-gray-900', ok:'bg-green-600', warn:'bg-yellow-500 text-black', error:'bg-red-600' };
+      el.className = `fixed top-6 right-6 z-50 px-4 py-3 rounded-xl text-white shadow-xl transition-all ${colors[type]||colors.info}`;
+      el.textContent = msg; el.style.opacity = '1'; el.style.pointerEvents = 'auto';
+      clearTimeout(el._t); el._t = setTimeout(()=>{ el.style.opacity='0'; el.style.pointerEvents='none'; }, 2400);
     };
-    const colorForType = (t) => t==='birthday' ? '#3b82f6' : t==='anniversary' ? '#ec4899' : '#10b981';
-    const labelForType = (t) => t==='birthday' ? 'Urodziny' : t==='anniversary' ? 'Rocznica' : 'Inne';
+    const colorFor = (t) => t==='birthday' ? '#3b82f6' : t==='anniversary' ? '#ec4899' : '#10b981';
+    const labelFor = (t) => t==='birthday' ? 'Urodziny' : t==='anniversary' ? 'Rocznica' : 'Inne';
 
-    // ---------- Auth gate ----------
+    // Auth guard
     const user = await requireAuth('/pages/login.html');
-    if (!user) throw new Error('No user'); // hard stop, guard już zrobił redirect
-    let currentUser = user;
+    if (!user) throw new Error('Auth required');
 
-    // Logout (redirect)
-    document.getElementById('logout-btn')?.addEventListener('click', async () => {
-      await signOut(); window.location.href = '/pages/login.html';
-    });
-    document.getElementById('logout-btn-mobile')?.addEventListener('click', async () => {
-      await signOut(); window.location.href = '/pages/login.html';
-    });
+    // Logout
+    document.getElementById('logout-btn')?.addEventListener('click', async () => { await supabase.auth.signOut(); location.href = '/pages/login.html'; });
+    document.getElementById('logout-btn-mobile')?.addEventListener('click', async () => { await supabase.auth.signOut(); location.href = '/pages/login.html'; });
 
-    // ---------- FullCalendar ----------
+    // FullCalendar
     let FC;
     function initCalendar() {
-      const preferList = matchMedia('(max-width: 640px)').matches;
       FC = new FullCalendar.Calendar(document.getElementById('calendar'), {
-        height: 'auto',
-        initialView: preferList ? 'listMonth' : 'dayGridMonth',
-        locale: 'pl',
-        firstDay: 1,
-        selectable: true,
-        dayMaxEvents: true,
-        headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listMonth' },
-        buttonText: { today: 'Dziś', month: 'Miesiąc', list: 'Lista' },
-        eventTimeFormat: { hour12: false, hour: '2-digit', minute: '2-digit' },
-        editable: true,
-        eventStartEditable: true,
-        eventDurationEditable: false,
-        select: (info) => openEventModal({ date: info.startStr }),
-        dateClick: (info) => openEventModal({ date: info.dateStr }),
-        eventClick: (info) => openEventModal(fromEvent(info.event)),
+        height:'auto',
+        initialView: matchMedia('(max-width: 640px)').matches ? 'listMonth' : 'dayGridMonth',
+        locale:'pl',
+        firstDay:1,
+        selectable:true,
+        dayMaxEvents:true,
+        headerToolbar:{ left:'prev,next today', center:'title', right:'dayGridMonth,listMonth' },
+        buttonText:{ today:'Dziś', month:'Miesiąc', list:'Lista' },
+        editable:true,
+        eventStartEditable:true,
+        eventDurationEditable:false,
+        select: (info)=> openModal({ date: info.startStr }),
+        dateClick: (info)=> openModal({ date: info.dateStr }),
+        eventClick:(info)=> openModal(toModel(info.event)),
         eventDrop: async (info) => {
           try {
-            const id = info.event.id;
-            const { error } = await supabase.from('events').update({ date: info.event.startStr }).eq('id', id);
+            const { error } = await supabase.from('events').update({ date: info.event.startStr }).eq('id', info.event.id);
             if (error) throw error;
-            toast('Data wydarzenia zaktualizowana', 'ok');
-          } catch (e) {
-            console.error(e); info.revert(); toast('Nie udało się zapisać zmiany daty', 'error');
-          }
+            toast('Data wydarzenia zaktualizowana','ok');
+          } catch (e) { console.error(e); info.revert(); toast('Nie udało się zapisać zmiany daty','error'); }
         },
-        events: [] // ładowane via loadEvents()
+        events:[]
       });
       FC.render();
     }
     initCalendar();
 
-    function fromEvent(ev) {
+    const toModel = (ev) => {
       const x = ev.extendedProps || {};
       return { id: ev.id, title: x.title || ev.title || '', type: x.type || 'custom', person: x.person || '', date: ev.startStr };
-    }
+    };
 
-    async function loadEvents(showSkeleton = false) {
+    async function loadEvents(showSkeleton=false) {
       try {
         if (showSkeleton) { document.getElementById('event-skeleton').classList.remove('hidden'); document.getElementById('event-list').classList.add('hidden'); }
-        const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .eq('uid', currentUser.id)
-          .order('date', { ascending: true });
-
+        const { data, error } = await supabase.from('events').select('*').eq('uid', user.id).order('date', { ascending: true });
         if (error) throw error;
-        setCalendarEvents(data || []);
-        setUpcomingList(data || []);
-      } catch (e) {
-        console.error(e); toast('Błąd pobierania wydarzeń', 'error');
-      } finally {
+        setCalendar(data||[]);
+        setUpcoming(data||[]);
+      } catch(e){ console.error(e); toast('Błąd pobierania wydarzeń','error'); }
+      finally {
         document.getElementById('event-skeleton').classList.add('hidden');
         document.getElementById('event-list').classList.remove('hidden');
       }
     }
 
-    function setCalendarEvents(rows) {
+    function setCalendar(rows) {
       const mapped = rows.map(e => ({
         id: e.id,
-        title: `${e.person} — ${labelForType(e.type)}`,
+        title: `${e.person} — ${labelFor(e.type)}`,
         start: e.date,
         allDay: true,
-        backgroundColor: colorForType(e.type),
-        borderColor: colorForType(e.type),
+        backgroundColor: colorFor(e.type),
+        borderColor: colorFor(e.type),
         textColor: '#fff',
         extendedProps: { title: e.title || '', type: e.type || 'custom', person: e.person || '' }
       }));
@@ -272,247 +197,129 @@
       FC.addEventSource(mapped);
     }
 
-    // ---------- Realtime ----------
-    let channel;
-    function subscribeRT() {
-      if (channel) { try { supabase.removeChannel(channel); } catch {} }
-      channel = supabase
-        .channel('events-ch')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'events', filter: `uid=eq.${currentUser.id}` }, async () => { await loadEvents(false); })
-        .subscribe((status) => {
-          if (status === 'SUBSCRIBED') { /* ok */ }
-        });
+    // Realtime
+    let ch;
+    function subRT() {
+      if (ch) try { supabase.removeChannel(ch); } catch {}
+      ch = supabase.channel('events-ch')
+        .on('postgres_changes', { event:'*', schema:'public', table:'events', filter:`uid=eq.${user.id}` }, () => loadEvents(false))
+        .subscribe();
     }
 
-    // Initial load + subscribe
     await loadEvents(true);
-    subscribeRT();
+    subRT();
 
-    // ---------- Sidebar upcoming ----------
-    function setUpcomingList(events) {
+    // Sidebar
+    function setUpcoming(events) {
       const box = document.getElementById('event-list');
-      const skel = document.getElementById('event-skeleton');
-      skel.classList.add('hidden'); box.classList.remove('hidden');
       box.replaceChildren();
-
-      const todayISO = new Date().toISOString().slice(0,10);
-      const next = [...events]
-        .filter(e => e.date >= todayISO)
-        .sort((a,b)=>a.date.localeCompare(b.date))
-        .slice(0,8);
+      const today = new Date().toISOString().slice(0,10);
+      const next = events.filter(e => e.date >= today).sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
 
       if (!next.length) {
         const empty = document.createElement('div');
         empty.className = 'text-gray-500 text-center';
         empty.textContent = 'Brak nadchodzących wydarzeń 🎈';
-        box.appendChild(empty);
-        return;
+        box.appendChild(empty); return;
       }
 
       for (const e of next) {
         const card = document.createElement('div');
         card.className = 'bg-white/85 dark:bg-gray-800/70 rounded-xl px-4 py-3 shadow flex flex-col gap-1';
 
-        const t = document.createElement('div');
-        t.className = 'font-semibold flex items-center justify-between gap-3';
-        const spanTitle = document.createElement('span');
-        spanTitle.textContent = `${e.person} — ${labelForType(e.type)}`;
-        const pill = document.createElement('span');
-        pill.className = 'text-xs rounded-full px-2 py-0.5';
-        pill.style.backgroundColor = colorForType(e.type);
-        pill.style.color = '#fff';
-        pill.textContent = e.type==='birthday'?'🎂':e.type==='anniversary'?'💍':'🔖';
-        t.append(spanTitle, pill);
+        const t = document.createElement('div'); t.className = 'font-semibold flex items-center justify-between gap-3';
+        const title = document.createElement('span'); title.textContent = `${e.person} — ${labelFor(e.type)}`;
+        const pill = document.createElement('span'); pill.className='text-xs rounded-full px-2 py-0.5'; pill.style.backgroundColor=colorFor(e.type); pill.style.color='#fff'; pill.textContent = e.type==='birthday'?'🎂':e.type==='anniversary'?'💍':'🔖';
+        const date = document.createElement('div'); date.className='text-xs text-gray-600 dark:text-gray-300'; date.textContent = fmtDate(e.date);
 
-        const d = document.createElement('div');
-        d.className = 'text-xs text-gray-600 dark:text-gray-300';
-        d.textContent = fmtDate(e.date);
+        const actions = document.createElement('div'); actions.className='mt-1 flex gap-2';
+        const editBtn = document.createElement('button'); editBtn.className='text-blue-600 hover:underline text-xs'; editBtn.type='button'; editBtn.textContent='Edytuj';
+        editBtn.addEventListener('click', ()=> openModal({ id:e.id, title:e.title||'', type:e.type, person:e.person, date:e.date }));
+        const delBtn = document.createElement('button'); delBtn.className='text-red-600 hover:underline text-xs'; delBtn.type='button'; delBtn.textContent='Usuń';
+        delBtn.addEventListener('click', ()=> removeEvent(e.id));
 
-        const actions = document.createElement('div');
-        actions.className = 'mt-1 flex gap-2';
-        const editBtn = document.createElement('button');
-        editBtn.className = 'text-blue-600 hover:underline text-xs'; editBtn.type='button'; editBtn.textContent='Edytuj';
-        editBtn.addEventListener('click', () => openEventModal({ id:e.id, title:e.title||'', type:e.type, person:e.person, date:e.date }));
-        const delBtn = document.createElement('button');
-        delBtn.className = 'text-red-600 hover:underline text-xs'; delBtn.type='button'; delBtn.textContent='Usuń';
-        delBtn.addEventListener('click', () => deleteEvent(e.id));
-
-        actions.append(editBtn, delBtn);
-        card.append(t, d, actions);
-        box.appendChild(card);
+        t.append(title,pill); card.append(t,date,actions); actions.append(editBtn,delBtn); box.appendChild(card);
       }
     }
 
-    // ---------- Modal & CRUD ----------
-    const eventDlg   = document.getElementById('eventModal');
-    const eventForm  = document.getElementById('eventForm');
-    const deleteBtn  = document.getElementById('deleteEventBtn');
-    const closeBtn   = document.getElementById('closeModalBtn');
-    const modalTitle = document.getElementById('eventModalTitle');
+    // Modal + CRUD
+    const dlg   = document.getElementById('eventModal');
+    const form  = document.getElementById('eventForm');
+    const delBt = document.getElementById('deleteEventBtn');
+    const close = document.getElementById('closeModalBtn');
+    const h3    = document.getElementById('eventModalTitle');
 
-    document.getElementById('addEventBtn')?.addEventListener('click', () => openEventModal());
+    document.getElementById('addEventBtn')?.addEventListener('click', ()=> openModal());
 
-    function openEventModal(data = {}) {
-      document.getElementById('eventId').value     = data.id || '';
-      document.getElementById('eventTitle').value  = data.title || '';
-      document.getElementById('eventType').value   = data.type || 'custom';
-      document.getElementById('eventPerson').value = data.person || '';
-      document.getElementById('eventDate').value   = data.date || new Date().toISOString().slice(0,10);
-
-      modalTitle.textContent = data.id ? 'Edytuj wydarzenie' : 'Dodaj wydarzenie';
-      deleteBtn.classList.toggle('hidden', !data.id);
-
-      if (typeof eventDlg.showModal === 'function') eventDlg.showModal();
-      else eventDlg.classList.remove('hidden');
+    function openModal(data={}) {
+      document.getElementById('eventId').value    = data.id || '';
+      document.getElementById('eventTitle').value = data.title || '';
+      document.getElementById('eventType').value  = data.type || 'custom';
+      document.getElementById('eventPerson').value= data.person || '';
+      document.getElementById('eventDate').value  = data.date || new Date().toISOString().slice(0,10);
+      h3.textContent = data.id ? 'Edytuj wydarzenie' : 'Dodaj wydarzenie';
+      delBt.classList.toggle('hidden', !data.id);
+      dlg.showModal?.();
       setTimeout(()=> document.getElementById('eventTitle').focus(), 50);
     }
 
-    closeBtn?.addEventListener('click', () => {
-      if (eventDlg.open) eventDlg.close();
-      else eventDlg.classList.add('hidden');
-      eventForm.reset();
-    });
+    close?.addEventListener('click', ()=>{ dlg.open ? dlg.close() : dlg.classList.add('hidden'); form.reset(); });
 
-    eventForm?.addEventListener('submit', async (e) => {
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id     = document.getElementById('eventId').value.trim();
       const title  = document.getElementById('eventTitle').value.trim();
       const type   = document.getElementById('eventType').value;
       const person = document.getElementById('eventPerson').value.trim();
       const date   = document.getElementById('eventDate').value;
-
-      if (!title || !person || !date) { toast('Uzupełnij wymagane pola', 'warn'); return; }
+      if (!title || !person || !date) { toast('Uzupełnij wymagane pola','warn'); return; }
 
       try {
         if (id) {
           const { error } = await supabase.from('events').update({ title, type, person, date }).eq('id', id);
-          if (error) throw error;
-          toast('Zapisano zmiany', 'ok');
+          if (error) throw error; toast('Zapisano zmiany','ok');
         } else {
-          const { error } = await supabase.from('events').insert([{ uid: currentUser.id, title, type, person, date }]);
-          if (error) throw error;
-          toast('Dodano wydarzenie', 'ok');
+          const { error } = await supabase.from('events').insert([{ uid:user.id, title, type, person, date }]);
+          if (error) throw error; toast('Dodano wydarzenie','ok');
         }
-        if (eventDlg.open) eventDlg.close();
-        eventForm.reset();
-      } catch (err) {
-        console.error(err); toast('Nie udało się zapisać', 'error');
-      }
+        dlg.open && dlg.close(); form.reset();
+      } catch(err){ console.error(err); toast('Nie udało się zapisać','error'); }
     });
 
-    async function deleteEvent(id) {
+    async function removeEvent(id) {
       if (!confirm('Czy na pewno chcesz usunąć to wydarzenie?')) return;
       try {
         const { error } = await supabase.from('events').delete().eq('id', id);
-        if (error) throw error;
-        toast('Usunięto wydarzenie', 'ok');
-      } catch (err) {
-        console.error(err); toast('Nie udało się usunąć', 'error'); throw err;
-      }
+        if (error) throw error; toast('Usunięto wydarzenie','ok');
+      } catch(err){ console.error(err); toast('Nie udało się usunąć','error'); }
     }
 
-    // ---------- AI Assistant ----------
-    document.getElementById('ai-gift-btn')?.addEventListener('click', async () => {
-      const person = document.getElementById('gift-person').value.trim();
-      const occasion = document.getElementById('gift-occasion').value.trim();
-      const age = Number(document.getElementById('gift-age').value);
-      const budget = Number(document.getElementById('gift-budget').value);
-      const out = document.getElementById('gift-result');
-      out.textContent = '';
-
-      if (!person || !occasion || !age || !budget) { out.innerHTML = '<span class="text-red-600">Wypełnij wszystkie pola.</span>'; return; }
-      out.textContent = '⏳ Generuję propozycje...';
-
-      try {
-        const res = await fetch('/api/gift-ideas', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ person, occasion, age, budget })
-        });
-
-        if (!res.ok) throw new Error('Błąd serwera');
-        const data = await res.json();
-        renderIdeas(data.ideas || [], data.disclaimer);
-      } catch (err) {
-        const ideas = [
-          { title: 'Personalizowany kubek', desc: 'Z imieniem i krótkim cytatem dopasowanym do okazji.' },
-          { title: 'Zestaw spa w domu', desc: 'Sole i olejki do kąpieli + świeca zapachowa.' },
-          { title: 'Ramka z wydrukiem zdjęcia', desc: 'Wspólne zdjęcie + krótka dedykacja.' }
-        ];
-        renderIdeas(ideas, 'Sugestie lokalne — doprecyzuj w AI, aby dostać lepsze pomysły.');
-      }
-
-      function renderIdeas(ideas, disclaimer){
-        out.replaceChildren();
-        if (!ideas.length) { out.textContent = 'Brak propozycji. Spróbuj doprecyzować dane.'; return; }
-        const list = document.createElement('ol'); list.className = 'list-decimal list-inside space-y-2';
-        ideas.slice(0,3).forEach(i => {
-          const li = document.createElement('li');
-          const strong = document.createElement('strong'); strong.textContent = i.title || 'Pomysł';
-          const span = document.createElement('span'); span.className = 'block text-gray-600 dark:text-gray-300'; span.textContent = i.desc || '';
-          li.append(strong, span); list.appendChild(li);
-        });
-        out.appendChild(list);
-        if (disclaimer) {
-          const d = document.createElement('p'); d.className = 'text-xs text-gray-500 mt-2'; d.textContent = disclaimer;
-          out.appendChild(d);
-        }
-      }
-    });
-
-    // ---------- Export .ics ----------
+    // Eksпорт .ics
     document.getElementById('exportIcsBtn')?.addEventListener('click', async () => {
       try {
-        const { data, error } = await supabase.from('events').select('*').eq('uid', currentUser.id);
+        const { data, error } = await supabase.from('events').select('*').eq('uid', user.id);
         if (error) throw error;
-        const ics = buildIcs(data || []);
-        const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+        const ics = buildIcs(data||[]);
+        const blob = new Blob([ics], { type:'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = 'happydate-events.ics';
-        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      } catch(e) { console.error(e); toast('Nie udało się wyeksportować .ics', 'error'); }
+        const a = document.createElement('a'); a.href=url; a.download='happydate-events.ics'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      } catch(e){ console.error(e); toast('Nie udało się wyeksportować .ics','error'); }
     });
 
     function buildIcs(rows) {
-      const NL = '\r\n';
-      const pad = (n) => String(n).padStart(2,'0');
-      const dateToYYYYMMDD = (iso) => { const d = new Date(iso + 'T00:00:00'); return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}`; };
-      let out = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//HappyDate//Calendar//PL'].join(NL) + NL;
-      rows.forEach(r => {
-        const dt = dateToYYYYMMDD(r.date);
+      const NL='\r\n', pad=n=>String(n).padStart(2,'0');
+      const ymd = (iso)=>{ const d=new Date(iso+'T00:00:00'); return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}`; };
+      let out = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//HappyDate//Calendar//PL'].join(NL)+NL;
+      for (const r of rows) {
+        const dt = ymd(r.date);
         const uid = (r.id || (crypto?.randomUUID?.() || Math.random().toString(36).slice(2))) + '@happydate';
-        const summary = `${r.person || ''} — ${r.title || labelForType(r.type)}`.trim();
-        out += ['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${dt}T000000Z`,`DTSTART;VALUE=DATE:${dt}`,`SUMMARY:${summary}`,`DESCRIPTION:${labelForType(r.type)}`,'END:VEVENT'].join(NL) + NL;
-      });
-      return out + 'END:VCALENDAR' + NL;
+        const summary = `${r.person||''} — ${r.title||labelFor(r.type)}`.trim();
+        out += ['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${dt}T000000Z`,`DTSTART;VALUE=DATE:${dt}`,`SUMMARY:${summary}`,`DESCRIPTION:${labelFor(r.type)}`,'END:VEVENT'].join(NL)+NL;
+      }
+      return out+'END:VCALENDAR'+NL;
     }
 
-    // ---------- Modal close by click outside ----------
-    document.getElementById('eventModal')?.addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) { e.currentTarget.close?.(); }
-    });
-
-    // ---------- AI toggle (works even if ESM fails) also duplicated below ----------
-  </script>
-
-  <!-- MINI-SKRYPT: незалежний toggle для 🤖 (працює навіть якщо ESM впаде) -->
-  <script>
-    (function(){
-      const aiToggle = document.getElementById('aiToggle');
-      const aiWin = document.getElementById('ai-chat-window');
-      const aiClose = document.getElementById('ai-chat-close');
-      if (!aiToggle || !aiWin) return;
-      aiToggle.addEventListener('click', () => {
-        const hidden = aiWin.classList.toggle('hidden');
-        aiToggle.setAttribute('aria-expanded', String(!hidden));
-        if (!hidden) setTimeout(() => document.getElementById('gift-person')?.focus(), 60);
-      });
-      aiClose?.addEventListener('click', () => {
-        aiWin.classList.add('hidden');
-        aiToggle.setAttribute('aria-expanded','false');
-        aiToggle.focus();
-      });
-    })();
+    document.getElementById('eventModal')?.addEventListener('click', (e)=>{ if(e.target===e.currentTarget) e.currentTarget.close?.(); });
   </script>
 </body>
 </html>

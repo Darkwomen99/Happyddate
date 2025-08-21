@@ -1,4 +1,4 @@
-// /api/env.js — Edge Function для Vercel
+// /api/env.js — Vercel Edge Function
 export const config = { runtime: "edge" };
 
 export default async function handler() {

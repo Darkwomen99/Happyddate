@@ -15,16 +15,17 @@
   <!-- Open Graph -->
   <meta property="og:title" content="HappyDate - Magiczne prezenty na każdą okazję" />
   <meta property="og:description" content="Zaskocz bliskich wyjątkowymi prezentami i nie zapomnij o ważnych chwilach!" />
-  <meta property="og:image" content="/public/img/social-banner.jpg" />
+  <!-- TODO: zamień na swój baner w /public/img/ gdy dodasz plik -->
+  <meta property="og:image" content="/public/img/11.png" />
   <meta property="og:url" content="https://www.happydate.pl/" />
   <meta property="og:type" content="website" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/public/img/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/public/img/apple-touch-icon.png">
+  <!-- Favicon (tymczasowo korzystamy z istniejących plików w /public/img/) -->
+  <!-- TODO: dodaj własne favicony do /public/img/ i zaktualizuj ścieżki -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/public/img/11.png">
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com" defer></script>
+  <!-- Tailwind CSS (bez defer, by uniknąć FOUC z CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- i18n -->
   <script src="https://unpkg.com/i18next@21.6.14/i18next.min.js" defer></script>
@@ -37,9 +38,10 @@
   <!-- Custom -->
   <link rel="stylesheet" href="/src/css/style.css" />
 
-  <!-- Prefer-reduced-motion -->
   <style>
     @media (prefers-reduced-motion: reduce){.animate-bounce,.animate-ping,.animate-pulse{animation:none!important}}
+    @keyframes fade-in { from { opacity:0; transform: translateY(5px);} to { opacity:1; transform: translateY(0);} }
+    .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
   </style>
 </head>
 <body class="overflow-x-hidden">
@@ -136,7 +138,7 @@
           <!-- User avatar -->
           <a href="/pages/profile.html" id="user-avatar-link" class="hidden" aria-label="Mój profil">
             <img id="user-avatar"
-                 src="/public/img/default-avatar.png"
+                 src="/public/img/11.png"
                  alt="Profil użytkownika"
                  class="w-10 h-10 rounded-full border-2 border-white shadow cursor-pointer hover:scale-105 transition" />
           </a>
@@ -184,11 +186,12 @@
     <h3 class="text-lg font-bold">Krótka zapowiedź</h3>
     <p class="text-sm text-gray-600 dark:text-gray-300">Ciepło, emocje i prezenty — odkryj HappyDate w 30 sekund 💛</p>
     <audio controls class="w-full">
-      <source src="/public/audio/intro.mp3" type="audio/mpeg" />
+      <!-- TODO: podmień na istniejący plik w /public/audio/ -->
+      <source src="/public/audio/ElevenLabs_2025-04-09T21_13_18....mp3" type="audio/mpeg" />
       Twoja przeglądarka nie wspiera audio.
     </audio>
     <div class="flex justify-end">
-      <button class="px-4 py-2 rounded-lg border">Zamknij</button>
+      <button class="px-4 py-2 rounded-lg border" aria-label="Zamknij okno audio">Zamknij</button>
     </div>
   </form>
 </dialog>
@@ -262,22 +265,6 @@
     </div>
   </div>
 </div>
-<style>
-@keyframes fade-in { from { opacity: 0; transform: translateY(5px);} to { opacity: 1; transform: translateY(0);} }
-.animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
-</style>
-<script defer>
-(() => {
-  const helpBtn   = document.getElementById('helpBtn');
-  const helpPopup = document.getElementById('helpPopup');
-  const isOpen = () => !helpPopup.classList.contains('hidden');
-  function openHelp(){ helpPopup.classList.remove('hidden'); helpBtn.setAttribute('aria-expanded','true'); helpPopup.querySelector('a,button')?.focus(); }
-  function closeHelp(){ helpPopup.classList.add('hidden'); helpBtn.setAttribute('aria-expanded','false'); helpBtn.focus(); }
-  helpBtn?.addEventListener('click', (e)=>{ e.stopPropagation(); isOpen()?closeHelp():openHelp(); });
-  document.addEventListener('click', (e)=>{ if(isOpen() && !helpPopup.contains(e.target) && e.target!==helpBtn) closeHelp(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && isOpen()) closeHelp(); });
-})();
-</script>
 
 <!-- HERO -->
 <section class="bg-gradient-to-r from-pink-100 via-yellow-100 to-blue-100 py-16 sm:py-20 px-2 md:px-12 text-center relative overflow-hidden">
@@ -290,7 +277,7 @@
     </p>
     <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 min-w-0">
       <a
-        href="/generator.html"
+        href="/pages/generator.html"
         class="px-6 py-3 bg-pink-500 text-white rounded-xl text-lg font-semibold shadow-md
                hover:bg-pink-600 hover:scale-105 hover:shadow-xl
                focus:bg-pink-600 focus:scale-105 focus:shadow-xl
@@ -409,26 +396,27 @@
   <div class="max-w-6xl mx-auto px-4">
     <h3 class="text-2xl font-semibold text-center mb-12" data-i18n="gifts.title">🎁 Przykładowe prezenty</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 min-w-0">
+      <!-- TODO: podmień na swoje realne zdjęcia w /public/img/ -->
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/public/img/gift1.jpg" alt="Zestaw SPA i kartka Kocham Cię - prezent romantyczny"
+        <img src="/public/img/money.png" alt="Zestaw prezentowy — przykład 1"
              class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
              loading="lazy">
         <p class="font-medium" data-i18n="gifts.romantic">Zestaw SPA + kartka „Kocham Cię”</p>
       </div>
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/public/img/gift2.jpg" alt="Kwiaty i list z przeprosinami"
+        <img src="/public/img/11.png" alt="Zestaw prezentowy — przykład 2"
              class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
              loading="lazy">
         <p class="font-medium" data-i18n="gifts.flowers">Kwiaty + list z przeprosinami</p>
       </div>
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/public/img/gift3.jpg" alt="Box niespodzianka i voucher"
+        <img src="/public/img/11.png" alt="Zestaw prezentowy — przykład 3"
              class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
              loading="lazy">
         <p class="font-medium" data-i18n="gifts.box">Box z niespodzianką + voucher</p>
       </div>
       <div class="bg-white dark:bg-gray-900 p-4 rounded-xl shadow text-center group hover:shadow-xl transition-shadow duration-300">
-        <img src="/public/img/gift4.jpg" alt="Voucher na masaż i kolację"
+        <img src="/public/img/money.png" alt="Zestaw prezentowy — przykład 4"
              class="rounded mb-3 w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
              loading="lazy">
         <p class="font-medium" data-i18n="gifts.voucher">Voucher na masaż i kolację</p>
@@ -531,11 +519,6 @@ document.addEventListener("DOMContentLoaded", () => {
 <!-- i18n init -->
 <script defer>
 (function() {
-  const repoBase = (() => {
-    const parts = location.pathname.split('/').filter(Boolean);
-    return parts.length > 0 ? `/${parts[0]}` : '';
-  })();
-
   const supportedLangs = ["pl", "ua", "en", "ru", "de"];
   const browserLang = navigator.language?.slice(0, 2) || "pl";
   const initialLang = localStorage.getItem("lang") || (supportedLangs.includes(browserLang) ? browserLang : "pl");
@@ -594,35 +577,22 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<!-- ===== Supabase: env + client + header auth UI ===== -->
+<!-- ===== Supabase: header auth UI (opcjonalnie, gdy masz /src/js/auth.js i supabaseClient.js) ===== -->
 <script type="module">
-  // 1) Отримуємо ENV з Edge‑функції
+  let supabase;
   try {
-    window.env = await fetch('/api/env').then(r => r.json());
-  } catch (e) {
-    console.error('[env] nie udało się pobrać /api/env', e);
-    window.env = {};
+    ({ supabase } = await import('/src/js/supabaseClient.js'));
+    await import('/src/js/auth.js').catch(()=>{});
+  } catch(e) {
+    console.warn('[supabase] pominięto — brak klienta lub w trybie standalone');
   }
 
-  // 2) Ініціалізація Supabase‑клієнта з твого модуля
-  const { supabase } = await import('/src/js/supabaseClient.js').catch(e => {
-    console.error('[supabaseClient] import error', e);
-    return {};
-  });
-
-  // 3) (необов’язково) додаткові обробники auth
-  try { await import('/src/js/auth.js'); } catch (e) { /* ok */ }
-
-  // 4) Header avatar/UI (desktop + mobile)
   const $ = (s, r = document) => r.querySelector(s);
-
   const avatarLink   = $("#user-avatar-link");
   const avatarImg    = $("#user-avatar");
   const loginLink    = $("#login-link");
   const registerLink = $("#register-link");
   const logoutBtn    = $("#logout-btn");
-
-  // mobile
   const loginLinkM     = $("#login-link-mobile");
   const registerLinkM  = $("#register-link-mobile");
   const dashboardLinkM = $("#dashboard-link-mobile");
@@ -635,23 +605,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (user) {
         const meta = user.user_metadata || {};
-        const avatarUrl =
-          (meta.avatar_url || '').trim() ||
-          (meta.picture || '').trim() ||
-          "/public/img/default-avatar.png";
-
+        const avatarUrl = (meta.avatar_url || meta.picture || "/public/img/11.png").trim();
         if (avatarImg) {
           avatarImg.src = avatarUrl;
           avatarImg.alt = meta.full_name || user.email || "Profil użytkownika";
           avatarImg.referrerPolicy = "no-referrer";
         }
-
         avatarLink?.classList.remove("hidden");
         logoutBtn?.classList.remove("hidden");
         loginLink?.classList.add("hidden");
         registerLink?.classList.add("hidden");
 
-        // mobile
         dashboardLinkM?.classList.remove("hidden");
         logoutBtnM?.classList.remove("hidden");
         loginLinkM?.classList.add("hidden");
@@ -662,7 +626,6 @@ document.addEventListener("DOMContentLoaded", () => {
         loginLink?.classList.remove("hidden");
         registerLink?.classList.remove("hidden");
 
-        // mobile
         dashboardLinkM?.classList.add("hidden");
         logoutBtnM?.classList.add("hidden");
         loginLinkM?.classList.remove("hidden");
@@ -673,18 +636,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // перший рендер
   updateHeaderAuthUI();
-
-  // підписка на зміну сесії
   if (supabase?.auth?.onAuthStateChange) {
     supabase.auth.onAuthStateChange(() => updateHeaderAuthUI());
   }
 
-  // вихід (desktop + mobile)
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await supabase?.auth?.signOut?.();
       window.location.href = "/index.html";
     } catch (e) {
       console.error("[header-auth] signOut error:", e);
