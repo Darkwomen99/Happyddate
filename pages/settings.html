@@ -5,40 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Ustawienia — HappyDate</title>
 
+  <!-- SEO / Security -->
+  <meta name="robots" content="noindex,follow" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="color-scheme" content="light dark" />
+
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Supabase JS v2 (UMD) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <!-- A11y / Motion -->
   <style>
-    @media (prefers-reduced-motion: reduce) { .animate-pulse{animation:none!important} }
+    @media (prefers-reduced-motion: reduce){.animate-pulse{animation:none!important}}
+    dialog::backdrop{background:rgba(0,0,0,.35)}
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-  <!-- Header (lekki) -->
+  <!-- Header -->
   <header class="bg-gradient-to-r from-blue-400 to-cyan-400 py-4 sticky top-0 z-40 shadow">
     <div class="max-w-6xl mx-auto px-4 flex items-center justify-between">
       <a href="/index.html" class="text-white font-bold text-xl">🎁 HappyDate</a>
-      <nav class="hidden sm:flex gap-5 text-white/95 text-sm">
+      <nav class="hidden sm:flex gap-5 text-white/95 text-sm" aria-label="Nawigacja główna">
         <a href="/pages/dashboard.html" class="hover:underline">Moje wydarzenia</a>
         <a href="/pages/profile.html" class="hover:underline">Profil</a>
-        <span class="underline font-semibold">Ustawienia</span>
+        <span class="underline font-semibold" aria-current="page">Ustawienia</span>
       </nav>
     </div>
   </header>
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-white font-semibold shadow-xl transition-all duration-300 opacity-0 pointer-events-none"></div>
+  <!-- Toast -->
+  <div id="toast" role="status" aria-live="polite"
+       class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-white font-semibold shadow-xl transition-all duration-300 opacity-0 pointer-events-none">
+  </div>
 
-  <main class="max-w-xl mx-auto px-4 py-10">
+  <main class="max-w-3xl mx-auto px-4 py-10 space-y-10">
+    <!-- Karta: Konto -->
     <section class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-t-4 border-pink-300 dark:border-cyan-400">
       <div class="flex items-center gap-4 mb-6">
         <img id="avatarPreview" alt="Avatar" class="w-16 h-16 rounded-full object-cover ring-4 ring-blue-100 dark:ring-gray-700 bg-white"
              src="https://api.dicebear.com/8.x/fun-emoji/svg?seed=gift">
-        <div>
-          <h1 class="text-2xl font-bold">Ustawienia konta</h1>
-          <p class="text-sm text-gray-500 dark:text-gray-400" id="userEmail">—</p>
+        <div class="min-w-0">
+          <h1 class="text-2xl font-bold truncate">Ustawienia konta</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 truncate" id="userEmail">—</p>
         </div>
         <button id="logoutBtn" type="button"
                 class="ml-auto px-3 py-2 rounded-lg bg-red-600 text-white text-sm hover:bg-red-700">
@@ -46,28 +53,110 @@
         </button>
       </div>
 
-      <form id="settings-form" class="space-y-4">
-        <label class="block">
-          <span class="block text-sm font-medium mb-1">Imię i nazwisko</span>
-          <input type="text" id="displayName" class="w-full p-2.5 border rounded-lg dark:bg-gray-700"
-                 placeholder="np. Jan Kowalski" autocomplete="name">
-        </label>
+      <form id="settings-form" class="space-y-5" novalidate>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="block text-sm font-medium mb-1">Imię i nazwisko</span>
+            <input type="text" id="displayName" class="w-full p-2.5 border rounded-lg dark:bg-gray-700"
+                   placeholder="np. Jan Kowalski" autocomplete="name">
+          </label>
 
-        <label class="block">
-          <span class="block text-sm font-medium mb-1">Link do zdjęcia profilowego (opcjonalnie)</span>
-          <input type="url" id="photoURL" class="w-full p-2.5 border rounded-lg dark:bg-gray-700"
-                 placeholder="https://.../avatar.jpg" inputmode="url">
-          <p class="text-xs text-gray-500 mt-1">Podaj pełny URL. Podgląd zaktualizuje się automatycznie.</p>
-        </label>
+          <label class="block">
+            <span class="block text-sm font-medium mb-1">Link do zdjęcia profilowego</span>
+            <input type="url" id="photoURL" class="w-full p-2.5 border rounded-lg dark:bg-gray-700"
+                   placeholder="https://…/avatar.jpg" inputmode="url">
+            <p class="text-xs text-gray-500 mt-1">Podaj pełny URL. Podgląd zaktualizuje się automatycznie.</p>
+          </label>
+        </div>
 
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold">
-          Zapisz zmiany
-        </button>
+        <div class="grid sm:grid-cols-3 gap-3">
+          <button type="submit"
+                  class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold">
+            Zapisz zmiany
+          </button>
+
+          <button id="sendResetBtn" type="button"
+                  class="w-full border hover:bg-gray-50 dark:hover:bg-gray-700 py-2.5 rounded-lg font-semibold">
+            Zmień / resetuj hasło
+          </button>
+
+          <button id="signOutAllBtn" type="button"
+                  class="w-full border hover:bg-gray-50 dark:hover:bg-gray-700 py-2.5 rounded-lg font-semibold">
+            Wyloguj na wszystkich urządzeniach
+          </button>
+        </div>
       </form>
 
-      <p class="mt-4 text-sm text-gray-500">
-        Zmiany zapisujemy w <code>user_metadata</code> Twojego konta Supabase i będą widoczne w panelu oraz innych stronach.
-      </p>
+      <details class="mt-5 group">
+        <summary class="cursor-pointer select-none font-semibold text-gray-800 dark:text-gray-100">
+          Zmień adres e‑mail
+        </summary>
+        <div class="mt-3 grid sm:grid-cols-[1fr_auto] gap-3 items-end">
+          <label class="block">
+            <span class="block text-sm font-medium mb-1">Nowy e‑mail</span>
+            <input type="email" id="newEmail" class="w-full p-2.5 border rounded-lg dark:bg-gray-700" placeholder="np. jan@example.com" />
+          </label>
+          <button id="changeEmailBtn" type="button" class="px-4 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
+            Zmień e‑mail
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">Wyślemy link potwierdzający na nowy adres. Zmiana obowiązuje po potwierdzeniu.</p>
+      </details>
+    </section>
+
+    <!-- Karta: Preferencje -->
+    <section class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-t-4 border-blue-300 dark:border-blue-500">
+      <h2 class="text-xl font-bold mb-4">Preferencje</h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <label class="block">
+          <span class="block text-sm font-medium mb-1">Język interfejsu</span>
+          <select id="prefLang" class="w-full p-2.5 border rounded-lg dark:bg-gray-700">
+            <option value="pl">🇵🇱 Polski</option>
+            <option value="ua">🇺🇦 Українська</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="de">🇩🇪 Deutsch</option>
+          </select>
+        </label>
+
+        <label class="block">
+          <span class="block text-sm font-medium mb-1">Motyw</span>
+          <select id="prefTheme" class="w-full p-2.5 border rounded-lg dark:bg-gray-700">
+            <option value="system">Systemowy</option>
+            <option value="light">Jasny</option>
+            <option value="dark">Ciemny</option>
+          </select>
+        </label>
+
+        <div class="flex items-end">
+          <button id="savePrefsBtn" type="button"
+                  class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-lg font-semibold">
+            Zapisz preferencje
+          </button>
+        </div>
+      </div>
+      <p class="text-xs text-gray-500 mt-3">Preferencje zapisujemy w <code>user_metadata</code> oraz lokalnie (localStorage) — działają w całym serwisie.</p>
+    </section>
+
+    <!-- Karta: Prywatność i dane -->
+    <section class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-t-4 border-emerald-300 dark:border-emerald-500">
+      <h2 class="text-xl font-bold mb-4">Prywatność i dane</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <a href="/pages/privacy.html" class="w-full text-center border rounded-lg py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700">Polityka prywatności</a>
+        <button id="exportDataBtn" type="button" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-semibold">Pobierz moje dane (.json)</button>
+      </div>
+      <p class="text-xs text-gray-500 mt-3">Eksport obejmuje Twój profil i powiązane wpisy (np. wydarzenia, ankieta powitalna), jeśli używasz tych funkcji.</p>
+    </section>
+
+    <!-- Karta: Bezpieczeństwo -->
+    <section class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border-t-4 border-red-300 dark:border-red-500">
+      <h2 class="text-xl font-bold mb-4">Bezpieczeństwo</h2>
+      <ul class="list-disc list-inside space-y-2 text-sm text-gray-700 dark:text-gray-300">
+        <li>Używaj unikalnego hasła i nie udostępniaj go nikomu.</li>
+        <li>W razie podejrzenia — skorzystaj z „Wyloguj na wszystkich urządzeniach”.</li>
+        <li>Zmiana e‑maila wymaga potwierdzenia linkiem.</li>
+      </ul>
+      <p class="text-xs text-gray-500 mt-3">Chcesz usunąć konto? Napisz do nas: <a class="underline" href="mailto:support@happydate.pl" rel="noopener">support@happydate.pl</a></p>
     </section>
   </main>
 
@@ -88,44 +177,69 @@
     </div>
   </div>
 
-  <script>
-    // ==== Supabase init ====
-    (function ensureConfig() {
-      if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY) {
-        console.warn('Brak SUPABASE_URL / SUPABASE_ANON_KEY. Zainicjuj je globalnie przed tą stroną.');
+  <!-- App logic -->
+  <script type="module">
+    // ========= Supabase bootstrap =========
+    let supabase = null;
+    async function ensureSupabase() {
+      if (supabase) return supabase;
+      // 1) Try project client
+      try {
+        ({ supabase } = await import('/src/js/supabaseClient.js'));
+        return supabase;
+      } catch (_) {}
+      // 2) Fallback to ESM client with globals
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+      const url = window.SUPABASE_URL || window.ENV?.SUPABASE_URL;
+      const key = window.SUPABASE_ANON_KEY || window.ENV?.SUPABASE_ANON_KEY;
+      if (!url || !key) {
+        toast('Brak konfiguracji Supabase (URL/ANON_KEY).', 'error');
+        throw new Error('Supabase config missing');
       }
-    })();
-    const { createClient } = window.supabase;
-    const sb = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      supabase = createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }});
+      return supabase;
+    }
 
-    // ==== Helpers ====
-    const $ = (s, r=document)=>r.querySelector(s);
+    // ========= Helpers =========
+    const $  = (s, r=document)=>r.querySelector(s);
+    const btnBusy = (el, on=true) => { if(!el) return; el.disabled = !!on; el.classList.toggle('opacity-70', !!on); el.classList.toggle('cursor-not-allowed', !!on); };
     const toastEl = $('#toast');
     function toast(msg, type='ok'){
       const palette = { ok:'bg-green-600', error:'bg-red-600', info:'bg-gray-900' };
       toastEl.textContent = msg;
-      toastEl.className = `fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-white font-semibold shadow-xl transition ${palette[type]||palette.info} opacity-0`;
-      requestAnimationFrame(()=>{ toastEl.style.opacity = 1; });
-      setTimeout(()=>{ toastEl.style.opacity = 0; }, 2400);
+      toastEl.className = `fixed top-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-white font-semibold shadow-xl transition ${palette[type]||palette.info}`;
+      toastEl.style.opacity = 1; toastEl.style.pointerEvents='auto';
+      clearTimeout(toastEl._t); toastEl._t = setTimeout(()=>{ toastEl.style.opacity=0; toastEl.style.pointerEvents='none'; }, 2600);
     }
+    const isValidHttpUrl = (str) => {
+      try { const u = new URL(str); return u.protocol==='http:' || u.protocol==='https:'; } catch { return false; }
+    };
     const setAvatar = (url) => {
       const img = $('#avatarPreview');
-      if (url && /^https?:\/\//i.test(url)) img.src = url;
+      if (url && isValidHttpUrl(url)) img.src = url;
       else img.src = 'https://api.dicebear.com/8.x/fun-emoji/svg?seed=gift';
     };
 
-    // ==== Auth guard + preload ====
+    // ========= Auth guard & preload =========
+    let currentUser = null;
     (async function init(){
-      // Sprawdź sesję
+      const sb = await ensureSupabase();
+
+      // Session check
       const { data: { session }, error: sErr } = await sb.auth.getSession();
       if (sErr) console.warn(sErr);
-      if (!session) { window.location.href = '/pages/login.html'; return; }
+      if (!session?.user) { window.location.href = '/pages/login.html'; return; }
+      currentUser = session.user;
 
-      // Pobierz użytkownika
+      // Redirect on auth changes (logout elsewhere, etc.)
+      sb.auth.onAuthStateChange((_e, sess) => { if (!sess?.user) window.location.href = '/pages/login.html'; });
+
+      // Load user
       const { data: { user }, error } = await sb.auth.getUser();
       if (error || !user) { window.location.href = '/pages/login.html'; return; }
+      currentUser = user;
 
-      // Ustaw pola
+      // Fill fields
       $('#userEmail').textContent = user.email || '—';
       const displayName = user.user_metadata?.display_name || user.user_metadata?.name || '';
       const photoURL = user.user_metadata?.photo_url || user.user_metadata?.avatar_url || '';
@@ -133,30 +247,145 @@
       $('#photoURL').value = photoURL;
       setAvatar(photoURL);
 
-      // Podgląd avatara w locie
+      // Live preview avatar
       $('#photoURL').addEventListener('input', (e)=> setAvatar(e.target.value));
 
-      // Zapis profilu (user_metadata)
+      // Load prefs (lang/theme)
+      const metaLang  = user.user_metadata?.lang || localStorage.getItem('lang')   || 'pl';
+      const metaTheme = user.user_metadata?.theme|| localStorage.getItem('theme')  || 'system';
+      $('#prefLang').value  = metaLang;
+      $('#prefTheme').value = metaTheme;
+      applyTheme(metaTheme);
+
+      // Save profile (user_metadata)
       $('#settings-form').addEventListener('submit', async (ev) => {
         ev.preventDefault();
-        const payload = {
-          display_name: $('#displayName').value.trim(),
-          photo_url: $('#photoURL').value.trim()
-        };
-        const { error: upErr } = await sb.auth.updateUser({ data: payload });
-        if (upErr) { toast(upErr.message || 'Nie udało się zapisać', 'error'); return; }
-        toast('Zapisano zmiany ✅', 'ok');
-        setAvatar(payload.photo_url);
+        const btn = ev.submitter || $('#settings-form button[type="submit"]');
+        btnBusy(btn, true);
+        try {
+          const payload = {
+            display_name: $('#displayName').value.trim(),
+            photo_url: $('#photoURL').value.trim()
+          };
+          if (payload.photo_url && !isValidHttpUrl(payload.photo_url)) {
+            toast('Niepoprawny URL zdjęcia.', 'error'); return;
+          }
+          const { error: upErr } = await sb.auth.updateUser({ data: payload });
+          if (upErr) { toast(upErr.message || 'Nie udało się zapisać', 'error'); return; }
+          toast('Zapisano zmiany ✅', 'ok');
+          setAvatar(payload.photo_url);
+        } finally {
+          btnBusy(btn, false);
+        }
       });
 
-      // Wylogowanie
+      // Change email (requires confirmation)
+      $('#changeEmailBtn')?.addEventListener('click', async () => {
+        const newEmail = $('#newEmail').value.trim();
+        if (!newEmail) return toast('Podaj nowy adres e‑mail.', 'error');
+        if (newEmail === currentUser.email) return toast('To już jest Twój e‑mail.', 'info');
+        btnBusy($('#changeEmailBtn'), true);
+        try {
+          const { error } = await sb.auth.updateUser({
+            email: newEmail,
+            options: { emailRedirectTo: `${location.origin}/pages/login.html` }
+          });
+          if (error) return toast(error.message || 'Nie udało się zmienić e‑maila.', 'error');
+          toast('Wyślemy link potwierdzający na nowy adres ✉️', 'ok');
+        } finally { btnBusy($('#changeEmailBtn'), false); }
+      });
+
+      // Password reset
+      $('#sendResetBtn')?.addEventListener('click', async () => {
+        btnBusy($('#sendResetBtn'), true);
+        try {
+          const email = currentUser.email;
+          const { error } = await sb.auth.resetPasswordForEmail(email, {
+            redirectTo: `${location.origin}/pages/reset-password.html`
+          });
+          if (error) return toast(error.message || 'Nie udało się wysłać linku.', 'error');
+          toast('Wysłaliśmy link do zmiany hasła ✉️', 'ok');
+        } finally { btnBusy($('#sendResetBtn'), false); }
+      });
+
+      // Sign out everywhere
+      $('#signOutAllBtn')?.addEventListener('click', async () => {
+        if (!confirm('Wylogować wszystkie Twoje sesje na innych urządzeniach?')) return;
+        btnBusy($('#signOutAllBtn'), true);
+        try {
+          const { error } = await sb.auth.signOut({ scope: 'global' });
+          if (error) return toast('Nie udało się wylogować globalnie.', 'error');
+          toast('Wylogowano na wszystkich urządzeniach.', 'ok');
+        } finally { btnBusy($('#signOutAllBtn'), false); }
+      });
+
+      // Normal logout
       $('#logoutBtn')?.addEventListener('click', async () => {
-        await sb.auth.signOut();
+        await sb.auth.signOut({ scope: 'local' });
         window.location.href = '/pages/login.html';
+      });
+
+      // Save preferences
+      $('#savePrefsBtn')?.addEventListener('click', async () => {
+        const lang  = $('#prefLang').value;
+        const theme = $('#prefTheme').value;
+        localStorage.setItem('lang', lang);
+        localStorage.setItem('theme', theme);
+        applyTheme(theme);
+
+        const { error } = await sb.auth.updateUser({ data: { lang, theme } });
+        if (error) return toast('Nie udało się zapisać preferencji.', 'error');
+        toast('Preferencje zapisane ✅', 'ok');
+      });
+
+      // Export data (.json)
+      $('#exportDataBtn')?.addEventListener('click', async () => {
+        const b = $('#exportDataBtn');
+        btnBusy(b, true);
+        try {
+          const [profile, events, survey] = await Promise.all([
+            sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle(),
+            sb.from('events').select('*').eq('uid', currentUser.id).order('date', { ascending: true }),
+            sb.from('onboarding_surveys').select('*').eq('user_id', currentUser.id).maybeSingle()
+          ]);
+
+          if (profile.error && profile.error.code !== 'PGRST116') throw profile.error;
+          if (events.error) throw events.error;
+          if (survey.error && survey.error.code !== 'PGRST116') throw survey.error;
+
+          const payload = {
+            exported_at: new Date().toISOString(),
+            user: { id: currentUser.id, email: currentUser.email, metadata: currentUser.user_metadata || {} },
+            profiles: profile.data || null,
+            events: events.data || [],
+            onboarding_survey: survey.data || null
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url; a.download = `happydate_export_${currentUser.id}.json`; a.click();
+          URL.revokeObjectURL(url);
+          toast('Eksport gotowy ✅', 'ok');
+        } catch (e) {
+          console.error(e);
+          toast('Nie udało się przygotować eksportu.', 'error');
+        } finally { btnBusy(b, false); }
       });
     })();
 
-    // ==== Cookies ====
+    // ========= Theme handling =========
+    function applyTheme(mode){
+      const root = document.documentElement;
+      if (mode === 'dark') root.classList.add('dark');
+      else if (mode === 'light') root.classList.remove('dark');
+      else {
+        // system
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.classList.toggle('dark', prefersDark);
+      }
+    }
+
+    // ========= Cookies =========
     document.addEventListener('DOMContentLoaded', () => {
       const cc = $('#cookieConsent'); const btn = $('#acceptCookies');
       if (!localStorage.getItem('happydate_cookie_consent')) cc.classList.remove('hidden');

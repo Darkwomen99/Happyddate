@@ -1,128 +1,112 @@
-<!-- /pages/register.html -->
+<!-- /pages/register.html — Rejestracja tylko przez Google (Supabase OAuth) -->
 <!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rejestracja — HappyDate</title>
+  <meta name="description" content="Zarejestruj się w HappyDate za pomocą konta Google. Szybko i bezpiecznie." />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
+  <link rel="manifest" href="/public/manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media (prefers-reduced-motion: reduce){ .animate-spin{ animation: none !important; } }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <main class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-6 text-center">Zarejestruj się w HappyDate</h1>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <main class="bg-white w-full max-w-md mx-auto my-8 p-8 rounded-2xl shadow-xl">
+    <a href="/index.html" class="block text-center text-3xl mb-2" aria-label="Strona główna HappyDate">🎁</a>
+    <h1 class="text-2xl font-bold mb-1 text-center">Zarejestruj się w HappyDate</h1>
+    <p class="text-sm text-center text-gray-500 mb-6">Szybko i bezpiecznie — użyj konta Google</p>
 
-    <form id="register-form" class="space-y-4" autocomplete="off">
-      <input type="text" id="full_name" placeholder="Imię i nazwisko" required class="w-full p-2 border rounded" />
+    <!-- CTA: tylko Google -->
+    <button id="signup-google"
+            class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed">
+      Zarejestruj się przez Google
+    </button>
 
-      <input type="email" id="email" placeholder="Email" required class="w-full p-2 border rounded" />
+    <p class="mt-6 text-xs text-center text-gray-500">
+      Rejestrując się, akceptujesz naszą
+      <a href="/pages/privacy.html" class="underline">Politykę prywatności</a>.
+    </p>
 
-      <div class="relative">
-        <input type="password" id="password" placeholder="Hasło (min. 6 znaków)" minlength="6" required class="w-full p-2 border rounded pr-12" autocomplete="new-password" />
-        <button type="button" id="toggle-pass" class="absolute inset-y-0 right-3 text-sm text-blue-600">Pokaż</button>
-      </div>
-
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition">
-        Zarejestruj się
-      </button>
-    </form>
-
-    <div class="mt-6">
-      <button id="signup-google" class="w-full border hover:bg-gray-50 py-2 rounded transition">
-        Zarejestruj się przez Google
-      </button>
-    </div>
-
-    <p class="mt-4 text-center text-sm">
+    <p class="mt-3 text-center text-sm text-gray-600">
       Masz już konto?
       <a href="/pages/login.html" class="text-blue-600 underline">Zaloguj się</a>
     </p>
   </main>
 
   <!-- Toast -->
-  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden"></div>
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50 hidden"
+       role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    // UŻYJ JEDNEGO KLIENTA — z Twojego projektu
+    // Używamy wspólnego klienta z projektu
     import { supabase } from '/src/js/supabaseClient.js';
 
     const $ = (s, r=document) => r.querySelector(s);
-    const toastBox = $('#toast');
-
-    function notify(msg, type='ok') {
-      toastBox.textContent = msg;
-      toastBox.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded shadow ' +
-        (type==='error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white');
-      toastBox.classList.remove('hidden');
-      setTimeout(()=> toastBox.classList.add('hidden'), 2800);
-    }
-
-    function mapError(msg='') {
-      const m = msg.toLowerCase();
-      if (m.includes('invalid email')) return 'Podaj poprawny adres e-mail.';
-      if (m.includes('password') && m.includes('length')) return 'Hasło musi mieć co najmniej 6 znaków.';
-      if (m.includes('user already registered')) return 'Ten e-mail jest już zarejestrowany.';
-      return msg || 'Wystąpił błąd. Spróbuj ponownie.';
-    }
-
-    // Pokaż/ukryj hasło
-    $('#toggle-pass')?.addEventListener('click', () => {
-      const inp = $('#password');
-      const isPwd = inp.type === 'password';
-      inp.type = isPwd ? 'text' : 'password';
-      $('#toggle-pass').textContent = isPwd ? 'Ukryj' : 'Pokaż';
-    });
-
-    // Rejestracja email + hasło
-    $('#register-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const full_name = $('#full_name').value.trim();
-      const email = $('#email').value.trim();
-      const password = $('#password').value;
-
-      if (!full_name || !email || !password) {
-        notify('Uzupełnij wszystkie pola.', 'error'); return;
+    const toast = (msg, type='ok') => {
+      const el = $('#toast');
+      el.className = 'fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50';
+      el.classList.add(type === 'err' ? 'bg-red-600' : type === 'warn' ? 'bg-yellow-500 text-black' : 'bg-green-600');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      setTimeout(()=> el.classList.add('hidden'), 2600);
+    };
+    const setLoading = (btn, loading=true, labelWhenLoading='Przekierowanie…') => {
+      if (!btn) return;
+      btn.disabled = loading;
+      if (loading) {
+        btn.dataset._label = btn.textContent;
+        btn.innerHTML = `<span class="inline-block align-middle w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin"></span>${labelWhenLoading}`;
+      } else {
+        btn.textContent = btn.dataset._label || btn.textContent;
       }
+    };
+    const redirectAfterAuth = () => {
+      // Priorytet: to, co zapisaliśmy przed auth (np. z guardów)
+      const next = sessionStorage.getItem("happydate_post_login_redirect");
+      if (next) sessionStorage.removeItem("happydate_post_login_redirect");
+      // Domyślnie po pierwszym logowaniu chcemy ankietę (możesz zmienić na dashboard)
+      window.location.href = next || '/pages/survey.html';
+    };
 
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email, password,
-          options: {
-            data: { full_name },
-            // po kliknięciu w link z e-maila Supabase wróci tu:
-            emailRedirectTo: `${location.origin}/pages/login.html`
-          }
-        });
+    // Jeśli użytkownik już zalogowany → od razu dalej
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) redirectAfterAuth();
+    } catch {}
 
-        if (error) return notify(mapError(error.message), 'error');
-
-        // Jeśli e-mail confirmation WŁĄCZONE (domyślnie) — session będzie null:
-        if (!data.session) {
-          notify('Sprawdź skrzynkę i potwierdź adres e-mail ✉️');
-          return;
-        }
-
-        // Jeśli e-mail confirmation WYŁĄCZONE — od razu mamy sesję:
-        notify('Rejestracja zakończona sukcesem ✅');
-        setTimeout(() => window.location.href = '/pages/survey.html', 1200);
-      } catch (err) {
-        console.error(err);
-        notify('Ups! Coś poszło nie tak.', 'error');
-      }
-    });
-
-    // Google OAuth (włącz w Supabase → Authentication → Providers)
+    // Start Google OAuth
     $('#signup-google')?.addEventListener('click', async () => {
+      const btn = $('#signup-google');
+      setLoading(btn, true);
       try {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
-          options: { redirectTo: `${location.origin}/pages/dashboard.html` }
+          options: {
+            redirectTo: `${location.origin}/pages/survey.html` // po powrocie dokończymy onboarding
+          }
         });
-        if (error) notify(mapError(error.message), 'error');
+        if (error) {
+          setLoading(btn, false);
+          toast(humanizeError(error), 'err');
+        }
       } catch (e) {
         console.error(e);
-        notify('Nie udało się rozpocząć logowania Google.', 'error');
+        setLoading(btn, false);
+        toast('Nie udało się rozpocząć logowania Google.', 'err');
       }
     });
+
+    function humanizeError(err) {
+      const m = (err?.message || '').toLowerCase();
+      if (m.includes('popup') && m.includes('closed')) return 'Zamknięto okno logowania.';
+      if (m.includes('unauthorized') || m.includes('access')) return 'Brak dostępu — sprawdź konfigurację Google w panelu.';
+      if (m.includes('network')) return 'Problem z siecią — spróbuj ponownie.';
+      return 'Ups! Coś poszło nie tak. Spróbuj ponownie.';
+    }
   </script>
 </body>
 </html>

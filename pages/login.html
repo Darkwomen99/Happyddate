@@ -1,13 +1,13 @@
-<!-- pages/login.html — HappyDate (Supabase: email+password, magic link, OAuth, redirect-back) -->
+<!-- pages/login.html — HappyDate (Supabase: email+password, magic link, Google OAuth) -->
 <!DOCTYPE html>
 <html lang="pl" class="h-full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Logowanie — HappyDate</title>
-  <meta name="description" content="Zaloguj się do HappyDate: e-mail i hasło, magic link lub Google/Apple." />
+  <meta name="description" content="Zaloguj się do HappyDate: e-mail i hasło, magic link lub Google." />
 
-  <!-- Ikony / PWA (dopasuj ścieżki do swoich plików) -->
+  <!-- Ikony / PWA -->
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
   <link rel="manifest" href="/public/manifest.webmanifest">
   <meta name="theme-color" content="#ffffff" />
@@ -114,13 +114,10 @@
       <div class="flex-1 h-px bg-gray-200"></div><span>lub</span><div class="flex-1 h-px bg-gray-200"></div>
     </div>
 
-    <!-- OAuth -->
+    <!-- Google OAuth ONLY -->
     <div class="grid grid-cols-1 gap-3">
       <button id="googleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed">
         Zaloguj przez Google
-      </button>
-      <button id="appleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed">
-        Zaloguj przez Apple
       </button>
     </div>
 
@@ -137,7 +134,7 @@
     role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script type="module">
-    // ВАЖЛИВО: імпорт з публічного /js (а не /src/js)
+    // Używamy wspólnego klienta Supabase
     import { supabase } from '/src/js/supabaseClient.js';
 
     // ---- Helpers ----
@@ -162,10 +159,10 @@
     };
     const redirectTo = (path) => window.location.href = path;
 
-    // Focus на e-mail при завантаженні
+    // Focus na e-mail przy starcie
     $('#email')?.focus();
 
-    // ---- Якщо вже залогінений → поверни «туди, звідки викинуло», або на dashboard ----
+    // ---- Jeśli już zalogowany → wróć na dashboard (lub zapamiętany redirect) ----
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -216,25 +213,12 @@
       toast('Sprawdź skrzynkę — wysłaliśmy link ✉️');
     });
 
-    // ---- OAuth ----
+    // ---- Google OAuth (only) ----
     $('#googleBtn')?.addEventListener('click', async () => {
       const btn = $('#googleBtn');
       setLoading(btn, true, 'Przekierowanie…');
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: `${location.origin}/pages/dashboard.html` }
-      });
-      if (error) {
-        setLoading(btn, false);
-        toast(friendlyError(error), 'err');
-      }
-    });
-
-    $('#appleBtn')?.addEventListener('click', async () => {
-      const btn = $('#appleBtn');
-      setLoading(btn, true, 'Przekierowanie…');
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'apple',
         options: { redirectTo: `${location.origin}/pages/dashboard.html` }
       });
       if (error) {

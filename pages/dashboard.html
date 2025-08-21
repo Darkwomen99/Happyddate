@@ -84,7 +84,7 @@
             <a href="tel:+48123123123" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Zadzwoń" aria-label="Zadzwoń">
               <span class="text-2xl">📞</span>
             </a>
-            <a href="mailto:happydate@gmail.com" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Napisz e-mail" aria-label="Napisz e-mail">
+            <a href="mailto:happyddate@gmail.com" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="Napisz e-mail" aria-label="Napisz e-mail">
               <span class="text-2xl">📩</span>
             </a>
             <button id="aiToggle" class="rounded-full bg-white/70 hover:bg-white/90 text-blue-600 shadow-lg p-3 transition" title="AI Asystent" type="button" aria-controls="ai-chat-window" aria-expanded="false">
@@ -178,36 +178,31 @@
       };
       el.className = `fixed top-6 right-6 z-50 px-4 py-3 rounded-xl shadow-xl transition-all duration-300 ${colors[type]||colors.info}`;
       el.textContent = msg; el.style.opacity='1'; el.style.pointerEvents='auto';
-      setTimeout(()=>{ el.style.opacity='0'; el.style.pointerEvents='none'; }, 2500);
+      clearTimeout(el._t); el._t = setTimeout(()=>{ el.style.opacity='0'; el.style.pointerEvents='none'; }, 2600);
     };
     const colorForType = (t) => t==='birthday' ? '#3b82f6' : t==='anniversary' ? '#ec4899' : '#10b981';
     const labelForType = (t) => t==='birthday' ? 'Urodziny' : t==='anniversary' ? 'Rocznica' : 'Inne';
 
     // ---------- Auth gate ----------
-    let currentUser = null;
     const user = await requireAuth('/pages/login.html');
-    if (user) currentUser = user;
-
-    supabase.auth.onAuthStateChange((_e, session) => {
-      if (!session?.user) window.location.href = '/pages/login.html';
-    });
+    if (!user) throw new Error('No user'); // hard stop, guard już zrobił redirect
+    let currentUser = user;
 
     // Logout (redirect)
     document.getElementById('logout-btn')?.addEventListener('click', async () => {
-      await signOut();
-      window.location.href = '/pages/login.html';
+      await signOut(); window.location.href = '/pages/login.html';
     });
     document.getElementById('logout-btn-mobile')?.addEventListener('click', async () => {
-      await signOut();
-      window.location.href = '/pages/login.html';
+      await signOut(); window.location.href = '/pages/login.html';
     });
 
     // ---------- FullCalendar ----------
     let FC;
     function initCalendar() {
+      const preferList = matchMedia('(max-width: 640px)').matches;
       FC = new FullCalendar.Calendar(document.getElementById('calendar'), {
         height: 'auto',
-        initialView: 'dayGridMonth',
+        initialView: preferList ? 'listMonth' : 'dayGridMonth',
         locale: 'pl',
         firstDay: 1,
         selectable: true,
@@ -242,16 +237,24 @@
       return { id: ev.id, title: x.title || ev.title || '', type: x.type || 'custom', person: x.person || '', date: ev.startStr };
     }
 
-    async function loadEvents() {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .eq('uid', currentUser.id)
-        .order('date', { ascending: true });
+    async function loadEvents(showSkeleton = false) {
+      try {
+        if (showSkeleton) { document.getElementById('event-skeleton').classList.remove('hidden'); document.getElementById('event-list').classList.add('hidden'); }
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .eq('uid', currentUser.id)
+          .order('date', { ascending: true });
 
-      if (error) { console.error(error); toast('Błąd pobierania wydarzeń', 'error'); return; }
-      setCalendarEvents(data || []);
-      setUpcomingList(data || []);
+        if (error) throw error;
+        setCalendarEvents(data || []);
+        setUpcomingList(data || []);
+      } catch (e) {
+        console.error(e); toast('Błąd pobierania wydarzeń', 'error');
+      } finally {
+        document.getElementById('event-skeleton').classList.add('hidden');
+        document.getElementById('event-list').classList.remove('hidden');
+      }
     }
 
     function setCalendarEvents(rows) {
@@ -270,13 +273,20 @@
     }
 
     // ---------- Realtime ----------
-    const channel = supabase
-      .channel('events-ch')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'events', filter: `uid=eq.${currentUser.id}` }, async () => { await loadEvents(); })
-      .subscribe();
+    let channel;
+    function subscribeRT() {
+      if (channel) { try { supabase.removeChannel(channel); } catch {} }
+      channel = supabase
+        .channel('events-ch')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'events', filter: `uid=eq.${currentUser.id}` }, async () => { await loadEvents(false); })
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') { /* ok */ }
+        });
+    }
 
-    // Initial load
-    await loadEvents();
+    // Initial load + subscribe
+    await loadEvents(true);
+    subscribeRT();
 
     // ---------- Sidebar upcoming ----------
     function setUpcomingList(events) {
@@ -285,7 +295,12 @@
       skel.classList.add('hidden'); box.classList.remove('hidden');
       box.replaceChildren();
 
-      const next = [...events].sort((a,b)=>a.date.localeCompare(b.date)).slice(0,8);
+      const todayISO = new Date().toISOString().slice(0,10);
+      const next = [...events]
+        .filter(e => e.date >= todayISO)
+        .sort((a,b)=>a.date.localeCompare(b.date))
+        .slice(0,8);
+
       if (!next.length) {
         const empty = document.createElement('div');
         empty.className = 'text-gray-500 text-center';
@@ -358,13 +373,6 @@
       eventForm.reset();
     });
 
-    deleteBtn?.addEventListener('click', async () => {
-      const id = document.getElementById('eventId').value; if (!id) return;
-      await deleteEvent(id);
-      if (eventDlg.open) eventDlg.close();
-      eventForm.reset();
-    });
-
     eventForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const id     = document.getElementById('eventId').value.trim();
@@ -416,7 +424,6 @@
       out.textContent = '⏳ Generuję propozycje...';
 
       try {
-        // Vercel Functions (jeśli masz /api/gift-ideas w root)
         const res = await fetch('/api/gift-ideas', {
           method:'POST',
           headers:{'Content-Type':'application/json'},
@@ -427,12 +434,11 @@
         const data = await res.json();
         renderIdeas(data.ideas || [], data.disclaimer);
       } catch (err) {
-        // Fallback (gdy funkcція відсутня): локальна генерація ідей
         const ideas = [
           { title: 'Personalizowany kubek', desc: 'Z imieniem i krótkim cytatem dopasowanym do okazji.' },
           { title: 'Zestaw spa w domu', desc: 'Sole i olejki do kąpieli + świeca zapachowa.' },
           { title: 'Ramka z wydrukiem zdjęcia', desc: 'Wspólne zdjęcie + krótka dedykacja.' }
-        ].filter(Boolean);
+        ];
         renderIdeas(ideas, 'Sugestie lokalne — doprecyzuj w AI, aby dostać lepsze pomysły.');
       }
 
@@ -485,6 +491,8 @@
     document.getElementById('eventModal')?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) { e.currentTarget.close?.(); }
     });
+
+    // ---------- AI toggle (works even if ESM fails) also duplicated below ----------
   </script>
 
   <!-- MINI-SKRYPT: незалежний toggle для 🤖 (працює навіть якщо ESM впаде) -->
