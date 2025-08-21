@@ -1,47 +1,46 @@
-<!-- pages/login.html — HappyDate (Supabase: email+password, magic link, Google OAuth) -->
 <!DOCTYPE html>
-<html lang="pl" class="h-full">
+<html lang="pl" class="h-full bg-gray-100">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Logowanie — HappyDate</title>
-  <meta name="description" content="Zaloguj się do HappyDate: e-mail i hasło, magic link lub Google." />
 
-  <!-- Ikony / PWA -->
+  <!-- SEO / Meta -->
+  <meta name="description" content="Zaloguj się do HappyDate: e-mail i hasło, magiczny link lub Google OAuth." />
+  <meta name="robots" content="noindex, follow" />
+
+  <!-- Favicon / PWA -->
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32x32.png">
-  <link rel="manifest" href="/public/manifest.webmanifest">
+  <link rel="manifest" href="/public/manifest.webmanifest" />
   <meta name="theme-color" content="#ffffff" />
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @media (prefers-reduced-motion: reduce){ .animate-spin{ animation: none !important; } }
+    @media (prefers-reduced-motion: reduce) {
+      .animate-spin { animation: none !important; }
+    }
   </style>
 </head>
-<body class="h-full bg-gray-100 flex items-center justify-center">
+
+<body class="h-full flex items-center justify-center">
   <noscript>
     <div class="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
       Ta strona wymaga JavaScript do działania (logowanie przez Supabase).
     </div>
   </noscript>
 
-  <main class="bg-white w-full max-w-md mx-auto my-8 p-8 rounded-2xl shadow-xl">
+  <main class="bg-white w-full max-w-md p-8 mx-auto rounded-2xl shadow-xl">
     <a href="/index.html" class="block text-center text-3xl mb-2" aria-label="Strona główna HappyDate">🎁</a>
-    <h1 class="text-2xl font-bold mb-1 text-center">Zaloguj się do HappyDate</h1>
-    <p class="text-sm text-center text-gray-500 mb-6">Szybko i bezpiecznie — wybierz metodę logowania</p>
+    <h1 class="text-2xl font-bold text-center mb-1">Zaloguj się do HappyDate</h1>
+    <p class="text-sm text-center text-gray-500 mb-6">Wybierz sposób logowania</p>
 
-    <!-- Email + password -->
+    <!-- Login: Email & Hasło -->
     <form id="login-form" class="space-y-4" autocomplete="on" novalidate>
       <label class="block">
         <span class="block text-sm font-medium mb-1">Adres e-mail</span>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          inputmode="email"
-          autocomplete="username email"
-          spellcheck="false"
+        <input type="email" id="email" name="email" required inputmode="email"
+          autocomplete="username email" spellcheck="false"
           class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-400"
           placeholder="np. jan.kowalski@email.pl" />
       </label>
@@ -49,213 +48,72 @@
       <label class="block">
         <span class="block text-sm font-medium mb-1">Hasło</span>
         <div class="relative">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            minlength="6"
+          <input type="password" id="password" name="password" required minlength="6"
             autocomplete="current-password"
             class="w-full p-2.5 border rounded-lg pr-10 focus:ring-2 focus:ring-blue-400"
             placeholder="••••••••" />
-          <button
-            type="button"
-            id="togglePass"
+          <button type="button" id="togglePass"
             class="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500 hover:text-gray-700"
-            aria-label="Pokaż/ukryj hasło"
-            aria-pressed="false">👁️</button>
+            aria-label="Pokaż lub ukryj hasło" aria-pressed="false">👁️</button>
         </div>
       </label>
 
-      <button
-        type="submit"
-        id="emailPassBtn"
+      <button type="submit" id="emailPassBtn"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
         Zaloguj się
       </button>
 
       <div class="flex items-center justify-between text-sm">
-        <button type="button" id="forgotBtn" class="text-blue-600 hover:underline">
-          Nie pamiętasz hasła?
-        </button>
+        <button type="button" id="forgotBtn" class="text-blue-600 hover:underline">Nie pamiętasz hasła?</button>
         <a href="/pages/register.html" class="text-gray-600 hover:underline">Nie masz konta?</a>
       </div>
     </form>
 
     <!-- Divider -->
     <div class="my-6 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
-      <div class="flex-1 h-px bg-gray-200"></div><span>lub</span><div class="flex-1 h-px bg-gray-200"></div>
+      <div class="flex-1 h-px bg-gray-200"></div>
+      <span>lub</span>
+      <div class="flex-1 h-px bg-gray-200"></div>
     </div>
 
-    <!-- Magic link -->
+    <!-- Magic Link -->
     <form id="magic-form" class="space-y-3" novalidate>
       <label class="block">
         <span class="block text-sm font-medium mb-1">Szybki dostęp (magic link)</span>
-        <input
-          type="email"
-          id="magic-email"
-          name="magicEmail"
-          inputmode="email"
-          autocomplete="email"
-          spellcheck="false"
+        <input type="email" id="magic-email" name="magicEmail" inputmode="email" autocomplete="email" spellcheck="false"
           class="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-pink-400"
           placeholder="Wpisz e-mail do wysłania linku" />
       </label>
-      <button
-        type="submit"
-        id="magicBtn"
+      <button type="submit" id="magicBtn"
         class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 rounded-lg font-semibold transition disabled:opacity-60 disabled:cursor-not-allowed">
-        Wyślij magic link ✉️
+        Wyślij magiczny link ✉️
       </button>
     </form>
 
     <!-- Divider -->
     <div class="my-6 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
-      <div class="flex-1 h-px bg-gray-200"></div><span>lub</span><div class="flex-1 h-px bg-gray-200"></div>
+      <div class="flex-1 h-px bg-gray-200"></div>
+      <span>lub</span>
+      <div class="flex-1 h-px bg-gray-200"></div>
     </div>
 
-    <!-- Google OAuth ONLY -->
+    <!-- Google OAuth -->
     <div class="grid grid-cols-1 gap-3">
-      <button id="googleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-60 disabled:cursor-not-allowed">
+      <button id="googleBtn" class="w-full border py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition">
         Zaloguj przez Google
       </button>
     </div>
 
     <p class="mt-6 text-xs text-center text-gray-500">
-      Logując się, akceptujesz naszą
-      <a href="/pages/privacy.html" class="underline">Politykę prywatności</a>.
+      Logując się, akceptujesz naszą <a href="/pages/privacy.html" class="underline">Politykę prywatności</a>.
     </p>
   </main>
 
-  <!-- Toast -->
-  <div
-    id="toast"
-    class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50 hidden"
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50 hidden"
     role="status" aria-live="polite" aria-atomic="true"></div>
 
-  <script type="module">
-    // Używamy wspólnego klienta Supabase
-    import { supabase } from '/src/js/supabaseClient.js';
-
-    // ---- Helpers ----
-    const $ = (s, r=document) => r.querySelector(s);
-    const toast = (msg, type='ok') => {
-      const el = $('#toast');
-      el.className = 'fixed top-5 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg text-white shadow-lg z-50';
-      el.classList.add(type === 'err' ? 'bg-red-600' : type === 'warn' ? 'bg-yellow-500' : 'bg-green-600');
-      el.textContent = msg;
-      el.classList.remove('hidden');
-      setTimeout(()=> el.classList.add('hidden'), 2600);
-    };
-    const setLoading = (btn, loading=true, labelWhenLoading='Przetwarzanie…') => {
-      if (!btn) return;
-      btn.disabled = loading;
-      if (loading) {
-        btn.dataset._label = btn.textContent;
-        btn.innerHTML = `<span class="inline-block align-middle w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full animate-spin"></span>${labelWhenLoading}`;
-      } else {
-        btn.textContent = btn.dataset._label || btn.textContent;
-      }
-    };
-    const redirectTo = (path) => window.location.href = path;
-
-    // Focus na e-mail przy starcie
-    $('#email')?.focus();
-
-    // ---- Jeśli już zalogowany → wróć na dashboard (lub zapamiętany redirect) ----
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        const next = sessionStorage.getItem("happydate_post_login_redirect");
-        if (next) sessionStorage.removeItem("happydate_post_login_redirect");
-        redirectTo(next || '/pages/dashboard.html');
-      }
-    } catch {}
-
-    // ---- Email + Password ----
-    $('#login-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = $('#email').value.trim();
-      const password = $('#password').value;
-      const btn = $('#emailPassBtn');
-
-      if (!email || !password) return toast('Uzupełnij e-mail i hasło', 'warn');
-
-      setLoading(btn, true, 'Logowanie…');
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      setLoading(btn, false);
-
-      if (error) {
-        toast(friendlyError(error), 'err');
-        return;
-      }
-      toast('Zalogowano pomyślnie ✅');
-      const next = sessionStorage.getItem("happydate_post_login_redirect");
-      if (next) sessionStorage.removeItem("happydate_post_login_redirect");
-      redirectTo(next || '/pages/dashboard.html');
-    });
-
-    // ---- Magic link ----
-    $('#magic-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = ($('#magic-email').value || $('#email').value).trim();
-      const btn = $('#magicBtn');
-      if (!email) return toast('Podaj adres e-mail', 'warn');
-
-      setLoading(btn, true, 'Wysyłanie linku…');
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: `${location.origin}/pages/dashboard.html` }
-      });
-      setLoading(btn, false);
-
-      if (error) return toast(friendlyError(error), 'err');
-      toast('Sprawdź skrzynkę — wysłaliśmy link ✉️');
-    });
-
-    // ---- Google OAuth (only) ----
-    $('#googleBtn')?.addEventListener('click', async () => {
-      const btn = $('#googleBtn');
-      setLoading(btn, true, 'Przekierowanie…');
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: `${location.origin}/pages/dashboard.html` }
-      });
-      if (error) {
-        setLoading(btn, false);
-        toast(friendlyError(error), 'err');
-      }
-    });
-
-    // ---- Reset hasła ----
-    $('#forgotBtn')?.addEventListener('click', async () => {
-      const email = ($('#email').value || $('#magic-email').value).trim();
-      if (!email) return toast('Najpierw wpisz e-mail', 'warn');
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${location.origin}/pages/reset-password.html`
-      });
-      if (error) return toast(friendlyError(error), 'err');
-      toast('Wysłaliśmy instrukcję resetu na e-mail ✉️');
-    });
-
-    // ---- Show/Hide password ----
-    $('#togglePass')?.addEventListener('click', (ev) => {
-      const input = $('#password');
-      const nextType = input.type === 'password' ? 'text' : 'password';
-      input.type = nextType;
-      ev.currentTarget.setAttribute('aria-pressed', String(nextType === 'text'));
-    });
-
-    // ---- Błędy „po ludzku” ----
-    function friendlyError(err) {
-      const msg = (err?.message || '').toLowerCase();
-      if (msg.includes('invalid login') || msg.includes('invalid email or password')) return 'Nieprawidłowy e-mail lub hasło.';
-      if (msg.includes('email not confirmed') || msg.includes('not confirmed')) return 'Potwierdź e-mail, zanim się zalogujesz.';
-      if (msg.includes('too many requests')) return 'Zbyt wiele prób — spróbuj za kilka minut.';
-      if (msg.includes('network')) return 'Problem z siecią — sprawdź połączenie.';
-      return 'Ups! Coś poszło nie tak. Spróbuj ponownie.';
-    }
-  </script>
+  <!-- Logika Supabase (modularna) -->
+  <script type="module" src="/src/js/login.js"></script>
 </body>
 </html>

@@ -3,10 +3,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 /**
- * Skąd bierzemy ENV (priorytet):
- * 1) window.ENV.{SUPABASE_URL, SUPABASE_ANON_KEY} — np. z /public/env.js
- * 2) /api/env (Vercel Edge/Serverless) — zwraca JSON z NEXT_PUBLIC_* (bezpieczne publicznie)
- * 3) window.env — legacy
+ * Джерела ENV (пріоритет):
+ * 1) window.ENV.{SUPABASE_URL, SUPABASE_ANON_KEY} — напр. із /public/env.js
+ * 2) window.env.{SUPABASE_URL, SUPABASE_ANON_KEY} — legacy
+ * 3) window.SUPABASE_URL / window.SUPABASE_ANON_KEY — глобальні (деякі сторінки так роблять)
+ * 4) /api/env (Vercel Edge/Serverless) — повертає JSON з NEXT_PUBLIC_* (публічні)
  */
 let envPromise = null;
 
@@ -14,34 +15,51 @@ async function fetchEnvFromApi(retries = 2) {
   const url = "/api/env";
   for (let i = 0; i <= retries; i++) {
     try {
-      const res = await fetch(url, { credentials: "same-origin", cache: "no-store" });
+      const res = await fetch(url, {
+        credentials: "same-origin",
+        cache: "no-store",
+        headers: { "Accept": "application/json" },
+      });
       if (res.ok) return await res.json();
-    } catch (_) { /* retry */ }
-    await new Promise(r => setTimeout(r, 250 * (i + 1)));
+    } catch { /* retry */ }
+    await new Promise((r) => setTimeout(r, 250 * (i + 1)));
   }
   return null;
 }
 
 async function getEnv() {
   // 1) window.ENV
-  if (window.ENV?.SUPABASE_URL && window.ENV?.SUPABASE_ANON_KEY) return window.ENV;
-
+  if (globalThis.window?.ENV?.SUPABASE_URL && globalThis.window?.ENV?.SUPABASE_ANON_KEY) {
+    return globalThis.window.ENV;
+  }
   // 2) window.env (legacy)
-  if (window.env?.SUPABASE_URL && window.env?.SUPABASE_ANON_KEY) return window.env;
-
-  // 3) /api/env (z cache'em w envPromise)
+  if (globalThis.window?.env?.SUPABASE_URL && globalThis.window?.env?.SUPABASE_ANON_KEY) {
+    return globalThis.window.env;
+  }
+  // 3) Глобальні змінні (деякі сторінки так задають)
+  if (globalThis.window?.SUPABASE_URL && globalThis.window?.SUPABASE_ANON_KEY) {
+    return {
+      SUPABASE_URL: globalThis.window.SUPABASE_URL,
+      SUPABASE_ANON_KEY: globalThis.window.SUPABASE_ANON_KEY,
+    };
+  }
+  // 4) /api/env (кешуємо в envPromise)
   if (!envPromise) {
     envPromise = (async () => {
       const json = await fetchEnvFromApi();
       if (json && (json.SUPABASE_URL || json.NEXT_PUBLIC_SUPABASE_URL)) {
-        // Normalizujemy klucze
+        // Нормалізація ключів
         const SUPABASE_URL =
           json.SUPABASE_URL || json.NEXT_PUBLIC_SUPABASE_URL || json.url || null;
         const SUPABASE_ANON_KEY =
           json.SUPABASE_ANON_KEY || json.NEXT_PUBLIC_SUPABASE_ANON_KEY || json.anon || null;
-        window.ENV = Object.assign({}, window.ENV, { SUPABASE_URL, SUPABASE_ANON_KEY });
+        globalThis.window = globalThis.window || {};
+        globalThis.window.ENV = Object.assign({}, globalThis.window.ENV, {
+          SUPABASE_URL,
+          SUPABASE_ANON_KEY,
+        });
       }
-      return window.ENV || window.env || {};
+      return globalThis.window?.ENV || globalThis.window?.env || {};
     })();
   }
   return envPromise;
@@ -50,7 +68,7 @@ async function getEnv() {
 /** Кидає помилку, якщо значення порожнє (локально ще й alert) */
 function must(val, name) {
   if (!val) {
-    const msg = `[Supabase] Missing ${name}. Configure Vercel ENV (NEXT_PUBLIC_*) or /public/env.js.`;
+    const msg = `[Supabase] Missing ${name}. Налаштуй ENV у Vercel (NEXT_PUBLIC_*) або /public/env.js.`;
     console.error(msg);
     if (typeof window !== "undefined" && location.hostname === "localhost") {
       try { alert(msg); } catch {}
@@ -62,7 +80,8 @@ function must(val, name) {
 
 /** Ініціалізація singleton‑клієнта */
 async function initClient() {
-  if (window.supabase) return window.supabase;
+  // Якщо вже є ініціалізований — повертаємо
+  if (globalThis.window?.supabase) return globalThis.window.supabase;
 
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = await getEnv();
   const url = must(SUPABASE_URL, "SUPABASE_URL");
@@ -70,7 +89,6 @@ async function initClient() {
 
   const client = createClient(url, key, {
     auth: {
-      // Persistuje sesję w localStorage; auto-refresh tokenów; rozpoznaje tokeny z URL (email, OAuth)
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
@@ -80,29 +98,30 @@ async function initClient() {
     },
   });
 
-  window.supabase = client;
+  // Зберігаємо в window як singleton
+  try { globalThis.window.supabase = client; } catch {}
   return client;
 }
 
-// Singleton export (top‑level await)
+// Singleton export (top‑level await доступний в ES-модулях)
 export const supabase = await initClient();
 
-/* ───────────────────────────── helpers / удобства ───────────────────────────── */
+/* ───────────────────────────── helpers ───────────────────────────── */
 
-/** Aktualna sesja (lub null) */
+/** Поточна сесія (або null) */
 export async function getSession() {
   const { data } = await supabase.auth.getSession();
   return data?.session ?? null;
 }
 
-/** Aktualny użytkownik (lub null) */
+/** Поточний користувач (або null) */
 export async function getUser() {
   const { data } = await supabase.auth.getUser();
   return data?.user ?? null;
 }
 
 /**
- * Subskrypcja zmian auth (onAuthStateChange) + natychmiastowe wywołanie z bieżącą sesją
+ * Підписка на зміни auth (onAuthStateChange) + миттєвий виклик з поточною сесією
  * @param {(session: import('@supabase/supabase-js').Session|null) => void} cb
  * @returns {() => void} unsubscribe
  */
@@ -111,10 +130,10 @@ export function onAuth(cb) {
   const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
     try { cb(session); } catch {}
   });
-  return () => sub.subscription?.unsubscribe?.();
+  return () => sub?.subscription?.unsubscribe?.();
 }
 
-/** Zapamiętać/odczytać URL do powrotu po logowaniu */
+/** Запам’ятати/прочитати URL для повернення після логіну */
 const REDIR_KEY = "happydate_post_login_redirect";
 export function rememberNext(url) {
   try { sessionStorage.setItem(REDIR_KEY, url); } catch {}
@@ -128,8 +147,8 @@ export function consumeNext() {
 }
 
 /**
- * Вимога логіну: якщо користувача немає — запам’ятовуємо current URL і ведемо на /pages/login.html
- * @param {string} loginPath ścieżka do logowania (domyślnie: /pages/login.html)
+ * Вимога логіну: якщо користувача немає — зберігаємо current URL і ведемо на /pages/login.html
+ * @param {string} loginPath шлях до логіну (за замовч.: /pages/login.html)
  * @returns {Promise<import('@supabase/supabase-js').User|null>}
  */
 export async function requireAuth(loginPath = "/pages/login.html") {
@@ -148,25 +167,35 @@ export async function requireAuth(loginPath = "/pages/login.html") {
 
 /* ───────────────────────────── auth shortcuts ───────────────────────────── */
 
-/** Email + hasło (login) */
+/** Вхід email+пароль */
 export function signIn(email, password) {
   return supabase.auth.signInWithPassword({ email, password });
 }
 
-/** Rejestracja email+hasło (jeśli kiedyś wrócisz do tej ścieżki) */
+/** Реєстрація email+пароль */
 export function signUp(email, password, meta = {}) {
+  // Якщо не маєш окремого callback — лишаємо редірект на дашборд (працює і для email‑link)
+  const redirect = (typeof location !== "undefined" ? location.origin : "") + "/pages/dashboard.html";
   return supabase.auth.signUp({
     email,
     password,
     options: {
-      // Jeśli nie masz osobnej strony callback — zostaw na dashboard albo survey
-      emailRedirectTo: location.origin + "/pages/dashboard.html",
-      data: Object.assign({ lang: (window.i18n?.getLang?.() || "pl") }, meta),
+      emailRedirectTo: redirect,
+      data: Object.assign({ lang: (globalThis.window?.i18n?.getLang?.() || "pl") }, meta),
     },
   });
 }
 
-/** Wylogowanie */
+/** Вхід через OAuth (Google тощо) */
+export function signInWithOAuth(provider = "google", redirect = "/pages/dashboard.html") {
+  const redirectTo = (typeof location !== "undefined" ? location.origin : "") + redirect;
+  return supabase.auth.signInWithOAuth({
+    provider,
+    options: { redirectTo },
+  });
+}
+
+/** Вихід */
 export function signOut() {
   return supabase.auth.signOut();
 }
@@ -174,20 +203,23 @@ export function signOut() {
 /* ───────────────────────────── domain helpers ───────────────────────────── */
 
 /**
- * Upsert profilu użytkownika (wymaga RLS polityk jak w naszej migracji)
- * @param {Partial<{name:string,surname:string,phone:string,birthdate:string,gender:string,preferences:string,photo_url:string,points:number}>} patch
+ * Upsert профілю користувача (вимагає RLS політик, як у міграції)
+ * @param {Partial<{name:string,surname:string,phone:string,birthdate:string,gender:string,preferences:string,photo_url:string,points:number,email:string}>} patch
  */
 export async function upsertMyProfile(patch) {
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error("Brak użytkownika");
-  return supabase.from("profiles").upsert({ id: user.id, ...patch });
+  if (!user) throw new Error("Brak użytkownika / Користувач не авторизований");
+  // Гарантуємо id та email (якщо є)
+  const row = Object.assign({ id: user.id }, patch);
+  if (!row.email && user.email) row.email = user.email;
+  return supabase.from("profiles").upsert(row, { onConflict: "id" });
 }
 
-/* Opcjonalnie — helper do Google OAuth (czytelny import w stronach):
-export function signInWithGoogle(redirect = "/pages/dashboard.html") {
-  return supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: location.origin + redirect },
-  });
+/**
+ * Простий helper: чи користувач залогінений (без редіректу)
+ * @returns {Promise<boolean>}
+ */
+export async function isLoggedIn() {
+  const { data: { session } } = await supabase.auth.getSession();
+  return !!session?.user;
 }
-*/
